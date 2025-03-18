@@ -51,6 +51,9 @@
     <ClCompile Include="KeyManager.cpp">
       <Filter>2D Framework</Filter>
     </ClCompile>
+    <ClCompile Include="KOFKeyManager.cpp">
+      <Filter>2D Framework</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h">
@@ -84,6 +87,9 @@
       <Filter>2D Framework</Filter>
     </ClInclude>
     <ClInclude Include="Singleton.h">
+      <Filter>2D Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="KOFKeyManager.h">
       <Filter>2D Framework</Filter>
     </ClInclude>
   </ItemGroup>

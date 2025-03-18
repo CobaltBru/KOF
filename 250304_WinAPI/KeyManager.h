@@ -21,6 +21,5 @@ public:
 
 	void SetKeyDown(int key, bool state) { this->keyDown.set(key, state); }
 	void SetKeyUp(int key, bool state) { this->keyUp.set(key, state); }
-
 };
 
