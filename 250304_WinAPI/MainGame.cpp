@@ -2,7 +2,7 @@
 #include "CommonFunction.h"
 #include "Image.h"
 #include "KOF_Iori.h"
-
+#include "KOFKeyManager.h"
 /*
 	실습1. 이오리 집에 보내기
 	실습2. 배경 바꾸기 (킹오파 애니메이션 배경)
@@ -91,6 +91,8 @@ void MainGame::Update()
 
 	if (iori)
 		iori->Update();
+
+	KOFKeyManager::GetInstance()->Update();
 
 }
 
