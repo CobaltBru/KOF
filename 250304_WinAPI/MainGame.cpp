@@ -10,6 +10,16 @@
 
 void MainGame::Init()
 {
+	// 메인보드가 갖고 있는 고해상도 타이머의 누적값을 얻어오는 함수
+	QueryPerformanceCounter(&m_CurrentTime);		// 1000
+	QueryPerformanceCounter(&m_OldTime);			// 1020	
+	QueryPerformanceCounter(&m_OriginTime);			// 1030	
+
+	// 고해상도 타이머의 주파수를 얻어오는 함수, 주파수는 cpu 초당 클럭수 주기를 말함
+	QueryPerformanceFrequency(&m_CpuTick);			// 1,600,000
+
+	m_bRunning = true;
+
 	hdc = GetDC(g_hWnd);
 	backBuffer = new Image();
 	if (FAILED(backBuffer->Init(WINSIZE_X, WINSIZE_Y)))
@@ -50,10 +60,35 @@ void MainGame::Release()
 		delete backBuffer;
 		backBuffer = nullptr;
 	}
+
+	ReleaseDC(g_hWnd, hdc);
+}
+
+void MainGame::UpdateTimer()
+{
+	QueryPerformanceCounter(&m_CurrentTime);
+	// 2000	//	3000 // 4000 // 5000
+
+	if (m_CurrentTime.QuadPart - m_OriginTime.QuadPart > m_CpuTick.QuadPart)
+	{
+		QueryPerformanceFrequency(&m_CpuTick);
+		m_OriginTime = m_CurrentTime;
+	}
+
+	m_fTimeDelta = float(m_CurrentTime.QuadPart - m_OldTime.QuadPart) / m_CpuTick.QuadPart;
+
+	if (!m_bRunning)
+		m_fTimeDelta = 0.f;
+
+	m_OldTime = m_CurrentTime;
 }
 
 void MainGame::Update()
 {
+	float fTimeDelta = GetTimeDelta();
+
+	m_fTimeAcc += fTimeDelta;
+
 	if (iori)
 		iori->Update();
 
@@ -67,11 +102,22 @@ void MainGame::Render()
 	backGround->Render(hBackBufferDC);
 	iori->Render(hBackBufferDC);
 
+	++m_iNumDraw;
+
+	/*if (m_fTimeAcc >= 1.f)
+	{
+		m_iFPS = m_iNumDraw;
+		m_iNumDraw = 0;
+		m_fTimeAcc = 0.f;
+	}
+	wsprintf(szText, TEXT("Mouse X : %d"), m_iNumDraw);
+	TextOut(hBackBufferDC, 20, 60, szText, wcslen(szText));*/
+
 	// 백버퍼에 있는 내용을 메인 hdc에 복사
 	HDC tempDC = GetDC(g_hWnd);
 	backBuffer->Render(tempDC);
 
-	++m_iFPS;
+	/*++m_iFPS;
 
 	if (m_dwTime + 1000 < GetTickCount())
 	{
@@ -80,7 +126,14 @@ void MainGame::Render()
 
 		m_iFPS = 0;
 		m_dwTime = GetTickCount();
-	}
+	}*/
+
+
+
+	/*wprintf(m_szFPS, L"FPS : %f", GetTimeDelta());
+	SetWindowText(g_hWnd, m_szFPS);*/
+
+	
 }
 
 LRESULT MainGame::MainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
@@ -113,10 +166,14 @@ LRESULT MainGame::MainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPara
 }
 
 MainGame::MainGame()
-	: m_dwTime(GetTickCount())
+	: m_fTimeDelta(0.f)
+	, m_bRunning(false)
+	, m_fTimeScale(1.f)
 {
-	ZeroMemory(m_szFPS, sizeof(TCHAR) * 64);
-	m_iFPS = 0;
+	ZeroMemory(&m_CurrentTime, sizeof(LARGE_INTEGER));
+	ZeroMemory(&m_CpuTick, sizeof(LARGE_INTEGER));
+	ZeroMemory(&m_OldTime, sizeof(LARGE_INTEGER));
+	ZeroMemory(&m_OriginTime, sizeof(LARGE_INTEGER));
 }
 
 MainGame::~MainGame()

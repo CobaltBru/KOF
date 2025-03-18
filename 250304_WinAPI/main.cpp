@@ -8,7 +8,7 @@ HINSTANCE g_hInstance;	// 프로그램 인스턴스 핸들
 HWND g_hWnd;
 LPCWSTR g_lpszClassName = (LPCWSTR)TEXT("윈도우 API 사용하기");
 MainGame g_mainGame;
-
+float g_fFrameLimit;
 // Init
 
 RECT GetRect(int left, int top, int width, int height);
@@ -85,44 +85,49 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	g_mainGame.Init();
 	HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDR_ACCELERATOR1));
 
-	DWORD		dwOldTime = GetTickCount();
 	MSG message;
-	while (true)
+
+	float fTimeAcc = 0.f;
+
+	bool bDone = false;
+	while (!bDone)
 	{
 		// PM_REMOVE   : 메시지를 읽어옴과 동시에 메시지 큐에서 제거
 		// PM_NOREMOVE : 메시지 큐에 메시지가 존재하는지만 파악, 만약 메시지를 얻어오려면 GetMessage를 다시 호출해야 함
 
-		if (PeekMessage(&message, nullptr, 0, 0, PM_REMOVE))
+		while (PeekMessage(&message, nullptr, 0, 0, PM_REMOVE))
 		{
-			if (WM_QUIT == message.message)
-				break;
+			if (message.message == WM_QUIT)
+				bDone = true;
 
-			if (!TranslateAccelerator(message.hwnd, hAccelTable, &message)) // 메뉴 기능의 단축키가 제대로 작동하도록 검사하는 함수
+			if (!TranslateAccelerator(message.hwnd, hAccelTable, &message))
 			{
-				TranslateMessage(&message);	// 키보드 메세지를 가공하여 프로그램에서 쉽게 사용할 수 있도록 번역하는 함수
-				DispatchMessage(&message);	// 시스템 메세지 큐에서 꺼낸 메세지를 프로그램에서 처리(WndProc 호출) 하도록 전달
+				TranslateMessage(&message);
+				DispatchMessage(&message);
 			}
 		}
 
-		else
+		if (bDone)
+			break;
+
+		g_mainGame.UpdateTimer();
+
+		fTimeAcc += g_mainGame.GetTimeDelta();
+
+		float fNextFrame = g_fFrameLimit <= 0.f ? 0.f : (1.f / g_fFrameLimit);
+
+		if (fTimeAcc >= fNextFrame)
 		{
-			if (dwOldTime + 10 < GetTickCount())
-			{
-				g_mainGame.Update();
-				
-				g_mainGame.Render();
+			//pMainApp->Tick();
+			//pMainApp->Render();
+			g_mainGame.Update();
+			g_mainGame.Render();
 
-				dwOldTime = GetTickCount();
-			}
-
-			/*pMainGame->Update();
-			pMainGame->Late_Update();
-			pMainGame->Render();*/
+			fTimeAcc = 0.f;
 		}
-
 	}
 
-	return message.wParam;
+	return (int)message.wParam;
 }
 
 LRESULT WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
