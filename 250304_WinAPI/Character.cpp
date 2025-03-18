@@ -4,7 +4,7 @@
 Character::Character()
 {
 	player = 0;
-	way = 1;
+	moveWay = 1;
 	pos = { 0,0 };
 	speed = 0;
 	hp = 0;
@@ -21,6 +21,7 @@ Character::~Character()
 void Character::setPlayer(int p)//1, 2
 {
 	this->player = p;
+	screenWay = player == 1 ? 1 : -1;
 }
 void Character::Init(vector<Image> images, FPOINT pos, float hp, float damage)
 {
@@ -36,33 +37,57 @@ void Character::Release()
 {
 }
 
-void Character::Update()
+void Character::Update(float deltaTime)
 {
-	if (currentCommand == "N") //기본
+	if (currentCommand == "A")
 	{
-		currentState = STATE::IDLE;
+		if (screenWay == 1)
+		{
+			currentState = STATE::BACK;
+		}
+		else
+		{
+			currentState = STATE::WALK;
+		}
 	}
-	else if (currentCommand == "N") //앞으로
+	else if (currentCommand == "D")
 	{
-		currentState = STATE::WALK;
-		pos.x += way * speed;
+		if (screenWay == 1)
+		{
+			currentState = STATE::WALK;
+		}
+		else
+		{
+			currentState = STATE::BACK;
+		}
 	}
-	else if (currentCommand == "N") //뒤로
-	{
-		currentState = STATE::WALK;
-	}
-	else if (currentCommand == "N") //숙이기
+	else if (currentCommand == "S")
 	{
 		currentState = STATE::DOWN;
 	}
-	else if (currentCommand == "N") //앞대쉬
+	else if (currentCommand == "AA")
 	{
-		currentState = STATE::DASH;
+		if (screenWay == 1)
+		{
+			currentState = STATE::BACKDASH;
+		}
+		else
+		{
+			currentState = STATE::DASH;
+		}
 	}
-	else if (currentCommand == "N") //뒤대쉬
+	else if (currentCommand == "DD")
 	{
-		currentState = STATE::DASH;
+		if (screenWay == 1)
+		{
+			currentState = STATE::DASH;
+		}
+		else
+		{
+			currentState = STATE::BACKDASH;
+		}
 	}
+
 }
 
 void Character::Render(HDC hdc)
@@ -76,5 +101,11 @@ void Character::Move()
 
 void Character::getCommand()
 {
+}
+
+void Character::updateCurrentScreenWay(Character* otherCharacter)
+{
+	if (pos.x - otherCharacter->pos.x < 0) screenWay = -1;
+	else if (pos.x - otherCharacter->pos.x > 0) screenWay = 1;
 }
 

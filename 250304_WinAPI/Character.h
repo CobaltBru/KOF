@@ -5,11 +5,12 @@ class Image;
 class Character
 {
 private:
-	enum class STATE{ IDLE, WALK, DOWN, DASH };
+	enum class STATE { IDLE, BACK, WALK, DOWN, DOWNBACK, DOWNWALK, DASH, BACKDASH, PROCESS };
 	int player;
 
 	FPOINT pos;
-	int way;
+	int screenWay;
+	int moveWay;
 	float speed;
 	float hp;
 	float currentHp;
@@ -23,11 +24,12 @@ public:
 	~Character();
 	void Init(vector<Image> images, FPOINT pos, float hp, float damage);
 	void Release();
-	void Update();
+	void Update(float deltaTime);
 	void Render(HDC hdc);
 	void Move();
 	void getCommand();
-
+	void updateCurrentScreenWay(Character* otherCharacter);
 	void setPlayer(int p);
 };
+
 
