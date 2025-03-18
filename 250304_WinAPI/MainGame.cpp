@@ -10,6 +10,7 @@
 
 void MainGame::Init()
 {
+	hdc = GetDC(g_hWnd);
 	backBuffer = new Image();
 	if (FAILED(backBuffer->Init(WINSIZE_X, WINSIZE_Y)))
 	{
@@ -56,10 +57,9 @@ void MainGame::Update()
 	if (iori)
 		iori->Update();
 
-	InvalidateRect(g_hWnd, NULL, false);
 }
 
-void MainGame::Render(HDC hdc)
+void MainGame::Render()
 {
 	// 백버퍼에 먼저 복사
 	HDC hBackBufferDC = backBuffer->GetMemDC();
@@ -67,11 +67,20 @@ void MainGame::Render(HDC hdc)
 	backGround->Render(hBackBufferDC);
 	iori->Render(hBackBufferDC);
 
-	wsprintf(szText, TEXT("Mouse X : %d, Y : %d"), mousePosX, mousePosY);
-	TextOut(hBackBufferDC, 20, 60, szText, wcslen(szText));
-
 	// 백버퍼에 있는 내용을 메인 hdc에 복사
-	backBuffer->Render(hdc);
+	HDC tempDC = GetDC(g_hWnd);
+	backBuffer->Render(tempDC);
+
+	++m_iFPS;
+
+	if (m_dwTime + 1000 < GetTickCount())
+	{
+		swprintf_s(m_szFPS, L"FPS : %d", m_iFPS);
+		SetWindowText(g_hWnd, m_szFPS);
+
+		m_iFPS = 0;
+		m_dwTime = GetTickCount();
+	}
 }
 
 LRESULT MainGame::MainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
@@ -79,44 +88,23 @@ LRESULT MainGame::MainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPara
 	switch (iMessage)
 	{
 	case WM_CREATE:
-		hTimer = (HANDLE)SetTimer(hWnd, 0, 10, NULL);
-
 		break;
 	case WM_TIMER:
-		this->Update();
 		break;
 	case WM_KEYDOWN:
-		switch (wParam)
-		{
-		case 'a': case 'A':
-			break;
-		case 'd': case 'D':
-			break;
-		}
 		break;
 	case WM_LBUTTONDOWN:
-		mousePosX = LOWORD(lParam);
-		mousePosY = HIWORD(lParam);
-
 		break;
 	case WM_LBUTTONUP:
 		break;
 	case WM_MOUSEMOVE:
-		mousePosX = LOWORD(lParam);
-		mousePosY = HIWORD(lParam);
-
-		mousePos.x = LOWORD(lParam);
-		mousePos.y = HIWORD(lParam);
 		break;
 	case WM_PAINT:
 		hdc = BeginPaint(g_hWnd, &ps);
 
-		this->Render(hdc);
-
 		EndPaint(g_hWnd, &ps);
 		break;
 	case WM_DESTROY:
-		KillTimer(hWnd, 0);
 		PostQuitMessage(0);
 		break;
 	}
@@ -125,7 +113,10 @@ LRESULT MainGame::MainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPara
 }
 
 MainGame::MainGame()
+	: m_dwTime(GetTickCount())
 {
+	ZeroMemory(m_szFPS, sizeof(TCHAR) * 64);
+	m_iFPS = 0;
 }
 
 MainGame::~MainGame()
