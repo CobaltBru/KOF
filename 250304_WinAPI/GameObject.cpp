@@ -8,7 +8,7 @@ void GameObject::Release()
 {
 }
 
-void GameObject::Update()
+void GameObject::Update(float TimeDelta)
 {
 }
 

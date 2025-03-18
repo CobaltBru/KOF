@@ -14,7 +14,7 @@ private:
 public:
 	void Init();
 	void Release();
-	void Update();
+	void Update(float TimeDelta);
 	void Render(HDC hdc);
 
 	void Move();

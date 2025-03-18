@@ -26,7 +26,7 @@ void KOF_Iori::Release()
 	}
 }
 
-void KOF_Iori::Update()
+void KOF_Iori::Update(float TimeDelta)
 {
 	elapsedFrame++;
 	//if (elapsedFrame >= 5)
@@ -53,7 +53,7 @@ void KOF_Iori::Update()
 void KOF_Iori::Render(HDC hdc)
 {
 	if (image)
-		image->Render(hdc, pos.x, pos.y, currAnimaionFrame, true);
+		image->Render(hdc, pos.x, pos.y, currAnimaionFrame);
 }
 
 void KOF_Iori::Move()

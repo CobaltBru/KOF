@@ -33,6 +33,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 	LPSTR lpszCmdParam, int nCmdShow)
 {
+
+#ifdef _DEBUG
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+
 	g_hInstance = hInstance;
 
 	WNDCLASSEX wndClass;
@@ -49,27 +54,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	wndClass.style = CS_HREDRAW | CS_VREDRAW;
 	wndClass.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SHIELD));
 
-
-
-	//// 윈도우를 생성하기 위한 데이터 셋팅
-	//WNDCLASS wndClass;
-	//wndClass.cbClsExtra = 0;
-	//wndClass.cbWndExtra = 0;
-	//wndClass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
-	//wndClass.hCursor = LoadCursor(g_hInstance, IDC_ARROW);
-	//wndClass.hIcon = LoadIcon(g_hInstance, IDI_APPLICATION);
-	//wndClass.hInstance = g_hInstance;
-	//wndClass.lpfnWndProc = WndProc;		// 함수의 이름은 메모리주소이다.
-	//wndClass.lpszClassName = g_lpszClassName;
-	//wndClass.lpszMenuName = NULL;
-	//wndClass.style = CS_HREDRAW | CS_VREDRAW;	// | : 비트연산자
-
-	//RegisterClass(&wndClass);
 	RegisterClassEx(&wndClass);
-
-	//g_hWnd = CreateWindow(g_lpszClassName, g_lpszClassName,
-	//	WS_OVERLAPPEDWINDOW, 50, 50, WINSIZE_X, WINSIZE_Y,
-	//	NULL, NULL, g_hInstance, NULL);
 
 	RECT rcWindowSize = { 0, 0, WINSIZE_X, WINSIZE_Y };
 	AdjustWindowRect(&rcWindowSize, WS_OVERLAPPEDWINDOW, FALSE);
@@ -83,6 +68,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	ShowWindow(g_hWnd, nCmdShow);
 
 	g_mainGame.Init();
+	g_mainGame.AddTimer(TEXT("TimerDefault"));
+	g_mainGame.AddTimer(TEXT("Timer60"));
 	HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDR_ACCELERATOR1));
 
 	MSG message;
@@ -110,22 +97,22 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		if (bDone)
 			break;
 
-		g_mainGame.UpdateTimer();
+		g_mainGame.UpdateTimer(TEXT("TimerDefault"));
 
-		fTimeAcc += g_mainGame.GetTimeDelta();
+		fTimeAcc += g_mainGame.GetTimeDelta(TEXT("TimerDefault"));
 
-		float fNextFrame = g_fFrameLimit <= 0.f ? 0.f : (1.f / g_fFrameLimit);
-
-		if (fTimeAcc >= fNextFrame)
+		if (fTimeAcc > 1.f / 60.0f)
 		{
-			//pMainApp->Tick();
-			//pMainApp->Render();
+			g_mainGame.UpdateTimer(TEXT("Timer60"));
+
 			g_mainGame.Update();
 			g_mainGame.Render();
 
 			fTimeAcc = 0.f;
 		}
 	}
+
+	g_mainGame.Release();
 
 	return (int)message.wParam;
 }

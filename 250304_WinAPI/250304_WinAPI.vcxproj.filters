@@ -30,16 +30,7 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>2D Framework</Filter>
     </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>MainGame</Filter>
-    </ClCompile>
     <ClCompile Include="MainGame.cpp">
-      <Filter>MainGame</Filter>
-    </ClCompile>
-    <ClCompile Include="Missile.cpp">
-      <Filter>MainGame</Filter>
-    </ClCompile>
-    <ClCompile Include="Tank.cpp">
       <Filter>MainGame</Filter>
     </ClCompile>
     <ClCompile Include="Image.cpp">
@@ -54,6 +45,12 @@
     <ClCompile Include="KOFKeyManager.cpp">
       <Filter>2D Framework</Filter>
     </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>2D Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerManager.cpp">
+      <Filter>2D Framework</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h">
@@ -65,16 +62,7 @@
     <ClInclude Include="GameObject.h">
       <Filter>2D Framework</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>MainGame</Filter>
-    </ClInclude>
     <ClInclude Include="MainGame.h">
-      <Filter>MainGame</Filter>
-    </ClInclude>
-    <ClInclude Include="Missile.h">
-      <Filter>MainGame</Filter>
-    </ClInclude>
-    <ClInclude Include="Tank.h">
       <Filter>MainGame</Filter>
     </ClInclude>
     <ClInclude Include="Image.h">
@@ -92,5 +80,19 @@
     <ClInclude Include="KOFKeyManager.h">
       <Filter>2D Framework</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>2D Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerManager.h">
+      <Filter>2D Framework</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="250304_WinAPI.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

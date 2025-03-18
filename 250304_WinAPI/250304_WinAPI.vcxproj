@@ -134,6 +134,8 @@
     <ClCompile Include="KOF_Iori.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainGame.cpp" />
+    <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="TimerManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommonFunction.h" />
@@ -146,6 +148,8 @@
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Singleton.h" />
+    <ClInclude Include="Timer.h" />
+    <ClInclude Include="TimerManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="250304_WinAPI.rc" />
