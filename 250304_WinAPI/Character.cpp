@@ -39,55 +39,61 @@ void Character::Release()
 
 void Character::Update(float deltaTime)
 {
-	if (currentCommand == "A")
+	if (currentState != STATE::PROCESS)
 	{
-		if (screenWay == 1)
+		if (currentCommand == "A")
 		{
-			currentState = STATE::BACK;
+			if (screenWay == 1)
+			{
+				currentState = STATE::BACK;
+			}
+			else
+			{
+				currentState = STATE::WALK;
+			}
 		}
-		else
+		else if (currentCommand == "D")
 		{
-			currentState = STATE::WALK;
+			if (screenWay == 1)
+			{
+				currentState = STATE::WALK;
+			}
+			else
+			{
+				currentState = STATE::BACK;
+			}
 		}
-	}
-	else if (currentCommand == "D")
-	{
-		if (screenWay == 1)
+		else if (currentCommand == "S")
 		{
-			currentState = STATE::WALK;
+			currentState = STATE::DOWN;
 		}
-		else
+		else if (currentCommand == "AA")
 		{
-			currentState = STATE::BACK;
+			if (screenWay == 1)
+			{
+				currentState = STATE::BACKDASH;
+			}
+			else
+			{
+				currentState = STATE::DASH;
+			}
 		}
-	}
-	else if (currentCommand == "S")
-	{
-		currentState = STATE::DOWN;
-	}
-	else if (currentCommand == "AA")
-	{
-		if (screenWay == 1)
+		else if (currentCommand == "DD")
 		{
-			currentState = STATE::BACKDASH;
+			if (screenWay == 1)
+			{
+				currentState = STATE::DASH;
+			}
+			else
+			{
+				currentState = STATE::BACKDASH;
+			}
 		}
-		else
-		{
-			currentState = STATE::DASH;
-		}
-	}
-	else if (currentCommand == "DD")
-	{
-		if (screenWay == 1)
-		{
-			currentState = STATE::DASH;
-		}
-		else
-		{
-			currentState = STATE::BACKDASH;
-		}
+
 	}
 
+	Move(deltaTime);
+	
 }
 
 void Character::Render(HDC hdc)
@@ -95,7 +101,7 @@ void Character::Render(HDC hdc)
 	images[(int)currentState].Render(hdc, pos.x,pos.y);
 }
 
-void Character::Move()
+void Character::Move(float deltaTime)
 {
 }
 
