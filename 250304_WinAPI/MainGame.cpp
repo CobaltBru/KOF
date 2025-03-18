@@ -106,34 +106,9 @@ void MainGame::Render()
 
 	++m_iNumDraw;
 
-	/*if (m_fTimeAcc >= 1.f)
-	{
-		m_iFPS = m_iNumDraw;
-		m_iNumDraw = 0;
-		m_fTimeAcc = 0.f;
-	}
-	wsprintf(szText, TEXT("Mouse X : %d"), m_iNumDraw);
-	TextOut(hBackBufferDC, 20, 60, szText, wcslen(szText));*/
-
 	// 백버퍼에 있는 내용을 메인 hdc에 복사
 	HDC tempDC = GetDC(g_hWnd);
 	backBuffer->Render(tempDC);
-
-	/*++m_iFPS;
-
-	if (m_dwTime + 1000 < GetTickCount())
-	{
-		swprintf_s(m_szFPS, L"FPS : %d", m_iFPS);
-		SetWindowText(g_hWnd, m_szFPS);
-
-		m_iFPS = 0;
-		m_dwTime = GetTickCount();
-	}*/
-
-
-
-	/*wprintf(m_szFPS, L"FPS : %f", GetTimeDelta());
-	SetWindowText(g_hWnd, m_szFPS);*/
 
 	
 }
