@@ -7,6 +7,7 @@
 #include <iostream>
 #include <bitset>
 #include <map>
+#include <list>
 #include "KeyManager.h"
 
 using namespace std;
@@ -32,6 +33,13 @@ enum class EKeyType : uint8_t			// Å° Á¶ÇÕ
 	KEYDOWNLEFT,
 	KEYDOWNRIGHT,
 	END
+};
+
+enum OBJID 
+{
+	OBJ_CHARACTER,
+	OBJ_PROJECTILE,
+	OBJ_END
 };
 
 typedef struct tagFPOINT

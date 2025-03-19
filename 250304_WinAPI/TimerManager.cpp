@@ -41,6 +41,8 @@ void TimerManager::Release()
 		delete Pair.second;
 
 	m_Timers.clear();
+
+	ReleaseInstance();
 }
 
 Timer* TimerManager::FindTimer(const wchar_t* pTimerTag)

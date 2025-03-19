@@ -24,7 +24,7 @@ public:
 	}
 };
 
-class TimerManager
+class TimerManager : public Singleton<TimerManager>
 {
 public:
 	TimerManager();
