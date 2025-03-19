@@ -66,6 +66,9 @@ public:
 		bool isTransparent = FALSE, COLORREF transColor = FALSE);
 
 	// 파일로부터 이미지를 로드하는 함수
+	HRESULT Init(const wchar_t* filePath, bool isTransparent = FALSE, COLORREF transColor = FALSE);
+
+	// 파일로부터 이미지를 로드하는 함수
 	HRESULT Init(const wchar_t* filePath, int width, int height,
 		int maxFrameX, int maxFrameY,
 		bool isTransparent = FALSE, COLORREF transColor = FALSE);

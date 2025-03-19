@@ -54,6 +54,7 @@ private:
 	float CurrentTime;
 	float DebugDuration;
 	bool bDebugDraw;
+	bool bDuration;
 	bool bHit;
 };
 

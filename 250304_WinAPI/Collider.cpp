@@ -16,11 +16,12 @@ GameObject* Collider::GetOwner()
 	return Owner;
 }
 
-void Collider::DebugRender(bool bDebugDraw, float Duration)
+void Collider::DebugRender(bool bDuration, float Duration)
 {
 	this->DebugDuration = Duration;
-	this->bDebugDraw = bDebugDraw;
+	this->bDuration = bDebugDraw;
 	CurrentTime = 0.f;
+	this->bDebugDraw = true;
 }
 
 void Collider::DebugRender(bool bDraw)
@@ -87,11 +88,14 @@ bool Collider::DebugUpdate(float TimeDelta)
 	if (!bDebugDraw)
 		return false;
 
-	CurrentTime += TimeDelta;
-	if (CurrentTime >= DebugDuration)
+	if (bDuration)
 	{
-		CurrentTime = 0.f;
-		bDebugDraw = false;
+		CurrentTime += TimeDelta;
+		if (CurrentTime >= DebugDuration)
+		{
+			CurrentTime = 0.f;
+			bDebugDraw = false;
+		}
 	}
 	return true;
 }

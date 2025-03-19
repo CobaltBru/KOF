@@ -34,61 +34,7 @@ void HongCharacter::Init()
 
 	collider->DebugRender(true);
 
-	WIN32_FIND_DATA findFileData;
-	HANDLE hFind = INVALID_HANDLE_VALUE;
-
-	// 폴더 내 모든 파일을 찾기 위한 패턴 설정 (여기서는 *.bmp 파일을 찾음)
-	wstring folderPath = L"Image/converted/";
-	wstring searchPattern = folderPath + L"*.bmp";
-
-	// 첫 번째 파일을 찾기
-	hFind = FindFirstFile(searchPattern.c_str(), &findFileData);
-
-	if (hFind == INVALID_HANDLE_VALUE) {
-		std::wcerr << L"폴더를 찾을 수 없습니다: " << folderPath << std::endl;
-		return;
-	}
-
-	do {
-		// 숨김 파일은 무시
-		if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-			continue;
-		}
-
-		// 찾은 파일 경로 생성
-		std::wstring filePath = folderPath + findFileData.cFileName;
-
-		// LoadImage로 파일을 로드
-		//HBITMAP hBitmap = (HBITMAP)LoadImage(
-		//	NULL,                    // 부모 윈도우 핸들 (NULL로 지정)
-		//	filePath.c_str(),        // 이미지 파일 경로
-		//	IMAGE_BITMAP,            // 이미지 형식
-		//	0,                       // 자동으로 너비 계산
-		//	0,                       // 자동으로 높이 계산
-		//	LR_LOADFROMFILE          // 파일로부터 이미지 로드
-		//);
-
-		//if (hBitmap == NULL) {
-		//	std::wcerr << L"이미지 로드 실패: " << filePath << std::endl;
-		//	continue;  // 실패한 경우 다음 파일로 계속 진행
-		//}
-
-		if (FAILED(image->Init(filePath.c_str(), 0, 0)))
-		{
-			MessageBox(g_hWnd, TEXT("Image/iori_walk.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
-		}
-
-		// 이미지 로드 성공 시 출력
-		std::wcout << L"이미지 로드 성공: " << filePath << std::endl;
-
-		// 여기서 이미지를 처리하거나 화면에 그리기 작업을 할 수 있습니다.
-
-		// 비트맵 리소스 해제
-		//DeleteObject(hBitmap);
-
-	} while (FindNextFile(hFind, &findFileData) != 0);  // 다음 파일 찾기
-
-	FindClose(hFind);  // 핸들 닫기
+	Load();
 }
 
 void HongCharacter::Release()
@@ -146,6 +92,7 @@ void HongCharacter::Render(HDC hdc)
 		{
 			/*image->Render(hdc, pos.x - 34, pos.y - 52, currAnimaionFrame);*/
 			image->Render(hdc, pos.x - 34, pos.y - 52);
+			//Animations[0]->Render(hdc);
 		}
 	}
 }
@@ -229,4 +176,55 @@ HongCharacter::HongCharacter()
 
 HongCharacter::~HongCharacter()
 {
+}
+
+void HongCharacter::Load()
+{
+	WIN32_FIND_DATA findFileData;
+	HANDLE hFind = INVALID_HANDLE_VALUE;
+
+	// 폴더 내 모든 파일을 찾기 위한 패턴 설정 (여기서는 *.bmp 파일을 찾음)
+	wstring folderPath = L"Image/converted/";
+	wstring searchPattern = folderPath + L"*.bmp";
+
+	// 첫 번째 파일을 찾기
+	hFind = FindFirstFile(searchPattern.c_str(), &findFileData);
+
+	if (hFind == INVALID_HANDLE_VALUE) {
+		std::wcerr << L"폴더를 찾을 수 없습니다: " << folderPath << std::endl;
+		return;
+	}
+
+	do {
+		// 숨김 파일은 무시
+		if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+			continue;
+		}
+
+		// 찾은 파일 경로 생성
+		std::wstring filePath = folderPath + findFileData.cFileName;
+
+		if (FAILED(image->Init(filePath.c_str())))
+		{
+			MessageBox(g_hWnd, filePath.c_str(), TEXT("경고"), MB_OK);
+		}
+
+	} while (FindNextFile(hFind, &findFileData) != 0);  // 다음 파일 찾기
+
+	FindClose(hFind);  // 핸들 닫기
+}
+
+void Animation::PlayAnimation(float TimeDelta)
+{
+	PlayTime += TimeDelta;
+
+	if (PlayTime >= (float)MaxFrame)
+	{
+		PlayTime = (float)MaxFrame;
+	}
+}
+
+void Animation::Render(HDC hdc)
+{
+	Images[(int)PlayTime]->Render(hdc, 0, 0);
 }
