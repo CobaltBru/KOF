@@ -27,14 +27,19 @@ public:
 		return temp;
 	}
 
+	void ClearPlayer1Buffer() { player1KeyBuffer.clear(); }
+	void ClearPlayer2Buffer() { player2KeyBuffer.clear(); }
+	
+	void Reset() {
+		currentTime = 0.f;
+		player1KeyBuffer.clear();
+		player2KeyBuffer.clear();
+	}
 private:
 	float currentTime = 0.f;
 	// 1p, 2p ¹öÆÛ
 	deque<pair<char, float>> player1KeyBuffer;
 	deque<pair<char, float>> player2KeyBuffer;
-	// 1p , 2p 
-	string player1Command;
-	string player2Command;
 	
 };
 

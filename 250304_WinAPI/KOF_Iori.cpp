@@ -7,8 +7,8 @@ void KOF_Iori::Init()
 	pos = { 0.0f, 0.0f };
 	moveSpeed = 5.0f;
 	image = new Image();
-	if (FAILED(image->Init(TEXT("Image/iori_walk.bmp"), 612, 104, 9, 1, 
-		true, RGB(255,0,255))))
+	if (FAILED(image->Init(TEXT("Image/iori_walk.bmp"), 612, 104, 9, 1,
+		true, RGB(255, 0, 255))))
 	{
 		MessageBox(g_hWnd, TEXT("Image/iori_walk.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
 	}
@@ -60,21 +60,13 @@ void KOF_Iori::Update(float TimeDelta)
 		}
 		elapsedFrame = 0;
 	}
-	currAnimaionFrame = elapsedFrame / 5;
-	if (currAnimaionFrame > 8)
-	{
-		currAnimaionFrame = 0;
-		elapsedFrame = 0;
-		
-		if (bAttack)
-			bAttack = false;		
-	}
+
 
 	// TODO : 김태경이 테스트하려고 만듦
 #pragma once region TaeKyung
 	KeyUpdate(TimeDelta);
-	if(characterKey[(int)EMoveKey::KEYT] || characterKey[(int)EMoveKey::KEYY] || characterKey[(int)EMoveKey::KEYG] || characterKey[(int)EMoveKey::KEYH])
-		Attack();
+
+	//Attack();
 	Move();
 
 	if (KOFKeyManager::GetInstance()->GetPlayer1Command() != "")
@@ -82,8 +74,18 @@ void KOF_Iori::Update(float TimeDelta)
 		string command = KOFKeyManager::GetInstance()->GetPlayer1Command();
 		if (command.size() >= 3)
 		{
-			
+
 		}
+	}
+
+	currAnimaionFrame = elapsedFrame / 5;
+	if (currAnimaionFrame > 8)
+	{
+		currAnimaionFrame = 0;
+		elapsedFrame = 0;
+
+		if (bAttack)
+			bAttack = false;
 	}
 #pragma once endregion
 }
@@ -115,29 +117,16 @@ void KOF_Iori::Move()
 	{
 
 	}
-	 if (KeyManager::GetInstance()->IsOnceKeyUp('A'))
+	else if (characterKey[(int)EMoveKey::KEYA] && stepTime > 0.0001f && currentTime - stepTime < 0.2f)
 	{
-		if (stepTime > 0.0001f && currentTime - stepTime < 0.2f)
-		{
-			int a = 0;
-		}
-		else
-		{
-			pos.x -= moveSpeed;
-		}
-		stepTime = currentTime;
-	} 
-	else if (KeyManager::GetInstance()->IsOnceKeyUp('D'))
+		pos.x -= moveSpeed * 2;
+
+		stepTime = 0.f;
+	}
+	else if (characterKey[(int)EMoveKey::KEYD] && stepTime > 0.0001f && stepTime - currentTime < 0.2f)
 	{
-		if (stepTime > 0.0001f && stepTime - currentTime < 0.2f)
-		{
-			int a = 0;
-		}
-		else
-		{
-			pos.x += moveSpeed;
-		}
-		stepTime = currentTime;
+		pos.x += moveSpeed * 2;
+		stepTime = 0.f;
 	}
 	else if (characterKey[(int)EMoveKey::KEYW])
 	{
@@ -161,31 +150,16 @@ void KOF_Iori::KeyUpdate(float TimeDelta)
 {
 	currentTime += TimeDelta;
 
-	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
-		keyBuffer.push({ 'W',currentTime });
-	if (KeyManager::GetInstance()->IsOnceKeyDown('A'))
-		keyBuffer.push({ 'A',currentTime });
-	if (KeyManager::GetInstance()->IsOnceKeyDown('S'))
-		keyBuffer.push({ 'S',currentTime });
-	if (KeyManager::GetInstance()->IsOnceKeyDown('D'))
-		keyBuffer.push({ 'D',currentTime });
-	if (!keyBuffer.empty())
-	{
-		float b = currentTime - keyBuffer.front().second;
-	}
-	
-	while (!keyBuffer.empty() && currentTime - keyBuffer.front().second > 0.3f)
-		keyBuffer.pop();
-
 	characterKey[(int)EMoveKey::KEYW] = KeyManager::GetInstance()->IsStayKeyDown('W');
 	characterKey[(int)EMoveKey::KEYA] = KeyManager::GetInstance()->IsStayKeyDown('A');
 	characterKey[(int)EMoveKey::KEYS] = KeyManager::GetInstance()->IsStayKeyDown('S');
 	characterKey[(int)EMoveKey::KEYD] = KeyManager::GetInstance()->IsStayKeyDown('D');
 
-	characterKey[(int)EMoveKey::KEYT] = KeyManager::GetInstance()->IsOnceKeyDown('T');
-	characterKey[(int)EMoveKey::KEYY] = KeyManager::GetInstance()->IsOnceKeyDown('Y');
-	characterKey[(int)EMoveKey::KEYG] = KeyManager::GetInstance()->IsOnceKeyDown('G');
-	characterKey[(int)EMoveKey::KEYH] = KeyManager::GetInstance()->IsOnceKeyDown('H');
+	bool bA = KeyManager::GetInstance()->IsOnceKeyUp('A');
+	bool bD = KeyManager::GetInstance()->IsOnceKeyUp('D');
+
+	if (bA || bD)
+		stepTime = currentTime;
 }
 
 void KOF_Iori::StateUpdate()
@@ -199,7 +173,7 @@ void KOF_Iori::Attack()
 		bAttack = true;
 		currAnimaionFrame = 0;
 		elapsedFrame = 0;
-	}	
+	}
 }
 
 KOF_Iori::KOF_Iori()

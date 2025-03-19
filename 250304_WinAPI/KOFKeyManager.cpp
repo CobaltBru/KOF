@@ -53,4 +53,5 @@ void KOFKeyManager::Update(float TimeDelta)
 
 void KOFKeyManager::Release()
 {
+	ReleaseInstance();
 }
