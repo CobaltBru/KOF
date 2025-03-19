@@ -160,10 +160,17 @@ void Character::Init(int player, Image* profile, FPOINT pos, float characterSpee
 
 void Character::Release()
 {
+	profile->Release();
 	delete profile;
+
 	for (auto skill : skillSet)
 	{
+		skill.image->Release();
 		delete skill.image;
+	}
+	for (auto image : images)
+	{
+		image.Release();
 	}
 }
 
@@ -369,6 +376,11 @@ void Character::updateCurrentScreenWay(Character* otherCharacter)
 
 void Character::useSkill(string str)
 {
+	if (str == "")
+	{
+		setIdle();
+		return;
+	}
 	for (int i = 0;i<skillSet.size();i++)
 	{
 		if (str.find(skillSet[i].command) != string::npos)
@@ -380,14 +392,10 @@ void Character::useSkill(string str)
 			this->damage = skill.damage;
 			this->moveWay = skill.way;
 			if(skill.startTime <= 0.0f) this->speed = skill.speed;
-		}
-		else
-		{
-			currentState = STATE::IDLE;
 			return;
 		}
 	}
-	
+	setIdle();
 	
 }
 
