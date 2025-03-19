@@ -33,7 +33,6 @@ void HongCharacter::Init()
 	manager->AddObject(OBJID::OBJ_CHARACTER, collider);	
 
 	collider->DebugRender(true);
-
 }
 
 void HongCharacter::Release()
@@ -73,6 +72,7 @@ void HongCharacter::Update(float TimeDelta)
 		{
 			int a = 10;
 
+			
 			//dynamic_cast<asdf>(hit.Actors[0]);
 		}
 	}
@@ -91,6 +91,8 @@ void HongCharacter::Render(HDC hdc)
 	{
 		if (image)
 			image->Render(hdc, pos.x - 34, pos.y - 52, currAnimaionFrame);
+
+		
 	}
 }
 

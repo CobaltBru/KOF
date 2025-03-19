@@ -37,32 +37,39 @@ void MainGame::Init()
 	{
 		objectManager->Init();
 
-		//KOF_Iori* tempIori = new KOF_Iori;
-		//tempIori->Init();
-		//objectManager->AddObject(OBJID::OBJ_CHARACTER, tempIori);
+	/*	KOF_Iori* tempIori = new KOF_Iori;
+		tempIori->Init();
+		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempIori);*/
 
-		HongCharacter* tempHong = new HongCharacter;
+	/*	HongCharacter* tempHong = new HongCharacter;
 		tempHong->Init();
 		tempHong->SetPos({ 100.f, 100.f });
-		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempHong);
+		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempHong);*/
 
-		/*Ryo* tempRyo = new Ryo();
+		Ryo* tempRyo = new Ryo();
 		vector<Image> tempImage;
-		vector<int> tempMaxFrame;
 		Image Idle;
-		Idle.Init(L"Image/Ryo_Idle.bmp", 622, 109, 7, 1, true, RGB(255, 0, 255));
+		Idle.Init(L"Image/Ryo/Ryo_Idle.bmp", 616, 109, 7, 1, true, RGB(255, 0, 255));
+
+		Image Walk;
+		Walk.Init(L"Image/Ryo/Ryo_Walk1.bmp", 422, 105, 6, 1, true, RGB(255, 0, 255));
+		Image BackWalk;
+		BackWalk.Init(L"Image/Ryo/Ryo_BackWalk.bmp", 408, 105, 6, 1, true, RGB(255, 0, 255));
+
+		Image Down;
+		Down.Init(L"Image/Ryo/Ryo_DownUp.bmp", 409, 109, 5, 1, true, RGB(255, 0, 255));
+
 		tempImage.push_back(Idle);
-		tempImage.push_back(Idle);
-		tempImage.push_back(Idle);
-		tempImage.push_back(Idle);
-		tempImage.push_back(Idle);
-		tempMaxFrame.push_back(7);
-		tempMaxFrame.push_back(7);
-		tempMaxFrame.push_back(7);
-		tempMaxFrame.push_back(7);
-		tempMaxFrame.push_back(7);
-		tempRyo->Init(2, {10,10},10,100, tempImage);
-		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempRyo);*/
+		tempImage.push_back(BackWalk);
+		tempImage.push_back(Walk);
+		tempImage.push_back(Down);
+		tempImage.push_back(Walk);
+		tempImage.push_back(Walk);
+		tempImage.push_back(Walk);
+		tempImage.push_back(Walk);
+
+		tempRyo->Init(1, new Image(),{250,250},200.f,100.f, tempImage);
+		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempRyo);
 	}
 
 	UI = new UserInterface();

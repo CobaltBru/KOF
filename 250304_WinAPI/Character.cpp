@@ -185,7 +185,7 @@ void Character::Update(float deltaTime)
 	if (currentState != STATE::IDLE)
 	{
 		timecnt += deltaTime;
-		framecnt = timecnt / (deltaTime); //현재 프레임 계산
+		framecnt = timecnt / (deltaTime * 10.f); //현재 프레임 계산
 		if (currentState == STATE::PROCESS) //기술중
 		{
 			if (framecnt >= skillSet[currentSkill].maxFrame)//끝나면 IDLE로
@@ -254,7 +254,7 @@ void Character::Move(float deltaTime)
 			speed = 0;
 		}
 	}
-	pos.x += ((screenWay ? -1 : 1) * moveWay) * speed * deltaTime;
+	pos.x += ((screenWay ? -1 : 1) * moveWay) * speed * characterSpeed * deltaTime;
 }
 
 void Character::getCommand()

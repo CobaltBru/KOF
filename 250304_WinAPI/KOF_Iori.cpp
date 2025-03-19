@@ -7,11 +7,18 @@ void KOF_Iori::Init()
 	pos = { 0.0f, 0.0f };
 	moveSpeed = 5.0f;
 	image = new Image();
-	if (FAILED(image->Init(TEXT("Image/iori_walk.bmp"), 612, 104, 9, 1,
+	/*if (FAILED(image->Init(TEXT("Image/iori_walk.bmp"), 612, 104, 9, 1,
 		true, RGB(255, 0, 255))))
 	{
 		MessageBox(g_hWnd, TEXT("Image/iori_walk.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
+	}*/
+
+	if (FAILED(image->Init(L"Image/Ryo/Ryo_Walk1.bmp", 422, 105, 6, 1, true, RGB(255, 0, 255))))
+	{
+		MessageBox(g_hWnd, TEXT("Image/iori_walk.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
 	}
+	
+	
 
 	elapsedFrame = 0;
 	currAnimaionFrame = 0;
@@ -54,7 +61,7 @@ void KOF_Iori::Update(float TimeDelta)
 		currAnimaionFrame++;
 		Move();
 
-		if (currAnimaionFrame > 8)
+		if (currAnimaionFrame > 5)
 		{
 			currAnimaionFrame = 0;
 		}
@@ -79,7 +86,7 @@ void KOF_Iori::Update(float TimeDelta)
 	}*/
 
 	currAnimaionFrame = elapsedFrame / 5;
-	if (currAnimaionFrame > 8)
+	if (currAnimaionFrame > 5)
 	{
 		currAnimaionFrame = 0;
 		elapsedFrame = 0;
