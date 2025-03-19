@@ -69,7 +69,7 @@ void Character::pushCommon(Image* image, int maxFrame)
 
 void Character::pushSkill(string command, Image* image, int maxFrame,
 			int damage, int reach, bool isUpperAttack, bool isLowerAttack,
-			float startTime, float moveTime, int way, int speed)
+			float startTime, float endTime, int way, int speed)
 {
 	SKILL skill;
 	skill.command = command;
@@ -80,7 +80,7 @@ void Character::pushSkill(string command, Image* image, int maxFrame,
 	skill.isUpperAttack = isUpperAttack;
 	skill.isLowerAttack = isLowerAttack;
 	skill.startTime = startTime;
-	skill.moveTime = moveTime;
+	skill.endTime = endTime;
 	skill.way = way;
 	skill.speed = speed;
 	
@@ -98,14 +98,14 @@ void Character::Update(float deltaTime)
 			{
 				moveWay = -1;
 				speed = 0.7f;
-				if(currentState == STATE::DOWN)currentState = STATE::DOWNBACK;
+				if (currentState == STATE::BACK) currentState = STATE::BACKDASH;
 				else currentState = STATE::BACK;
 			}
 			else //앞으로 
 			{
 				moveWay = 1;
 				speed = 1.0f;
-				if (currentState == STATE::DOWN)currentState = STATE::DOWNWALK;
+				if (currentState == STATE::WALK) currentState = STATE::DASH;
 				else currentState = STATE::WALK;
 			}
 		}
@@ -115,14 +115,14 @@ void Character::Update(float deltaTime)
 			{
 				moveWay = 1; 
 				speed = 1.0f;
-				if (currentState == STATE::DOWN)currentState = STATE::DOWNWALK;
+				if (currentState == STATE::WALK) currentState = STATE::DASH;
 				else currentState = STATE::WALK;
 			}
 			else //뒷걸음질
 			{
 				moveWay = -1;
 				speed = 0.7f;
-				if (currentState == STATE::DOWN)currentState = STATE::DOWNBACK;
+				if (currentState == STATE::BACK) currentState = STATE::BACKDASH;
 				else currentState = STATE::BACK;
 			}
 		}
@@ -180,6 +180,16 @@ void Character::Update(float deltaTime)
 				endSkill();
 			}
 		}
+		else if (currentState == STATE::BACKDASH) //백대쉬는 끝나면 BACK으로
+		{
+			if (framecnt >= maxFrames[getIndex()])
+			{
+				currentState = STATE::BACK;
+				framecnt = 0;
+				timecnt = 0;
+				speed = 0.7f;
+			}
+		}
 		else //일반동작
 		{
 			if (framecnt >= maxFrames[getIndex()])//루프처리
@@ -194,7 +204,7 @@ void Character::Update(float deltaTime)
 	//기본상태일시 초기화
 	if (currentState == STATE::IDLE) 
 	{
-		timecnt == 0;
+		timecnt = 0;
 		framecnt = 0;
 		speed = 0;
 	}
@@ -221,6 +231,18 @@ void Character::Render(HDC hdc)
 
 void Character::Move(float deltaTime)
 {
+	if (currentState == STATE::PROCESS)
+	{
+		int maxFrame = skillSet[currentSkill].maxFrame;
+		if (skillSet[currentSkill].startTime >= ((float)framecnt / (float)maxFrame))
+		{
+			speed = skillSet[currentSkill].speed;
+		}
+		if (skillSet[currentSkill].endTime <= ((float)framecnt / (float)maxFrame))
+		{
+			speed = 0;
+		}
+	}
 	pos.x += ((screenWay ? 1 : -1) * moveWay) * speed * deltaTime;
 }
 
@@ -246,7 +268,7 @@ void Character::useSkill(string str)
 			SKILL& skill = skillSet[currentSkill];
 			this->damage = skill.damage;
 			this->moveWay = skill.way;
-			this->speed = skill.speed;
+			if(skill.startTime <= 0.0f) this->speed = skill.speed;
 		}
 		else
 		{
@@ -283,17 +305,11 @@ int Character::getIndex()
 	case STATE::DOWN:
 		idx = 2;
 		break;
-	case STATE::DOWNBACK:
+	case STATE::DASH:
 		idx = 3;
 		break;
-	case STATE::DOWNWALK:
-		idx = 4;
-		break;
-	case STATE::DASH:
-		idx = 5;
-		break;
 	case STATE::BACKDASH:
-		idx = 6;
+		idx = 4;
 		break;
 	case STATE::SKILL:
 		idx = -1;

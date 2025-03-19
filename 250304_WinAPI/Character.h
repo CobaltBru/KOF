@@ -5,7 +5,7 @@ class Image;
 class Character : public GameObject
 {
 private:
-	enum class STATE { IDLE, BACK, WALK, DOWN, DOWNBACK, DOWNWALK, DASH, BACKDASH,SKILL, PROCESS };
+	enum class STATE { IDLE, BACK, WALK, DOWN, DASH, BACKDASH,SKILL, PROCESS };
 	struct SKILL
 	{
 		string command;		//커맨드
@@ -18,7 +18,7 @@ private:
 
 		//현재 x축으로만 이동 가능
 		float startTime;	//이동 시작 타이밍
-		float moveTime;		//이동
+		float endTime;		//이동 끝 타이밍
 		int way;			//이동방향
 		int speed;			//이동속도
 	};
@@ -50,11 +50,12 @@ public:
 	void Init(int player, FPOINT pos, float characterSpeed,
 				float hp, vector<Image>images, vector<int> maxFrames);
 	void Release();
-	//뒷걷기, 앞걷기, 숙이기, 숙이고뒷걷기,숙이고앞걷기, 앞대쉬, 백대쉬 순으로 넣어주세요
+	//뒷걷기, 앞걷기, 숙이기, 앞대쉬, 백대쉬 순으로 넣어주세요
 	void pushCommon(Image* image, int maxFrame);
+
 	void pushSkill(string command, Image* image, int maxFrame,
 		int damage, int reach, bool isUpperAttack, bool isLowerAttack,
-		float startTime, float moveTime, int way, int speed);
+		float startTime, float endTime, int way, int speed);
 	void Update(float deltaTime);
 	void Render(HDC hdc);
 	void Move(float deltaTime);
