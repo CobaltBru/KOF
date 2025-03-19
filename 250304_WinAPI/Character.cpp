@@ -198,7 +198,7 @@ void Character::Update(float deltaTime)
 	
 	if (currentState != STATE::PROCESS)
 	{
-		currentCommand = KOFKeyManager::GetInstance()->GetPlayerCommand(player);;
+		currentCommand = KOFKeyManager::GetInstance()->GetPlayerCommand(player);
 		basicKeys[EKeyType::KEY_W] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_W);
 		basicKeys[EKeyType::KEY_A] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_A);
 		basicKeys[EKeyType::KEY_S] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_S);
