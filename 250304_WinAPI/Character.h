@@ -1,8 +1,8 @@
 #pragma once
-#include "config.h"
+#include "GameObject.h"
 #include <vector>
 class Image;
-class Character
+class Character : public GameObject
 {
 private:
 	enum class STATE { IDLE, BACK, WALK, DOWN, DOWNBACK, DOWNWALK, DASH, BACKDASH,SKILL, PROCESS };
