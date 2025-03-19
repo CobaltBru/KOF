@@ -4,6 +4,7 @@
 #include "KOF_Iori.h"
 #include "TimerManager.h"
 #include "KOFKeyManager.h"
+#include "ObjectManager.h"
 /*
 	실습1. 이오리 집에 보내기
 	실습2. 배경 바꾸기 (킹오파 애니메이션 배경)
@@ -27,21 +28,19 @@ void MainGame::Init()
 			TEXT("Image/backGround.bmp 생성 실패"), TEXT("경고"), MB_OK);
 	}
 
-	iori = new KOF_Iori();
-	iori->Init();
+	timerManager = TimerManager::GetInstance();
+	if (objectManager = ObjectManager::GetInstance())
+	{
+		objectManager->Init();
 
-	timerManager = new TimerManager;
+		KOF_Iori* tempIori = new KOF_Iori;
+		tempIori->Init();
+		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempIori);
+	}
 }
 
 void MainGame::Release()
 {
-	if (iori)
-	{
-		iori->Release();
-		delete iori;
-		iori = nullptr;
-	}
-
 	if (backGround)
 	{
 		backGround->Release();
@@ -57,11 +56,7 @@ void MainGame::Release()
 	}
 
 	if (timerManager)
-	{
 		timerManager->Release();
-		delete timerManager;
-		timerManager = nullptr;
-	}
 	
 	ReleaseDC(g_hWnd, hdc);
 
@@ -70,19 +65,21 @@ void MainGame::Release()
 
 	if (KeyManager* keyMgr = KeyManager::GetInstance())
 		keyMgr->Release();
+
+	if (objectManager)
+		objectManager->Release();
 }
 
 void MainGame::Update()
 {
-	float fTimeDelta = timerManager->GetTimeDelta(TEXT("Timer60"));
+	float TimeDelta = timerManager->GetTimeDelta(TEXT("Timer60"));
 	
 	if (KOFKeyManager* kofKeyMgr = KOFKeyManager::GetInstance())
-		kofKeyMgr->Update(fTimeDelta);
+		kofKeyMgr->Update(TimeDelta);
 
-	if (iori)
-		iori->Update(fTimeDelta);
+	if (objectManager)
+		objectManager->Update(TimeDelta);
 
-	
 }
 
 void MainGame::Render()
@@ -93,7 +90,9 @@ void MainGame::Render()
 	backBuffer->Render(hdc);
 
 	backGround->Render(hBackBufferDC);
-	iori->Render(hBackBufferDC);
+
+	if (objectManager)
+		objectManager->Render(hBackBufferDC);
 }
 
 float MainGame::GetTimeDelta(const wchar_t* pTimerTag)
@@ -118,35 +117,6 @@ void MainGame::UpdateTimer(const wchar_t* pTimerTag)
 		return;
 
 	return timerManager->UpdateTimer(pTimerTag);
-}
-
-LRESULT MainGame::MainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
-{
-	switch (iMessage)
-	{
-	case WM_CREATE:
-		break;
-	case WM_TIMER:
-		break;
-	case WM_KEYDOWN:
-		break;
-	case WM_LBUTTONDOWN:
-		break;
-	case WM_LBUTTONUP:
-		break;
-	case WM_MOUSEMOVE:
-		break;
-	case WM_PAINT:
-		//hdc = BeginPaint(hWnd, &ps);
-
-		//EndPaint(hWnd, &ps);
-		break;
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		break;
-	}
-
-	return DefWindowProc(hWnd, iMessage, wParam, lParam);
 }
 
 MainGame::MainGame()
