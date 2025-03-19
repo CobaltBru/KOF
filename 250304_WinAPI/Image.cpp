@@ -153,10 +153,10 @@ void Image::Render(HDC hdc, int destX, int destY, int frameIndex)
         BitBlt(
             hdc,
             destX, destY,
-            imageInfo->width / 9,
+            imageInfo->width / imageInfo->maxFrameX,
             imageInfo->height,
             imageInfo->hMemDC,
-            imageInfo->width / 9 * frameIndex, 0,
+            imageInfo->width / imageInfo->maxFrameX * frameIndex, 0,
             SRCCOPY
         );
     }
@@ -164,13 +164,25 @@ void Image::Render(HDC hdc, int destX, int destY, int frameIndex)
 
 void Image::Render(HDC hdc, int destX, int destY, int frameIndex, bool isFlip)
 {
-    if (isFlip)
+    if (isFlip && isTransparent)
     {
-        Render(imageInfo->hTempDC, 0, 0, frameIndex);
+        imageInfo->currFrameX = frameIndex;
 
-        StretchBlt(hdc, destX, destY, imageInfo->frameWidth, imageInfo->frameHeight,
-            imageInfo->hTempDC, imageInfo->frameWidth - 1, 0,
+        StretchBlt(imageInfo->hTempDC, 0, 0,
+            imageInfo->frameWidth, imageInfo->frameHeight,
+            imageInfo->hMemDC,
+            (imageInfo->frameWidth * imageInfo->currFrameX) + (imageInfo->frameWidth -1),
+            imageInfo->frameHeight * imageInfo->currFrameY,
             -imageInfo->frameWidth, imageInfo->frameHeight, SRCCOPY);
+
+        GdiTransparentBlt(hdc,
+            destX, destY,
+            imageInfo->frameWidth, imageInfo->frameHeight,
+
+            imageInfo->hTempDC,
+            0, 0,
+            imageInfo->frameWidth, imageInfo->frameHeight,
+            transColor);
     }
     else
     {

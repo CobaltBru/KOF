@@ -69,14 +69,14 @@ void KOF_Iori::Update(float TimeDelta)
 	//Attack();
 	Move();
 
-	if (KOFKeyManager::GetInstance()->GetPlayer1Command() != "")
+	/*if (KOFKeyManager::GetInstance()->GetPlayer1Command() != "")
 	{
 		string command = KOFKeyManager::GetInstance()->GetPlayer1Command();
 		if (command.size() >= 3)
 		{
 
 		}
-	}
+	}*/
 
 	currAnimaionFrame = elapsedFrame / 5;
 	if (currAnimaionFrame > 8)
@@ -150,10 +150,10 @@ void KOF_Iori::KeyUpdate(float TimeDelta)
 {
 	currentTime += TimeDelta;
 
-	characterKey[(int)EMoveKey::KEYW] = KeyManager::GetInstance()->IsStayKeyDown('W');
-	characterKey[(int)EMoveKey::KEYA] = KeyManager::GetInstance()->IsStayKeyDown('A');
-	characterKey[(int)EMoveKey::KEYS] = KeyManager::GetInstance()->IsStayKeyDown('S');
-	characterKey[(int)EMoveKey::KEYD] = KeyManager::GetInstance()->IsStayKeyDown('D');
+	//characterKey[(int)EMoveKey::KEYW] = KeyManager::GetInstance()->IsStayKeyDown('W');
+	//characterKey[(int)EMoveKey::KEYA] = KeyManager::GetInstance()->IsStayKeyDown('A');
+	//characterKey[(int)EMoveKey::KEYS] = KeyManager::GetInstance()->IsStayKeyDown('S');
+	//characterKey[(int)EMoveKey::KEYD] = KeyManager::GetInstance()->IsStayKeyDown('D');
 
 	bool bA = KeyManager::GetInstance()->IsOnceKeyUp('A');
 	bool bD = KeyManager::GetInstance()->IsOnceKeyUp('D');
