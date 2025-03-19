@@ -56,13 +56,13 @@ void MainGame::Init()
 		Image BackWalk;
 		BackWalk.Init(L"Image/Ryo/Ryo_BackWalk.bmp", 408, 105, 6, 1, true, RGB(255, 0, 255));
 
-		Image Down;
-		Down.Init(L"Image/Ryo/Ryo_DownUp.bmp", 409, 109, 5, 1, true, RGB(255, 0, 255));
+		Image* Down = new Image;
+		Down->Init(L"Image/Ryo/Ryo_DownUp.bmp", 409, 109, 5, 1, true, RGB(255, 0, 255));
 
 		tempImage.push_back(Idle);
 		tempImage.push_back(BackWalk);
 		tempImage.push_back(Walk);
-		tempImage.push_back(Down);
+		tempImage.push_back(*Down);
 		tempImage.push_back(Walk);
 		tempImage.push_back(Walk);
 		tempImage.push_back(Walk);
@@ -70,6 +70,7 @@ void MainGame::Init()
 
 		tempRyo->Init(1, new Image(),{250,250},200.f,100.f, tempImage);
 		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempRyo);
+		tempRyo->pushSkill("TY", Down, 5, 10, 10, false, true, 0, 1, 1, 1.5);
 	}
 
 	UI = new UserInterface();

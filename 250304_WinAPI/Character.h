@@ -2,7 +2,7 @@
 #include "GameObject.h"
 #include <vector>
 
-#define FRAMESPEED 10.0f
+#define FRAMESPEED 0.05f
 
 class Image;
 class Character : public GameObject
@@ -23,7 +23,7 @@ protected:
 		float startTime;	//이동 시작 타이밍
 		float endTime;		//이동 끝 타이밍
 		int way;			//이동방향
-		int speed;			//이동속도
+		float speed;			//이동속도
 	};
 	int		player; //1, 2
 	Image*	profile;
@@ -38,6 +38,7 @@ protected:
 	vector<Image> images;
 	string	currentCommand; //들어온 커맨드
 	
+	bool oldKeys[4];
 	bool basicKeys[4];
 
 	vector<SKILL> skillSet;//기술 목록
@@ -66,7 +67,7 @@ public:
 
 	void pushSkill(string command, Image* image, int maxFrame,
 		int damage, int reach, bool isUpperAttack, bool isLowerAttack,
-		float startTime, float endTime, int way, int speed);
+		float startTime, float endTime, int way, float speed);
 	void Update(float deltaTime);
 	void Render(HDC hdc);
 	void Move(float deltaTime);
@@ -74,6 +75,11 @@ public:
 	void updateCurrentScreenWay(Character* otherCharacter);
 	void setPlayer(int p);
 	
+	bool isJustPressed(int key);
+	bool isJustReleased(int key);
+	bool isKeepPressed(int key);
+	bool isKeepReleased(int key);
+
 	void setIdle();
 	void setWalk();
 	void setBack();
@@ -94,6 +100,7 @@ public:
 	//0 노가드 , 1상단가드, 2하단가드
 	int getGuardState();
 	STATE getState();
+
 };
 
 
