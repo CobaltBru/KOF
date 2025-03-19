@@ -4,13 +4,25 @@
 Character::Character()
 {
 	player = 0;
-	moveWay = 1;
+
 	pos = { 0,0 };
+	screenWay = true;
+	moveWay = 1;
+	characterSpeed = 5.0f;
 	speed = 0;
-	hp = 0;
-	currentHp = 0;
+	hp = 100;
+	currentHp = hp;
 	damage = 0;
+	//images
+	//maxFrames
 	currentCommand = "";
+
+	//skillSet
+	currentSkill = -1;
+
+	framecnt = 0;
+	timecnt = 0;
+
 	currentState = STATE::IDLE;
 }
 
@@ -23,18 +35,56 @@ void Character::setPlayer(int p)//1, 2
 	this->player = p;
 	screenWay = player == 1 ? true : false;
 }
-void Character::Init(vector<Image> images, FPOINT pos, float hp, float damage)
+void Character::Init(int player, FPOINT pos, float characterSpeed,
+	float hp, vector<Image>images, vector<int> maxFrames)
 {
-	this->images = images;
+	this->player = player;
 	this->pos = pos;
+	this->screenWay = player == 1 ? true : false;
+	this->moveWay = 1;
+	this->characterSpeed = characterSpeed;
+	this->speed = 0;
 	this->hp = hp;
-	currentHp = hp;
-	this->damage = damage;
-	currentCommand = "";
+	this->currentHp = this->hp;
+	this->damage = 0;
+	this->images = images;
+	this->maxFrames = maxFrames;
+	this->currentCommand = "";
+	this->currentSkill = -1;
+	this->framecnt = 0;
+	this->timecnt = 0;
+	this->currentState = STATE::IDLE;
 }
 
 void Character::Release()
 {
+}
+
+//µÞ°È±â, ¾Õ°È±â, ¼÷ÀÌ±â, ¼÷ÀÌ°íµÞ°È±â,¼÷ÀÌ°í¾Õ°È±â, ¾Õ´ë½¬, ¹é´ë½¬ ¼øÀ¸·Î ³Ö¾îÁÖ¼¼¿ä
+void Character::pushCommon(Image* image, int maxFrame)
+{
+	images.push_back(*image);
+	maxFrames.push_back(maxFrame);
+}
+
+void Character::pushSkill(string command, Image* image, int maxFrame,
+			int damage, int reach, bool isUpperAttack, bool isLowerAttack,
+			float startTime, float moveTime, int way, int speed)
+{
+	SKILL skill;
+	skill.command = command;
+	skill.image = image;
+	skill.maxFrame = maxFrame;
+	skill.damage = damage;
+	skill.reach = reach;
+	skill.isUpperAttack = isUpperAttack;
+	skill.isLowerAttack = isLowerAttack;
+	skill.startTime = startTime;
+	skill.moveTime = moveTime;
+	skill.way = way;
+	skill.speed = speed;
+	
+	skillSet.push_back(skill);
 }
 
 void Character::Update(float deltaTime)
@@ -146,6 +196,7 @@ void Character::Update(float deltaTime)
 	{
 		timecnt == 0;
 		framecnt = 0;
+		speed = 0;
 	}
 	
 	
@@ -170,18 +221,7 @@ void Character::Render(HDC hdc)
 
 void Character::Move(float deltaTime)
 {
-	if ((currentState == STATE::BACK) || (currentState == STATE::WALK))
-	{
-		pos.x += ((screenWay ? 1 : -1) * moveWay) * speed * deltaTime;
-	}
-	if ((currentState == STATE::DOWNBACK) || (currentState == STATE::DOWNWALK))
-	{
-		pos.x += ((screenWay ? 1 : -1) * moveWay) * speed * deltaTime * 0.5f;
-	}
-	if ((currentState == STATE::BACKDASH) || (currentState == STATE::DASH))
-	{
-		pos.x += ((screenWay ? 1 : -1) * moveWay) * speed * deltaTime * 3;
-	}
+	pos.x += ((screenWay ? 1 : -1) * moveWay) * speed * deltaTime;
 }
 
 void Character::getCommand()
@@ -222,7 +262,7 @@ void Character::endSkill()
 {
 	currentState = STATE::IDLE;
 	this->damage = 0;
-	this->currentSpeed = 0;
+	this->speed = 0;
 }
 
 
