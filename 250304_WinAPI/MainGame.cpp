@@ -101,10 +101,12 @@ void MainGame::Render()
 
 	backGround->Render(hBackBufferDC);
 
+	if(UI)
+		UI->Render(hBackBufferDC);
+
 	if (objectManager)
 		objectManager->Render(hBackBufferDC);
 
-	UI->Render(hBackBufferDC);
 }
 
 float MainGame::GetTimeDelta(const wchar_t* pTimerTag)
