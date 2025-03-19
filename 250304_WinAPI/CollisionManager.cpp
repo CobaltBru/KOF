@@ -19,7 +19,7 @@ void CollisionManager::Update(float TimeDelta)
 	UpdatePivot(TimeDelta);
 
 	//캐릭터와 캐릭터끼리 충돌...
-
+	 
 	RECT		rc{};
 
 	for (auto& Dest : CollisionList[OBJ_CHARACTER])
