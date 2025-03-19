@@ -6,7 +6,7 @@
 Character::Character()
 {
 	player = 0;
-
+	profile = nullptr;
 	pos = { 0,0 };
 	screenWay = true;
 	moveWay = 1;
@@ -16,16 +16,22 @@ Character::Character()
 	currentHp = hp;
 	damage = 0;
 	//images
-	//maxFrames
 	currentCommand = "";
+
+	memset(basicKeys, false, sizeof(basicKeys));
 
 	//skillSet
 	currentSkill = -1;
 
 	framecnt = 0;
 	timecnt = 0;
+	dashTimer = 0.0f;
+	dashTime = 0.0f;
+	dashKey = "n";
 
 	currentState = STATE::IDLE;
+	guardState = 0;
+	
 }
 
 Character::~Character()
@@ -36,6 +42,92 @@ void Character::setPlayer(int p)//1, 2
 {
 	this->player = p;
 	screenWay = player == 1 ? false : true;
+}
+void Character::setIdle()
+{
+	timecnt = 0;
+	framecnt = 0;
+	speed = 0;
+	guardState = 0;
+	currentState = STATE::IDLE;
+}
+void Character::setWalk()
+{
+	moveWay = 1;
+	speed = 1.0f;
+	guardState = 0;
+	currentState = STATE::WALK;
+}
+void Character::setBack()
+{
+	moveWay = -1;
+	speed = 0.7f;
+	guardState = 1;
+	currentState = STATE::BACK;
+}
+void Character::startDashTimer()
+{
+	dashTime = dashTimer;
+}
+void Character::checkDash(string key)
+{
+	if (dashKey == key)
+	{
+		if (dashTimer - dashTime < 0.2f)
+		{
+			setDash();
+		}
+		dashTimer = 0.0f;
+		dashTime = 0.0f;
+		dashKey = "n";
+	}
+	else
+	{
+		dashTimer = 0.0f;
+		dashTime = 0.0f;
+		dashKey = "n";
+		setWalk();
+	}
+}
+void Character::setDash()
+{
+	moveWay = 1;
+	speed = 2.0f;
+	guardState = 0;
+	currentState = STATE::DASH;
+}
+void Character::checkBackDash(string key)
+{
+	if (dashKey == key)
+	{
+		if (dashTimer - dashTime < 0.2f)
+		{
+			setBackDash();
+		}
+		dashTimer = 0.0f;
+		dashTime = 0.0f;
+		dashKey = "n";
+	}
+	else
+	{
+		dashTimer = 0.0f;
+		dashTime = 0.0f;
+		dashKey = "n";
+		setBack();
+	}
+}
+void Character::setBackDash()
+{
+	moveWay = -1;
+	speed = 3.0f;
+	guardState = 0;
+	currentState = STATE::BACKDASH;
+}
+void Character::setDown()
+{
+	speed = 0.0f;
+	guardState = 0;
+	currentState = STATE::DOWN;
 }
 void Character::Init(int player, Image* profile, FPOINT pos, float characterSpeed,
 	float hp, vector<Image>images)
@@ -54,10 +146,16 @@ void Character::Init(int player, Image* profile, FPOINT pos, float characterSpee
 	this->damage = 0;
 	this->images = images;
 	this->currentCommand = "";
+	//basicKeys
+	//skillSet
 	this->currentSkill = -1;
 	this->framecnt = 0;
 	this->timecnt = 0;
+	this->dashTimer = 0.0f;
+	this->dashTime = 0.0f;
+	this->dashKey = "n";
 	this->currentState = STATE::IDLE;
+	this->guardState = 0;
 }
 
 void Character::Release()
@@ -97,86 +195,97 @@ void Character::pushSkill(string command, Image* image, int maxFrame,
 //조작 커맨드 asd
 void Character::Update(float deltaTime)
 {
-	//키입력을 받을 수 있는 상태
-	//if(player == 1) currentCommand = KOFKeyManager::GetInstance()->GetPlayer1Command();
-	//else currentCommand = KOFKeyManager::GetInstance()->GetPlayer2Command();
-
-	if(currentCommand == "")
+	
 	if (currentState != STATE::PROCESS)
 	{
-
-		if (currentCommand == "A")
+		currentCommand = KOFKeyManager::GetInstance()->GetPlayerCommand(player);;
+		basicKeys[EKeyType::KEY_W] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_W);
+		basicKeys[EKeyType::KEY_A] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_A);
+		basicKeys[EKeyType::KEY_S] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_S);
+		basicKeys[EKeyType::KEY_D] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_D);
+		
+		if (currentState == STATE::DOWN && basicKeys[EKeyType::KEY_S] ||
+			currentState == STATE::BACK && basicKeys[EKeyType::KEY_A] ||
+			currentState == STATE::WALK && basicKeys[EKeyType::KEY_D])
 		{
+			currentState == STATE::IDLE;
+		}
+		dashTimer += deltaTime;
+		if (basicKeys[EKeyType::KEY_A])
+		{
+			if (dashKey == "a1_1") dashKey = "a2";
 			if (screenWay == false) //뒷걸음질
 			{
-				moveWay = -1;
-				speed = 0.7f;
-				if (currentState == STATE::BACK) currentState = STATE::BACKDASH;
-				else currentState = STATE::BACK;
+				if (currentState == STATE::DOWN)//숙이고 있었으면 하단방어
+				{
+					guardState = 2;
+				}
+				else
+				{
+					setBack();
+					checkBackDash("a2");
+				}
+				
 			}
 			else //앞으로 
 			{
-				moveWay = 1;
-				speed = 1.0f;
-				if (currentState == STATE::WALK) currentState = STATE::DASH;
-				else currentState = STATE::WALK;
+				setWalk();
+				checkDash("a2");
 			}
-		}
-		else if (currentCommand == "D")
-		{
-			if (screenWay == false) //앞으로
-			{
-				moveWay = 1; 
-				speed = 1.0f;
-				if (currentState == STATE::WALK) currentState = STATE::DASH;
-				else currentState = STATE::WALK;
-			}
-			else //뒷걸음질
-			{
-				moveWay = -1;
-				speed = 0.7f;
-				if (currentState == STATE::BACK) currentState = STATE::BACKDASH;
-				else currentState = STATE::BACK;
-			}
-		}
-		else if (currentCommand == "S") //숙이기
-		{
-			speed = 0;
-			currentState = STATE::DOWN;
-		}
-		else if (currentCommand == "AA") 
-		{
-			if (screenWay == false) //백대쉬
-			{
-				speed = 3.0f;
-				moveWay = -1;
-				currentState = STATE::BACKDASH;
-			}
-			else //앞대쉬
-			{
-				speed = 3.0f;
-				moveWay = 1;
-				currentState = STATE::DASH;
-			}
-		}
-		else if (currentCommand == "DD")
-		{
-			if (screenWay == false) //앞대쉬
-			{
-				speed = 3.0f;
-				moveWay = 1;
-				currentState = STATE::DASH;
-			}
-			else //백대쉬
-			{
-				speed = 3.0f;
-				moveWay = -1;
-				currentState = STATE::BACKDASH;
-			}
+			dashKey = "a1";
 		}
 		else
 		{
-			
+			if (dashKey == "a1")
+			{
+				startDashTimer();
+				dashKey = "a1_1";
+			}
+		}
+
+		if (basicKeys[EKeyType::KEY_D])
+		{
+			if (dashKey == "d1_1") dashKey = "d2";
+			if (screenWay == false) //앞으로
+			{
+				setWalk();
+				checkDash("d2");
+			}
+			else //뒷걸음질
+			{
+				if (currentState == STATE::DOWN)//숙이고 있었으면 하단방어
+				{
+					guardState = 2;
+				}
+				else
+				{
+					setBack();
+					checkBackDash("d2");
+				}
+			}
+			dashKey = "d1";
+		}
+		else
+		{
+			if (dashKey == "d1")
+			{
+				startDashTimer();
+				dashKey = "d1_1";
+			}
+		}
+		if (basicKeys[EKeyType::KEY_S]) //숙이기
+		{
+			setDown();
+		}
+		else
+		{
+			setIdle();
+		}
+
+		if (!basicKeys[EKeyType::KEY_W] && !basicKeys[EKeyType::KEY_A] &&
+			!basicKeys[EKeyType::KEY_S] && !basicKeys[EKeyType::KEY_D])
+		{
+			setIdle();
 		}
 
 	}
@@ -185,7 +294,7 @@ void Character::Update(float deltaTime)
 	if (currentState != STATE::IDLE)
 	{
 		timecnt += deltaTime;
-		framecnt = timecnt / (deltaTime); //현재 프레임 계산
+		framecnt = timecnt / (deltaTime / FRAMESPEED); //현재 프레임 계산
 		if (currentState == STATE::PROCESS) //기술중
 		{
 			if (framecnt >= skillSet[currentSkill].maxFrame)//끝나면 IDLE로
@@ -197,10 +306,9 @@ void Character::Update(float deltaTime)
 		{
 			if (framecnt >= images[getIndex()].GetMaxFrame())
 			{
-				currentState = STATE::BACK;
 				framecnt = 0;
 				timecnt = 0;
-				speed = 0.7f;
+				setIdle();
 			}
 		}
 		else //일반동작
@@ -213,14 +321,6 @@ void Character::Update(float deltaTime)
 		}
 	}
 	
-	
-	//기본상태일시 초기화
-	if (currentState == STATE::IDLE) 
-	{
-		timecnt = 0;
-		framecnt = 0;
-		speed = 0;
-	}
 	
 	
 	Move(deltaTime);
@@ -254,7 +354,7 @@ void Character::Move(float deltaTime)
 			speed = 0;
 		}
 	}
-	pos.x += ((screenWay ? -1 : 1) * moveWay) * speed * deltaTime;
+	pos.x += ((screenWay ? -1 : 1) * moveWay) * speed * characterSpeed * deltaTime;
 }
 
 void Character::getCommand()
@@ -341,3 +441,19 @@ float Character::getMaxHp()
 {
 	return hp;
 }
+
+Image Character::getProfile()
+{
+	return *profile;
+}
+
+int Character::getGuardState()
+{
+	return guardState;
+}
+
+Character::STATE Character::getState()
+{
+	return currentState;
+}
+

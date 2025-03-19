@@ -37,7 +37,7 @@ public:
 
 	void ClearPlayer1Buffer() { player1KeyBuffer.clear(); }
 	void ClearPlayer2Buffer() { player2KeyBuffer.clear(); }
-
+	
 	void Reset() {
 		currentTime = 0.f;
 		player1KeyBuffer.clear();
