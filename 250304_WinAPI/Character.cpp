@@ -1,5 +1,7 @@
 #include "Character.h"
 #include "Image.h"
+#include "KOFKeyManager.h"
+
 
 Character::Character()
 {
@@ -33,14 +35,17 @@ Character::~Character()
 void Character::setPlayer(int p)//1, 2
 {
 	this->player = p;
-	screenWay = player == 1 ? true : false;
+	screenWay = player == 1 ? false : true;
 }
-void Character::Init(int player, FPOINT pos, float characterSpeed,
-	float hp, vector<Image>images, vector<int> maxFrames)
+void Character::Init(int player, Image* profile, FPOINT pos, float characterSpeed,
+	float hp, vector<Image>images)
+/*Init(int player, Image* profile, FPOINT pos, float characterSpeed,
+	float hp, vector<Image>images)*/
 {
 	this->player = player;
+	this->profile = profile;
 	this->pos = pos;
-	this->screenWay = player == 1 ? true : false;
+	this->screenWay = player == 1 ? false : true;
 	this->moveWay = 1;
 	this->characterSpeed = characterSpeed;
 	this->speed = 0;
@@ -48,7 +53,6 @@ void Character::Init(int player, FPOINT pos, float characterSpeed,
 	this->currentHp = this->hp;
 	this->damage = 0;
 	this->images = images;
-	this->maxFrames = maxFrames;
 	this->currentCommand = "";
 	this->currentSkill = -1;
 	this->framecnt = 0;
@@ -58,13 +62,17 @@ void Character::Init(int player, FPOINT pos, float characterSpeed,
 
 void Character::Release()
 {
+	delete profile;
+	for (auto skill : skillSet)
+	{
+		delete skill.image;
+	}
 }
 
-//뒷걷기, 앞걷기, 숙이기, 숙이고뒷걷기,숙이고앞걷기, 앞대쉬, 백대쉬 순으로 넣어주세요
+//IDLE, 뒷걷기, 앞걷기, 숙이기, 앞대쉬, 백대쉬 순으로 넣어주세요
 void Character::pushCommon(Image* image, int maxFrame)
 {
 	images.push_back(*image);
-	maxFrames.push_back(maxFrame);
 }
 
 void Character::pushSkill(string command, Image* image, int maxFrame,
@@ -86,15 +94,20 @@ void Character::pushSkill(string command, Image* image, int maxFrame,
 	
 	skillSet.push_back(skill);
 }
-
+//조작 커맨드 asd
 void Character::Update(float deltaTime)
 {
 	//키입력을 받을 수 있는 상태
+	//if(player == 1) currentCommand = KOFKeyManager::GetInstance()->GetPlayer1Command();
+	//else currentCommand = KOFKeyManager::GetInstance()->GetPlayer2Command();
+
+	if(currentCommand == "")
 	if (currentState != STATE::PROCESS)
 	{
+
 		if (currentCommand == "A")
 		{
-			if (screenWay == true) //뒷걸음질
+			if (screenWay == false) //뒷걸음질
 			{
 				moveWay = -1;
 				speed = 0.7f;
@@ -111,7 +124,7 @@ void Character::Update(float deltaTime)
 		}
 		else if (currentCommand == "D")
 		{
-			if (screenWay == true) //앞으로
+			if (screenWay == false) //앞으로
 			{
 				moveWay = 1; 
 				speed = 1.0f;
@@ -133,7 +146,7 @@ void Character::Update(float deltaTime)
 		}
 		else if (currentCommand == "AA") 
 		{
-			if (screenWay == true) //백대쉬
+			if (screenWay == false) //백대쉬
 			{
 				speed = 3.0f;
 				moveWay = -1;
@@ -148,7 +161,7 @@ void Character::Update(float deltaTime)
 		}
 		else if (currentCommand == "DD")
 		{
-			if (screenWay == true) //앞대쉬
+			if (screenWay == false) //앞대쉬
 			{
 				speed = 3.0f;
 				moveWay = 1;
@@ -163,11 +176,11 @@ void Character::Update(float deltaTime)
 		}
 		else
 		{
-			useSkill(currentCommand);
+			
 		}
 
 	}
-
+	useSkill(currentCommand);
 	//동작중
 	if (currentState != STATE::IDLE)
 	{
@@ -182,7 +195,7 @@ void Character::Update(float deltaTime)
 		}
 		else if (currentState == STATE::BACKDASH) //백대쉬는 끝나면 BACK으로
 		{
-			if (framecnt >= maxFrames[getIndex()])
+			if (framecnt >= images[getIndex()].GetMaxFrame())
 			{
 				currentState = STATE::BACK;
 				framecnt = 0;
@@ -192,7 +205,7 @@ void Character::Update(float deltaTime)
 		}
 		else //일반동작
 		{
-			if (framecnt >= maxFrames[getIndex()])//루프처리
+			if (framecnt >= images[getIndex()].GetMaxFrame())//루프처리
 			{
 				framecnt = 0;
 				timecnt = 0;
@@ -216,17 +229,15 @@ void Character::Update(float deltaTime)
 
 void Character::Render(HDC hdc)
 {
-	/*if (currentState != STATE::IDLE)
-	{*/
-		if (currentState == STATE::PROCESS)
-		{
-			skillSet[currentSkill].image->Render(hdc, pos.x, pos.y, framecnt, screenWay);
-		}
-		else
-		{
-			images[getIndex() + 1].Render(hdc, pos.x, pos.y, framecnt, screenWay);
-		}
-	//}
+	if (currentState == STATE::PROCESS)
+	{
+		skillSet[currentSkill].image->Render(hdc, pos.x, pos.y, framecnt, screenWay);
+	}
+	else
+	{
+		images[getIndex()].Render(hdc, pos.x, pos.y, framecnt, screenWay);
+	}
+	
 }
 
 void Character::Move(float deltaTime)
@@ -243,7 +254,7 @@ void Character::Move(float deltaTime)
 			speed = 0;
 		}
 	}
-	pos.x += ((screenWay ? 1 : -1) * moveWay) * speed * deltaTime;
+	pos.x += ((screenWay ? -1 : 1) * moveWay) * speed * deltaTime;
 }
 
 void Character::getCommand()
@@ -294,22 +305,22 @@ int Character::getIndex()
 	switch (currentState)
 	{
 	case STATE::IDLE:
-		idx = -1;
-		break;
-	case STATE::BACK:
 		idx = 0;
 		break;
-	case STATE::WALK:
+	case STATE::BACK:
 		idx = 1;
 		break;
-	case STATE::DOWN:
+	case STATE::WALK:
 		idx = 2;
 		break;
-	case STATE::DASH:
+	case STATE::DOWN:
 		idx = 3;
 		break;
-	case STATE::BACKDASH:
+	case STATE::DASH:
 		idx = 4;
+		break;
+	case STATE::BACKDASH:
+		idx = 5;
 		break;
 	case STATE::SKILL:
 		idx = -1;
@@ -319,4 +330,14 @@ int Character::getIndex()
 		break;
 	}
 	return idx;
+}
+
+float* Character::getCurrentHp()
+{
+	return &currentHp;
+}
+
+float Character::getMaxHp()
+{
+	return hp;
 }
