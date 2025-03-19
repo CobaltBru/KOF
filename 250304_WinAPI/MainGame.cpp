@@ -46,7 +46,7 @@ void MainGame::Init()
 		tempHong->SetPos({ 100.f, 100.f });
 		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempHong);
 
-		Ryo* tempRyo = new Ryo();
+		/*Ryo* tempRyo = new Ryo();
 		vector<Image> tempImage;
 		vector<int> tempMaxFrame;
 		Image Idle;
@@ -63,7 +63,7 @@ void MainGame::Init()
 		tempMaxFrame.push_back(7);
 
 		tempRyo->Init(1,new Image(), {10,10}, 10, 100, tempImage);
-		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempRyo);
+		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempRyo);*/
 	}
 
 	UI = new UserInterface();
