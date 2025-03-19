@@ -74,6 +74,7 @@ public:
 	void Render(HDC hdc, int destX = 0, int destY = 0);
 	void Render(HDC hdc, int destX, int destY, int frameIndex);
 	void Render(HDC hdc, int destX, int destY, int frameIndex, bool isFlip);
+	void HpRender(HDC hdc, int destX, int destY, float hpCalculate, int damage, bool isPlayer1);
 
 	// 메모리 해제
 	void Release();

@@ -63,6 +63,9 @@
     <ClCompile Include="KOFKeyManager.cpp">
       <Filter>2D Framework</Filter>
     </ClCompile>
+    <ClCompile Include="UserInterface.cpp">
+      <Filter>리소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h">
@@ -113,6 +116,17 @@
     <ClInclude Include="KOFKeyManager.h">
       <Filter>2D Framework</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface.h">
+      <Filter>리소스 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="250304_WinAPI.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="250304_WinAPI.rc">

@@ -4,6 +4,7 @@
 #include "KOF_Iori.h"
 #include "TimerManager.h"
 #include "KOFKeyManager.h"
+#include "UserInterface.h"
 #include "ObjectManager.h"
 /*
 	실습1. 이오리 집에 보내기
@@ -37,6 +38,9 @@ void MainGame::Init()
 		tempIori->Init();
 		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempIori);
 	}
+
+	UI = new UserInterface();
+	UI->Init();
 }
 
 void MainGame::Release()
@@ -59,6 +63,12 @@ void MainGame::Release()
 		timerManager->Release();
 	
 	ReleaseDC(g_hWnd, hdc);
+	if (UI)
+	{
+		UI->Release();
+		delete UI;
+		UI = nullptr;
+	}
 
 	if (KOFKeyManager* kofKeyMgr = KOFKeyManager::GetInstance())
 		kofKeyMgr->Release();
@@ -79,7 +89,7 @@ void MainGame::Update()
 
 	if (objectManager)
 		objectManager->Update(TimeDelta);
-
+	UI->Update();
 }
 
 void MainGame::Render()
@@ -93,6 +103,8 @@ void MainGame::Render()
 
 	if (objectManager)
 		objectManager->Render(hBackBufferDC);
+
+	UI->Render(hBackBufferDC);
 }
 
 float MainGame::GetTimeDelta(const wchar_t* pTimerTag)
