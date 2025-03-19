@@ -1,6 +1,5 @@
 #pragma once
 #include "GameObject.h"
-#include <queue>
 
 enum  EMoveKey : uint8_t
 {
@@ -8,10 +7,6 @@ enum  EMoveKey : uint8_t
 	KEYA,
 	KEYS,
 	KEYD,
-	KEYT,
-	KEYY,
-	KEYG,
-	KEYH,
 	END
 };
 
@@ -25,7 +20,6 @@ private:
 	int elapsedFrame;
 	int currAnimaionFrame;	// 0 ~ 8
 
-	queue<pair<int,float>> keyBuffer;
 	bool characterKey[(int)EMoveKey::END] = { 0, };
 
 	float stepTime = 0.f;
