@@ -3,6 +3,7 @@
 #include "Image.h"
 #include "KOF_Iori.h"
 #include "KOFKeyManager.h"
+#include "UserInterface.h"
 /*
 	실습1. 이오리 집에 보내기
 	실습2. 배경 바꾸기 (킹오파 애니메이션 배경)
@@ -36,6 +37,9 @@ void MainGame::Init()
 
 	iori = new KOF_Iori();
 	iori->Init();
+
+	UI = new UserInterface();
+	UI->Init();
 }
 
 void MainGame::Release()
@@ -62,6 +66,12 @@ void MainGame::Release()
 	}
 
 	ReleaseDC(g_hWnd, hdc);
+	if (UI)
+	{
+		UI->Release();
+		delete UI;
+		UI = nullptr;
+	}
 }
 
 void MainGame::UpdateTimer()
@@ -93,7 +103,7 @@ void MainGame::Update()
 		iori->Update();
 
 	KOFKeyManager::GetInstance()->Update();
-
+	UI->Update();
 }
 
 void MainGame::Render()
@@ -103,6 +113,8 @@ void MainGame::Render()
 
 	backGround->Render(hBackBufferDC);
 	iori->Render(hBackBufferDC);
+
+	UI->Render(hBackBufferDC);
 
 	++m_iNumDraw;
 

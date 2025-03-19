@@ -11,17 +11,17 @@ public:
 	void Update();
 	void Render(HDC hdc);
 
-
-	
 	UserInterface();
 	~UserInterface();
 private:
-	FPOINT p1Pos;
+	enum eBattle {
+		P1Character, P2Character, HP_bar, HP_gage_p1, HP_gage_p2, eBattleEnd
+	};
+
+	Image* battleImage[eBattle::eBattleEnd];
+
+	float hpCalculate;
 	int p1Health;
-	Image* p1Image;
-	
-	FPOINT p2Pos;
 	int p2Health;
-	Image* p2Image;
 	
 };

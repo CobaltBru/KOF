@@ -178,6 +178,51 @@ void Image::Render(HDC hdc, int destX, int destY, int frameIndex, bool isFlip)
     }
 }
 
+void Image::HpRender(HDC hdc, int destX, int destY, float hpCalculate, int health, bool isPlayer1)
+{
+	if (isTransparent)
+	{
+		int width = imageInfo->width;
+		int height = imageInfo->height;
+
+		// HP에 따라 이미지 너비 계산
+		int renderWidth = width - (100 - health) * hpCalculate;
+
+		if (isPlayer1)
+		{
+			// 소스 사각형의 시작 x 좌표
+			int srcX = (100 - health) * hpCalculate;
+			GdiTransparentBlt(
+				hdc,
+				destX - width / 2 + (100 - health) * hpCalculate,
+				destY - height / 2,
+				renderWidth,
+				height,
+
+				imageInfo->hMemDC,
+				srcX, 0,
+				renderWidth, height,
+				transColor
+			);
+		}
+		else
+		{
+			GdiTransparentBlt(
+				hdc,
+				destX - width / 2,
+				destY - height / 2,
+				renderWidth,
+				height,
+
+				imageInfo->hMemDC,
+				0, 0,
+				renderWidth, height,
+				transColor
+			);
+		}
+	}
+}
+
 void Image::Release()
 {
     if (imageInfo)

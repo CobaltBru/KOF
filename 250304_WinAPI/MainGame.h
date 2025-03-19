@@ -3,6 +3,7 @@
 
 class Image;
 class KOF_Iori;
+class UserInterface;
 class MainGame : public GameObject
 {
 private:
@@ -16,6 +17,7 @@ private:
 	Image* backBuffer;
 	Image* backGround;
 	KOF_Iori* iori;
+	UserInterface* UI;
 
 
 	TCHAR		m_szFPS[64];	// 멀티 바이트 기반에서는 CHAR로 유니 코드 기반에서는 유니코드로 처리해주는 매크로
