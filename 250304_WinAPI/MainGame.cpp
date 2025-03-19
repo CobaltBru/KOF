@@ -90,6 +90,9 @@ void MainGame::Release()
 
 	if (objectManager)
 		objectManager->Release();
+
+	if (collisionManager)
+		collisionManager->Release();
 }
 
 void MainGame::Update()
@@ -106,6 +109,7 @@ void MainGame::Update()
 
 	if (collisionManager)
 		collisionManager->Update(TimeDelta);
+
 }
 
 void MainGame::Render()
@@ -119,6 +123,9 @@ void MainGame::Render()
 
 	if (objectManager)
 		objectManager->Render(hBackBufferDC);
+	
+	if (collisionManager)
+		collisionManager->Render(hBackBufferDC);
 
 	UI->Render(hBackBufferDC);
 }

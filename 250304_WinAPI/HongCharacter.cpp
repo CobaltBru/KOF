@@ -2,6 +2,7 @@
 #include "Image.h"
 #include "KOFKeyManager.h"
 #include "Collider.h"
+#include "CollisionManager.h"
 
 void HongCharacter::Init()
 {
@@ -17,7 +18,6 @@ void HongCharacter::Init()
 	elapsedFrame = 0;
 	currAnimaionFrame = 0;
 
-
 	attackImage = new Image();
 	if (FAILED(attackImage->Init(TEXT("Image/iori_kick.bmp"), 1170, 106, 10, 1,
 		true, RGB(255, 0, 255))))
@@ -27,9 +27,13 @@ void HongCharacter::Init()
 
 	bAttack = false;
 
-	collider = new Collider(this, pos, { 20.f, 20.f });
+	collider = new Collider(this, pos, { 50.f, 100.f }, COLLIDER_TYPE::Rect);
+	CollisionManager* manager = CollisionManager::GetInstance();
 
-	
+	manager->AddObject(OBJID::OBJ_CHARACTER, collider);	
+
+	collider->DebugRender(true);
+
 }
 
 void HongCharacter::Release()
@@ -47,12 +51,6 @@ void HongCharacter::Release()
 		delete attackImage;
 		attackImage = nullptr;
 	}
-
-	if (collider)
-	{
-		delete collider;
-		collider = nullptr;
-	}
 }
 
 void HongCharacter::Update(float TimeDelta)
@@ -60,7 +58,7 @@ void HongCharacter::Update(float TimeDelta)
 	elapsedFrame++;
 	//if (elapsedFrame >= 5)
 
-	if (KeyManager::GetInstance()->IsOnceKeyUp(VK_SPACE))
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
 	{
 		currAnimaionFrame++;
 		Move();
@@ -70,7 +68,13 @@ void HongCharacter::Update(float TimeDelta)
 			currAnimaionFrame = 0;
 		}
 		elapsedFrame = 0;
-		collider->DebugRender(COLLIDER_TYPE::Rect, true);
+		HitResult hit;
+		if (CollisionManager::GetInstance()->LineTraceByObject(hit, OBJ_CHARACTER, pos, { pos.x + 100.f, pos.y }, this, true))
+		{
+			int a = 10;
+
+			//dynamic_cast<asdf>(hit.Actors[0]);
+		}
 	}
 
 
@@ -111,7 +115,7 @@ void HongCharacter::Render(HDC hdc)
 	else
 	{
 		if (image)
-			image->Render(hdc, pos.x, pos.y, currAnimaionFrame);
+			image->Render(hdc, pos.x - 34, pos.y - 52, currAnimaionFrame);
 	}
 }
 

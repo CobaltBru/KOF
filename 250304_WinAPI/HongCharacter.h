@@ -7,7 +7,6 @@ class Collider;
 class HongCharacter : public GameObject
 {
 private:
-	FPOINT pos;
 	float moveSpeed;
 	Image* image;
 	int elapsedFrame;

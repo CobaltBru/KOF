@@ -8,6 +8,7 @@
 #include <bitset>
 #include <map>
 #include <list>
+#include <vector>
 #include "KeyManager.h"
 
 using namespace std;
