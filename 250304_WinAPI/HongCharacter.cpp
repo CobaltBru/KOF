@@ -68,6 +68,7 @@ void HongCharacter::Update(float TimeDelta)
 			currAnimaionFrame = 0;
 		}
 		elapsedFrame = 0;
+
 		HitResult hit;
 		if (CollisionManager::GetInstance()->LineTraceByObject(hit, OBJ_CHARACTER, pos, { pos.x + 100.f, pos.y }, this, true))
 		{
@@ -76,9 +77,6 @@ void HongCharacter::Update(float TimeDelta)
 			//dynamic_cast<asdf>(hit.Actors[0]);
 		}
 	}
-
-
-
 }
 
 void HongCharacter::Render(HDC hdc)

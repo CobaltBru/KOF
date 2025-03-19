@@ -16,18 +16,68 @@ void CollisionManager::AddObject(OBJID eID, Collider* collider)
 
 void CollisionManager::Update(float TimeDelta)
 {
-	for (int i = 0; i < OBJ_END; ++i)
+	UpdatePivot(TimeDelta);
+
+	//캐릭터와 캐릭터끼리 충돌...
+
+	RECT		rc{};
+
+	for (auto& Dest : CollisionList[OBJ_CHARACTER])
 	{
-		for (auto iter = CollisionList[i].begin();
-			iter != CollisionList[i].end(); )
+		for (auto& Sour : CollisionList[OBJ_CHARACTER])
 		{
-			if (*iter == nullptr)
+			if (Dest == Sour)
 				continue;
 
-			(*iter)->Update(TimeDelta);
-			++iter;
+			FPOINT SourMin = { Sour->GetWorldPos().x - (Sour->GetSize().x / 2.f), Sour->GetWorldPos().y - (Sour->GetSize().y / 2.f) };
+			FPOINT SourMax = { Sour->GetWorldPos().x + (Sour->GetSize().x / 2.f), Sour->GetWorldPos().y + (Sour->GetSize().y / 2.f) };
+						
+			FPOINT DestMin = { Dest->GetWorldPos().x - (Dest->GetSize().x / 2.f), Dest->GetWorldPos().y - (Dest->GetSize().y / 2.f) };
+			FPOINT DestMax = { Dest->GetWorldPos().x + (Dest->GetSize().x / 2.f), Dest->GetWorldPos().y + (Dest->GetSize().y / 2.f) };
+						
+			bool bCollision = false;
+
+			if (SourMax.x > DestMin.x
+				&& SourMin.x < DestMax.x
+				&& SourMin.y > DestMax.y
+				&& SourMax.y < DestMin.y)
+			{
+				bCollision = true;
+			}
+
+			if (bCollision)
+			{
+				//TODO 점프가있다면 수정하기
+			 
+				//얼마나 깊이 들어왔는지 확인 /점프제외
+				float overlapWidth = min(SourMax.x, DestMax.x) - max(SourMin.x, DestMin.x);
+				float pushAmount = overlapWidth / 2.0f;
+
+				FPOINT newSourPos = Sour->GetWorldPos();
+				FPOINT newDestPos = Dest->GetWorldPos();
+
+				if (SourMin.x < DestMin.x) {
+					// Sour가 Dest의 왼쪽에 있는 경우
+					newSourPos.x -= pushAmount;
+					newDestPos.x += pushAmount;
+				}
+				else {
+					// Sour가 Dest의 오른쪽에 있는 경우
+					newSourPos.x += pushAmount;
+					newDestPos.x -= pushAmount;
+				}
+
+				Sour->GetOwner()->SetPos(newSourPos);
+				Dest->GetOwner()->SetPos(newDestPos);
+			}
 		}
 	}
+
+	//Sour와 Dest의 위치를 업데이트 했으니 
+
+	UpdatePivot(TimeDelta); //별로 맘에 들지는 않는다..
+
+	DebugLineUpdate(TimeDelta);
 }
 
 void CollisionManager::Render(HDC hdc)
@@ -42,15 +92,7 @@ void CollisionManager::Render(HDC hdc)
 			++iter;
 		}
 	}
-
-	for (auto iter = LineList.begin();
-		iter != LineList.end(); )
-	{
-		MoveToEx(hdc, (*iter)->start.x, (*iter)->start.y, NULL);
-		LineTo(hdc, (*iter)->end.x, (*iter)->end.y);
-
-		++iter;
-	}
+	DebugLineRender(hdc);
 }
 
 void CollisionManager::Release()
@@ -80,10 +122,16 @@ void CollisionManager::Release()
 	ReleaseInstance();
 }
 
-bool CollisionManager::LineTraceByObject(HitResult& hitResult, OBJID eObjID, FPOINT start, FPOINT end, GameObject* Owner, bool bIgnoreSelf)
+bool CollisionManager::LineTraceByObject(HitResult& hitResult, OBJID eObjID, FPOINT start, FPOINT end, GameObject* Owner, bool bIgnoreSelf, bool bDebugDraw, float DebugDuration, COLORREF DebugColor)
 {
-	Line* line = new Line(start, end);
-	LineList.push_back(line);
+	if (bDebugDraw)
+	{
+		Line* line = new Line(start, end);
+		line->bDebugDraw = bDebugDraw;
+		line->DebugDuration = DebugDuration;
+		line->DebugColor = DebugColor;
+		LineList.push_back(line);
+	}
 
 	for (auto iter = CollisionList[eObjID].begin();
 		iter != CollisionList[eObjID].end(); )
@@ -145,4 +193,62 @@ bool CollisionManager::LineTraceByObject(HitResult& hitResult, OBJID eObjID, FPO
 		return true;
 
 	return false;
+}
+
+void CollisionManager::DebugLineRender(HDC hdc)
+{
+	for (auto iter = LineList.begin();
+		iter != LineList.end(); )
+	{
+		if ((*iter)->bDebugDraw)
+		{
+			HPEN hPen = CreatePen(PS_SOLID, 4, (*iter)->DebugColor); // RGB(0, 255, 0) -> 초록색
+			HPEN hOldPen = (HPEN)SelectObject(hdc, hPen); // 현재 DC에 펜을 설정
+
+			(*iter)->Render(hdc);
+
+			// 사용한 펜을 원래대로 복원
+			SelectObject(hdc, hOldPen);
+
+			// 펜 메모리 해제
+			DeleteObject(hPen);
+		}
+		++iter;
+	}
+}
+
+void CollisionManager::UpdatePivot(float TimeDelta)
+{
+	//부모 오브젝트를 기준으로 Collider의 위치 갱신
+	for (int i = 0; i < OBJ_END; ++i)
+	{
+		for (auto iter = CollisionList[i].begin();
+			iter != CollisionList[i].end(); )
+		{
+			if (*iter == nullptr)
+				continue;
+
+			(*iter)->Update(TimeDelta);
+			++iter;
+		}
+	}
+}
+
+void CollisionManager::DebugLineUpdate(float TimeDelta)
+{
+	for (auto iter = LineList.begin();
+		iter != LineList.end(); )
+	{
+		if ((*iter)->bDebugDraw)
+		{
+			(*iter)->Update(TimeDelta);
+
+			++iter;
+		}
+		else
+		{
+			delete* iter;
+			iter = LineList.erase(iter);
+		}
+	}
 }

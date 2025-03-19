@@ -10,10 +10,12 @@ public:
 	virtual void Render(HDC hdc);	// 프레임 단위로 출력(이미지, 텍스트 등)
 
 	inline const FPOINT& GetPos() { return pos; }
+
+	void SetPos(FPOINT newPos) { pos = newPos; }
 	GameObject();
 	virtual ~GameObject();
-protected:
 
+protected:
 	FPOINT pos;
 };
 

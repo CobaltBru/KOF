@@ -38,7 +38,7 @@ public:
 
 private:
 	void DrawRectLine(HDC hdc, FPOINT HalfSize);
-
+	bool DebugUpdate(float TimeDelta);
 
 private:
 	FPOINT Pos; //부모 위치로부터 상대적인 위치
@@ -54,7 +54,6 @@ private:
 	float CurrentTime;
 	float DebugDuration;
 	bool bDebugDraw;
-	bool bDuration;
 	bool bHit;
 };
 
