@@ -67,6 +67,7 @@ void MainGame::Init()
 
 	UI = new UserInterface();
 	UI->Init();
+	// UI->SetPlayer(a, b);
 
 	if (collisionManager = CollisionManager::GetInstance())
 	{
