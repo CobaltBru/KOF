@@ -1,20 +1,43 @@
 #pragma once
 #include "GameObject.h"
+#include "KOF_Iori.h"
 
+class Image;
 class Collider;
 class HongCharacter : public GameObject
 {
-public:
-	void Init();		// 멤버 변수의 초기화, 메모리 할당
-	virtual void Release();		// 메모리 해제
-	virtual void Update(float TimeDelta);		// 프레임 단위로 게임 로직 실행(데이터 계산)
-	virtual void Render(HDC hdc);	// 프레임 단위로 출력(이미지, 텍스트 등)
+private:
+	float moveSpeed;
+	Image* image;
+	int elapsedFrame;
+	int currAnimaionFrame;	// 0 ~ 8
 
-	HongCharacter();
-	virtual ~HongCharacter();
+	bool characterKey[(int)EMoveKey::END] = { 0, };
 
-public:
-	FPOINT Pos;
+	float stepTime = 0.f;
+	float currentTime;
+
+	Image* attackImage;
+
+	bool bAttack = false;
+
 	Collider* collider;
+public:
+	void Init();
+	void Release();
+	void Update(float TimeDelta);
+	void Render(HDC hdc);
+
+
+	void Move();
+
+	void KeyUpdate(float TimeDelta);
+	void StateUpdate();
+	void Attack();
+
+	//Hong Interface
+	void SetPos(FPOINT pos) { this->pos = pos; }
+	HongCharacter();
+	~HongCharacter();
 };
 

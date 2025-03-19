@@ -6,6 +6,8 @@
 #include "KOFKeyManager.h"
 #include "UserInterface.h"
 #include "ObjectManager.h"
+#include "HongCharacter.h"
+#include "CollisionManager.h"
 /*
 	실습1. 이오리 집에 보내기
 	실습2. 배경 바꾸기 (킹오파 애니메이션 배경)
@@ -37,10 +39,20 @@ void MainGame::Init()
 		KOF_Iori* tempIori = new KOF_Iori;
 		tempIori->Init();
 		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempIori);
+
+		HongCharacter* tempHong = new HongCharacter;
+		tempHong->Init();
+		tempHong->SetPos({ 100.f, 100.f });
+		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempHong);
 	}
 
 	UI = new UserInterface();
 	UI->Init();
+
+	if (collisionManager = CollisionManager::GetInstance())
+	{
+		collisionManager->Init();
+	}
 }
 
 void MainGame::Release()
@@ -78,6 +90,9 @@ void MainGame::Release()
 
 	if (objectManager)
 		objectManager->Release();
+
+	if (collisionManager)
+		collisionManager->Release();
 }
 
 void MainGame::Update()
@@ -89,7 +104,12 @@ void MainGame::Update()
 
 	if (objectManager)
 		objectManager->Update(TimeDelta);
+
 	UI->Update();
+
+	if (collisionManager)
+		collisionManager->Update(TimeDelta);
+
 }
 
 void MainGame::Render()
@@ -103,6 +123,9 @@ void MainGame::Render()
 
 	if (objectManager)
 		objectManager->Render(hBackBufferDC);
+	
+	if (collisionManager)
+		collisionManager->Render(hBackBufferDC);
 
 	UI->Render(hBackBufferDC);
 }

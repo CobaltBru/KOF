@@ -5,6 +5,7 @@ class Image;
 class TimerManager;
 class ObjectManager;
 class UserInterface;
+class CollisionManager;
 class MainGame : public GameObject
 {
 private:
@@ -19,6 +20,7 @@ private:
 	Image* backGround;
 	TimerManager* timerManager;
 	ObjectManager* objectManager;
+	CollisionManager* collisionManager;
 
 	UserInterface* UI;
 public:
