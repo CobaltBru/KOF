@@ -202,7 +202,7 @@ void Character::pushSkill(string command, Image* image, int maxFrame,
 //조작 커맨드 asd
 void Character::Update(float deltaTime)
 {
-	
+
 	if (currentState != STATE::PROCESS)
 	{
 		currentCommand = KOFKeyManager::GetInstance()->GetPlayerCommand(player);

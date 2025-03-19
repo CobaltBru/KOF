@@ -54,10 +54,10 @@ void KOFKeyManager::Update(float TimeDelta)
 	player2MoveKey[KEY_S] = KeyManager::GetInstance()->IsStayKeyDown(VK_DOWN);
 	player2MoveKey[KEY_D] = KeyManager::GetInstance()->IsStayKeyDown(VK_RIGHT);
 
-	while (!player1KeyBuffer.empty() && currentTime - player1KeyBuffer.front().second > 0.3f)
+	while (!player1KeyBuffer.empty() && currentTime - player1KeyBuffer.front().second > 1.f)
 		player1KeyBuffer.pop_front();
 
-	while (!player2KeyBuffer.empty() && currentTime - player2KeyBuffer.front().second > 0.3f)
+	while (!player2KeyBuffer.empty() && currentTime - player2KeyBuffer.front().second > 1.f)
 		player2KeyBuffer.pop_front();
 }
 
