@@ -4,7 +4,7 @@
 class Image;
 class Character : public GameObject
 {
-private:
+protected:
 	enum class STATE { IDLE, BACK, WALK, DOWN, DASH, BACKDASH,SKILL, PROCESS };
 	struct SKILL
 	{
@@ -23,7 +23,7 @@ private:
 		int speed;			//이동속도
 	};
 	int		player;
-
+	Image*	profile;
 	FPOINT	pos;
 	bool	screenWay; //화면에서 보고있는 방향
 	int		moveWay; //이동방향
@@ -33,7 +33,6 @@ private:
 	float	currentHp;
 	float	damage;
 	vector<Image> images;
-	vector<int> maxFrames;
 	string	currentCommand; //들어온 커맨드
 	
 	vector<SKILL> skillSet;//기술 목록
@@ -47,8 +46,8 @@ private:
 public:
 	Character();
 	~Character();
-	void Init(int player, FPOINT pos, float characterSpeed,
-				float hp, vector<Image>images, vector<int> maxFrames);
+	void Init(int player,Image* profile, FPOINT pos, float characterSpeed,
+				float hp, vector<Image>images);
 	void Release();
 	//뒷걷기, 앞걷기, 숙이기, 앞대쉬, 백대쉬 순으로 넣어주세요
 	void pushCommon(Image* image, int maxFrame);
@@ -66,6 +65,9 @@ public:
 	void useSkill(string str);
 	void endSkill();
 	int getIndex();
+
+	float* getCurrentHp();
+	float getMaxHp();
 };
 
 
