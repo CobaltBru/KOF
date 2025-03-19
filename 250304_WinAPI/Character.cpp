@@ -284,10 +284,6 @@ void Character::Update(float deltaTime)
 		{
 			setDown();
 		}
-		else
-		{
-			setIdle();
-		}
 
 		if (!basicKeys[EKeyType::KEY_W] && !basicKeys[EKeyType::KEY_A] &&
 			!basicKeys[EKeyType::KEY_S] && !basicKeys[EKeyType::KEY_D])
@@ -395,7 +391,6 @@ void Character::useSkill(string str)
 			return;
 		}
 	}
-	setIdle();
 	
 }
 
