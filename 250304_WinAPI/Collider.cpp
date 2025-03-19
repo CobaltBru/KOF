@@ -1,8 +1,8 @@
 #include "Collider.h"
 #include "GameObject.h"
 
-Collider::Collider(GameObject* Owner, FPOINT Pos)
-	: Owner(Owner), Pos(Pos)
+Collider::Collider(GameObject* Owner, FPOINT Pos, FPOINT Size)
+	: Owner(Owner), Pos(Pos), Size(Size), bHit(false)
 {
 }
 
@@ -10,7 +10,7 @@ Collider::~Collider()
 {
 }
 
-inline GameObject* Collider::GetOwner()
+GameObject* Collider::GetOwner()
 {
 	return Owner;
 }
