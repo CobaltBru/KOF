@@ -1,33 +1,40 @@
 #pragma once
-#include "Singleton.h"
 #include "config.h"
-#include <queue>
-
-#define KEYINTERVAL 1000
+#include <deque>
+#include <string>
 
 class KOFKeyManager : public Singleton<KOFKeyManager>
 {
 public:
 	HRESULT Init();
-	void Update();
+	void Update(float TimeDelta);
 	void Release();
 
-	void Player1Update();
-	void Player2Update();
+	string GetPlayer1Command() const {
+		string temp = "";
 
-	void Player1CommandUpdate();
-	void Player2CommandUpdate();
-	
+		for (int i = 0; i < player1KeyBuffer.size(); ++i)
+			temp += player1KeyBuffer[i].first;
+
+		return temp;
+	}
+	string GetPlayer2Command() const {
+		string temp = "";
+
+		for (int i = 0; i < player2KeyBuffer.size(); ++i)
+			temp += player2KeyBuffer[i].first;
+
+		return temp;
+	}
+
 private:
-	// 현재 틱  플레이어마다 해야함
-	ULONGLONG currentUpdateTime1 = 0;
-	ULONGLONG currentUpdateTime2 = 0;
-
-	//키를 받는 변수 1p, 2p
-	queue<pair<int,int>> playerInput1;
-	queue<pair<int, int>> playerInput2;
-
-	//결정된 키 1p, 2p
-
+	float currentTime = 0.f;
+	// 1p, 2p 버퍼
+	deque<pair<char, float>> player1KeyBuffer;
+	deque<pair<char, float>> player2KeyBuffer;
+	// 1p , 2p 
+	string player1Command;
+	string player2Command;
+	
 };
 
