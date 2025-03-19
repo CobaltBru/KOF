@@ -78,32 +78,7 @@ void HongCharacter::Update(float TimeDelta)
 	}
 
 
-	// TODO : 김태경이 테스트하려고 만듦
-#pragma once region TaeKyung
-	KeyUpdate(TimeDelta);
 
-	//Attack();
-	Move();
-
-	if (KOFKeyManager::GetInstance()->GetPlayer1Command() != "")
-	{
-		string command = KOFKeyManager::GetInstance()->GetPlayer1Command();
-		if (command.size() >= 3)
-		{
-
-		}
-	}
-
-	currAnimaionFrame = elapsedFrame / 5;
-	if (currAnimaionFrame > 8)
-	{
-		currAnimaionFrame = 0;
-		elapsedFrame = 0;
-
-		if (bAttack)
-			bAttack = false;
-	}
-#pragma once endregion
 }
 
 void HongCharacter::Render(HDC hdc)

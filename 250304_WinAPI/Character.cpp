@@ -216,17 +216,17 @@ void Character::Update(float deltaTime)
 
 void Character::Render(HDC hdc)
 {
-	if (currentState != STATE::IDLE)
-	{
+	/*if (currentState != STATE::IDLE)
+	{*/
 		if (currentState == STATE::PROCESS)
 		{
 			skillSet[currentSkill].image->Render(hdc, pos.x, pos.y, framecnt, screenWay);
 		}
 		else
 		{
-			images[getIndex()].Render(hdc, pos.x, pos.y, framecnt, screenWay);
+			images[getIndex() + 1].Render(hdc, pos.x, pos.y, framecnt, screenWay);
 		}
-	}
+	//}
 }
 
 void Character::Move(float deltaTime)

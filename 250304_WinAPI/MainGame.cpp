@@ -8,6 +8,7 @@
 #include "ObjectManager.h"
 #include "HongCharacter.h"
 #include "CollisionManager.h"
+#include "Ryo.h"
 /*
 	실습1. 이오리 집에 보내기
 	실습2. 배경 바꾸기 (킹오파 애니메이션 배경)
@@ -36,14 +37,32 @@ void MainGame::Init()
 	{
 		objectManager->Init();
 
-		KOF_Iori* tempIori = new KOF_Iori;
-		tempIori->Init();
-		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempIori);
+		//KOF_Iori* tempIori = new KOF_Iori;
+		//tempIori->Init();
+		//objectManager->AddObject(OBJID::OBJ_CHARACTER, tempIori);
 
 		HongCharacter* tempHong = new HongCharacter;
 		tempHong->Init();
 		tempHong->SetPos({ 100.f, 100.f });
 		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempHong);
+
+		Ryo* tempRyo = new Ryo();
+		vector<Image> tempImage;
+		vector<int> tempMaxFrame;
+		Image Idle;
+		Idle.Init(L"Image/Ryo_Idle.bmp", 622, 109, 7, 1, true, RGB(255, 0, 255));
+		tempImage.push_back(Idle);
+		tempImage.push_back(Idle);
+		tempImage.push_back(Idle);
+		tempImage.push_back(Idle);
+		tempImage.push_back(Idle);
+		tempMaxFrame.push_back(7);
+		tempMaxFrame.push_back(7);
+		tempMaxFrame.push_back(7);
+		tempMaxFrame.push_back(7);
+		tempMaxFrame.push_back(7);
+		tempRyo->Init(2, {10,10},10,100, tempImage,tempMaxFrame);
+		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempRyo);
 	}
 
 	UI = new UserInterface();

@@ -4,7 +4,7 @@
 class Image;
 class Character : public GameObject
 {
-private:
+protected:
 	enum class STATE { IDLE, BACK, WALK, DOWN, DASH, BACKDASH,SKILL, PROCESS };
 	struct SKILL
 	{

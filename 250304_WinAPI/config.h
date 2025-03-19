@@ -22,20 +22,6 @@ using namespace std;
 #define RAD_TO_DEG(radian) ((180.0 / 3.14) * radian)
 #define MAX_KEY_COUNT	256
 
-enum class EKeyType : uint8_t			// Å° Á¶ÇÕ
-{
-	KEYUP,
-	KEYDOWN,
-	KEYLEFT,
-	KEYRIGHT,
-	KEYUPDOWN,
-	KEYUPLEFT,
-	KEYUPRIGHT,
-	KEYDOWNLEFT,
-	KEYDOWNRIGHT,
-	END
-};
-
 enum OBJID 
 {
 	OBJ_CHARACTER,

@@ -66,6 +66,9 @@
     <ClCompile Include="UserInterface.cpp">
       <Filter>리소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Ryo.cpp">
+      <Filter>MainGame\KOF_Character</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h">
@@ -121,6 +124,9 @@
     </ClInclude>
     <ClInclude Include="UserInterface.h">
       <Filter>리소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Ryo.h">
+      <Filter>MainGame\KOF_Character</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
