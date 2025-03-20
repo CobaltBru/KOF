@@ -31,9 +31,12 @@ public:
 	inline FPOINT GetWorldPos() { return WorldPos; }
 	inline bool IsHit() {
 		return bHit;
-	};
+	}
 	inline bool IsDraw() {
 		return bDebugDraw;
+	}
+	inline void SetHit(bool bHit) {
+		this->bHit = bHit;
 	}
 
 private:
@@ -41,7 +44,7 @@ private:
 	bool DebugUpdate(float TimeDelta);
 
 private:
-	FPOINT Pos; //부모 위치로부터 상대적인 위치
+	FPOINT Pivot; //부모 위치로부터 상대적인 위치
 	FPOINT WorldPos; //월드 포지션
 
 	FPOINT PrevWorldPos; //이전 프레임의 월드 포지션

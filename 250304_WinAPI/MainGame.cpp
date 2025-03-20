@@ -80,6 +80,38 @@ void MainGame::Init()
 
 		tempRyo->pushSkill("Y", tempAttack1, 7, 5, 10, true, false, 2, 3, 0, 0);
 		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempRyo);
+
+		HongCharacter* tempHong = new HongCharacter();
+		vector<Image> tempImage2;
+
+		Image Idle2;
+		Idle2.Init(L"Image/converted/akuma-ts-stance.bmp/gouki.bmp", 780, 120, 10, 1, true, RGB(255, 0, 255));
+
+		Image Walk2;
+		Walk2.Init(L"Image/converted/akuma-ts-stance.bmp/AkumaWalk.bmp", 1243, 120, 11, 1, true, RGB(255, 0, 255));
+
+		Image BackWalk2;
+		BackWalk2.Init(L"Image/converted/akuma-ts-stance.bmp/AkumaWalkB.bmp", 1243, 120, 11, 1, true, RGB(255, 0, 255));
+
+		Image Down2;
+		Down2.Init(L"Image/converted/akuma-ts-stance.bmp/AkumaWalk.bmp", 1243, 120, 11, 1, true, RGB(255, 0, 255));
+
+		Image Dash2;
+		Dash2.Init(L"Image/converted/akuma-ts-stance.bmp/AkumaWalk.bmp", 1243, 120, 11, 1, true, RGB(255, 0, 255));
+
+		Image Back2;
+		Back2.Init(L"Image/converted/akuma-ts-stance.bmp/AkumaWalk.bmp", 1243, 120, 11, 1, true, RGB(255, 0, 255));
+		//idle, 뒷걷기, 앞걷기, 숙이기, 앞대쉬, 백대쉬 순으로 넣어주세요
+		tempImage2.push_back(Idle2);
+		tempImage2.push_back(BackWalk2);
+		tempImage2.push_back(Walk2);
+		tempImage2.push_back(Down2);
+		tempImage2.push_back(Dash2);
+		tempImage2.push_back(Back2);
+
+		tempHong->Init(2, new Image(), { 550,250 }, 200.f, 100.f, tempImage2);
+		tempHong->InitCollider();
+		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempHong);
 	}
 
 	UI = new UserInterface();

@@ -1,8 +1,8 @@
 #include "Collider.h"
 #include "GameObject.h"
 
-Collider::Collider(GameObject* Owner, FPOINT Pos, FPOINT Size, COLLIDER_TYPE Type)
-	: Owner(Owner), Pos(Pos), Size(Size), bHit(false), PrevWorldPos({ 0.f,0.f })
+Collider::Collider(GameObject* Owner, FPOINT Pivot, FPOINT Size, COLLIDER_TYPE Type)
+	: Owner(Owner), Pivot(Pivot), Size(Size), bHit(false), PrevWorldPos({ 0.f,0.f })
 	, ColliderType(Type)
 {
 }
@@ -34,8 +34,8 @@ bool Collider::Update(float TimeDelta)
 	PrevWorldPos = WorldPos;
 
 	//TODO 변경된 Owner의 위치로 콜라이더의 Pos를 업데이트
-	WorldPos.x = Owner->GetPos().x + Pos.x;
-	WorldPos.y = Owner->GetPos().y + Pos.y;
+	WorldPos.x = Owner->GetPos().x + Pivot.x;
+	WorldPos.y = Owner->GetPos().y + Pivot.y;
 
 	bool bDraw = DebugUpdate(TimeDelta);
 	return bDraw;

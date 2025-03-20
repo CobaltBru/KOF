@@ -39,8 +39,9 @@ void CollisionManager::Update(float TimeDelta)
 
 			if (SourMax.x > DestMin.x
 				&& SourMin.x < DestMax.x
-				&& SourMin.y > DestMax.y
-				&& SourMax.y < DestMin.y)
+				//TODO Y가 들어올경우 
+				/*&& SourMin.y > DestMax.y
+				&& SourMax.y < DestMin.y*/)
 			{
 				bCollision = true;
 			}
@@ -51,10 +52,10 @@ void CollisionManager::Update(float TimeDelta)
 			 
 				//얼마나 깊이 들어왔는지 확인 /점프제외
 				float overlapWidth = min(SourMax.x, DestMax.x) - max(SourMin.x, DestMin.x);
-				float pushAmount = overlapWidth / 2.0f;
+				float pushAmount = (overlapWidth / 2.0f) * (TimeDelta / FixedTimeStep);
 
-				FPOINT newSourPos = Sour->GetWorldPos();
-				FPOINT newDestPos = Dest->GetWorldPos();
+				FPOINT newSourPos = Sour->GetOwner()->GetPos();
+				FPOINT newDestPos = Dest->GetOwner()->GetPos();
 
 				if (SourMin.x < DestMin.x) {
 					// Sour가 Dest의 왼쪽에 있는 경우
@@ -177,6 +178,8 @@ bool CollisionManager::LineTraceByObject(HitResult& hitResult, OBJID eObjID, FPO
 			if (Owner != (*iter)->GetOwner())
 			{
 				hitResult.Actors.push_back((*iter)->GetOwner());
+
+				(*iter)->SetHit(true);
 			}
 			else
 			{
