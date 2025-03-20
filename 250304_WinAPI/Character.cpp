@@ -591,7 +591,7 @@ void Character::attack(Character* other)
 		if (other->getGuardState() == 2) //하단 방어일때
 		{
 			d *= 0.1f;
-			other->SetCurrentState(STATE::BLOCKLOWER);
+			other->SetCurrentState(STATE::BLOCKLOWER);				// SetCurrentState  << 김태경이 넣음 else 도 제가 넣었어요 ㅠ
 		}
 		else
 			other->SetCurrentState(STATE::HITLOWER);
