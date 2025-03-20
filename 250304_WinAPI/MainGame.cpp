@@ -58,13 +58,13 @@ void MainGame::Init()
 		BackWalk.Init(L"Image/Ryo/Ryo_BackWalk.bmp", 720, 109, 6, 1, true, RGB(255, 0, 255));
 
 		Image Down;
-		Down.Init(L"Image/Ryo/Ryo_DownUp.bmp", 600, 109, 5, 1, true, RGB(255, 0, 255));
+		Down.Init(L"Image/Ryo/Ryo_Down.bmp", 120, 109, 1, 1, true, RGB(255, 0, 255));
 
 		Image Dash;
-		Dash.Init(L"Image/Ryo/Ryo_Walk1.bmp", 720, 109, 6, 1, true, RGB(255, 0, 255));
+		Dash.Init(L"Image/Ryo/Ryo_Dash.bmp", 720, 109, 6, 1, true, RGB(255, 0, 255));
 
 		Image Back;
-		Back.Init(L"Image/Ryo/Ryo_Walk1.bmp", 720, 109, 6, 1, true, RGB(255, 0, 255));
+		Back.Init(L"Image/Ryo/Ryo_BackDash1.bmp", 120, 109, 1, 1, true, RGB(255, 0, 255));
 		//idle, 뒷걷기, 앞걷기, 숙이기, 앞대쉬, 백대쉬 순으로 넣어주세요
 		tempImage.push_back(Idle);
 		tempImage.push_back(BackWalk);
