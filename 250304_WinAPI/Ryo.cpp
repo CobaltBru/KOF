@@ -5,11 +5,8 @@
 #include "CollisionManager.h"
 
 Ryo::Ryo()
+	:currentTime(0.f), aDashTime(0.f), bDashTime(0.f), KeyBufferTime(0.f), dy(-20), gravity(4), bCheckPreBackDash(false), bBackDash(false), bSkip(false)
 {
-	screenWay = false;
-	currentTime = 0.f;
-	dashTime = 0.f;
-	dy = -20;
 }
 
 void Ryo::InitCollider()
@@ -22,22 +19,35 @@ void Ryo::InitCollider()
 	collider->DebugRender(true);
 }
 
+void Ryo::pushSkill(string command, Image* image, int maxFrame, int damage, int reach, bool isUpperAttack, bool isLowerAttack, int attackFrame, int skipFrame, FPOINT collisionPivot)
+{
+	SKILL skill;
+	skill.command = command;
+	skill.image = image;
+	skill.maxFrame = maxFrame;
+	skill.damage = damage;
+	skill.reach = reach;
+	skill.isUpperAttack = isUpperAttack;
+	skill.isLowerAttack = isLowerAttack;
+	skill.attackFrame = attackFrame;
+	skillSet.push_back(skill);
+
+	skipFrames.push_back({ skipFrame ,collisionPivot });
+}
+
 void Ryo::Update(float deltaTime)
 {
 	currentTime += deltaTime;
 
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
+	if (!bDead && currentHp <= 0)
 	{
-		HitResult hit;
-		FPOINT position = { pos.x + collider->GetPivot().x, pos.y + collider->GetPivot().y };
-		if (CollisionManager::GetInstance()->LineTraceByObject(hit, OBJ_CHARACTER, position, { position.x + 100.f, position.y }, this, true))
-		{
-			int a = 10;
-			//dynamic_cast<asdf>(hit.Actors[0]);
-		}
+		bDead = true;
+		currentState = STATE::DEAD;
+		framecnt = 0;
+		timecnt = 0.f;
 	}
-
-	if ((currentState != STATE::PROCESS || bSkip) && !bBackDash)
+		
+	if (!bDead && (currentState != STATE::PROCESS || bSkip) && !bBackDash && !bBlockHit)
 	{
 		bool bA = KeyManager::GetInstance()->IsOnceKeyUp('A');
 		bool bD = KeyManager::GetInstance()->IsOnceKeyUp('D');
@@ -63,72 +73,13 @@ void Ryo::Update(float deltaTime)
 				bA ? aDashTime = currentTime : bDashTime = currentTime;
 		}
 
-		currentCommand = KOFKeyManager::GetInstance()->GetPlayerCommand(player);
-
-		basicKeys[EKeyType::KEY_W] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_W);
-		basicKeys[EKeyType::KEY_A] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_A);
-		basicKeys[EKeyType::KEY_S] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_S);
-		basicKeys[EKeyType::KEY_D] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_D);
-
-		if (basicKeys[EKeyType::KEY_W] && basicKeys[EKeyType::KEY_D])		//대각
-		{
-
-		}
-		else if (basicKeys[EKeyType::KEY_W] && basicKeys[EKeyType::KEY_A])
-		{
-
-		}
-		else if (basicKeys[EKeyType::KEY_S] && basicKeys[EKeyType::KEY_A])
-		{
-
-		}
-		else if (basicKeys[EKeyType::KEY_S] && basicKeys[EKeyType::KEY_D])
-		{
-
-		}
-		else if (basicKeys[EKeyType::KEY_A] && aDashTime > 0.0001f && currentTime - aDashTime < 0.2f)		// 대쉬
-		{
-			screenWay ? setDash() : setBackDash();
-			aDashTime = 0.f;
-		}
-		else if (basicKeys[EKeyType::KEY_D] && bDashTime > 0.0001f && currentTime - bDashTime < 0.2f)
-		{
-			screenWay ? setBackDash() : setDash();
-			bDashTime = 0.f;
-		}
-		else if (basicKeys[EKeyType::KEY_W])	//일반 키입력
-		{
-
-		}
-		else if (basicKeys[EKeyType::KEY_A] && currentState != STATE::BACKDASH && currentState != STATE::DASH)
-		{
-			screenWay ? setWalk() : setBack();
-		}
-		else if (basicKeys[EKeyType::KEY_S])
-		{
-			setDown();
-		}
-		else if (basicKeys[EKeyType::KEY_D] && currentState != STATE::BACKDASH && currentState != STATE::DASH)
-		{
-			screenWay ? setBack() : setWalk();
-		}
-		else if (currentState != STATE::IDLE && currentState != STATE::BACKDASH && currentState != STATE::DASH && !bSkip)
-		{
-			setIdle();
-		}
-
-		if (currentState == STATE::BACKDASH)
-		{
-			bCheckPreBackDash = true;
-			bBackDash = true;
-		}
-
-		useSkill(currentCommand);
+		StateUpdate(deltaTime);
 	}
 
 	timecnt += deltaTime;
 	framecnt = timecnt / (deltaTime * 5); //현재 프레임 계산
 
+	CollisionUpdate();
 	SkipSkillFrame();
 	CheckMaxFrame();
 
@@ -140,12 +91,84 @@ void Ryo::Update(float deltaTime)
 void Ryo::Render(HDC hdc)
 {
 	if (currentState == STATE::PROCESS)
-	{
 		skillSet[currentSkill].image->Render(hdc, pos.x, pos.y, framecnt, screenWay);
-	}
 	else
 	{
-		images[getIndex()].Render(hdc, pos.x, pos.y, framecnt, screenWay);
+		const int idx = bDead ? (int)STATE::DEAD : GetIndex();
+		images[idx].Render(hdc, pos.x, pos.y, framecnt, screenWay);
+	}		
+}
+
+void Ryo::StateUpdate(float deltaTime)
+{
+	currentCommand = KOFKeyManager::GetInstance()->GetPlayerCommand(player);
+
+	basicKeys[EKeyType::KEY_W] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_W);
+	basicKeys[EKeyType::KEY_A] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_A);
+	basicKeys[EKeyType::KEY_S] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_S);
+	basicKeys[EKeyType::KEY_D] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_D);
+
+	//if (basicKeys[EKeyType::KEY_W] && basicKeys[EKeyType::KEY_D])		//대각
+	//{
+
+	//}
+	//else if (basicKeys[EKeyType::KEY_W] && basicKeys[EKeyType::KEY_A])
+	//{
+
+	//}
+	//else if (basicKeys[EKeyType::KEY_S] && basicKeys[EKeyType::KEY_A])
+	//{
+
+	//}
+	//else if (basicKeys[EKeyType::KEY_S] && basicKeys[EKeyType::KEY_D])
+	//{
+	//}
+	if (basicKeys[EKeyType::KEY_A] && aDashTime > 0.0001f && currentTime - aDashTime < 0.2f)		// 대쉬
+	{
+		screenWay ? setDash() : setBackDash();
+		aDashTime = 0.f;
+	}
+	else if (basicKeys[EKeyType::KEY_D] && bDashTime > 0.0001f && currentTime - bDashTime < 0.2f)
+	{
+		screenWay ? setBackDash() : setDash();
+		bDashTime = 0.f;
+	}
+	else if (basicKeys[EKeyType::KEY_W])	//일반 키입력
+	{
+
+	}
+	else if (basicKeys[EKeyType::KEY_S])
+	{
+		setDown();
+		if (!screenWay)
+			guardState = basicKeys[EKeyType::KEY_A] ? 2 : 0;		
+		else
+			guardState = basicKeys[EKeyType::KEY_D] ? 2 : 0;		
+	}
+	else if (basicKeys[EKeyType::KEY_A] && currentState != STATE::BACKDASH && currentState != STATE::DASH)
+	{
+		screenWay ? setWalk() : setBack();
+	}
+	else if (basicKeys[EKeyType::KEY_D] && currentState != STATE::BACKDASH && currentState != STATE::DASH)
+	{
+		screenWay ? setBack() : setWalk();
+	}
+	else if (currentState != STATE::IDLE && currentState != STATE::BACKDASH && currentState != STATE::DASH && !bSkip)
+	{
+		setIdle();
+	}
+
+	if (currentState == STATE::BACKDASH)
+	{
+		bCheckPreBackDash = true;
+		bBackDash = true;
+	}
+	if (bBlockHit)
+		speed = 0.f;
+	if (currentTime - KeyBufferTime > 0.2f)
+	{
+		useSkill(currentCommand);
+		KeyBufferTime = currentTime;
 	}
 }
 
@@ -158,11 +181,11 @@ void Ryo::Move(float deltaTime)
 		pos.x += ((screenWay ? -1 : 1) * moveWay) * speed * characterSpeed * deltaTime;
 		pos.y += dy;
 
-		if (pos.y >= 250)
+		if (pos.y >= 200.f)
 		{
 			bBackDash = false;
 			dy = -20;
-			pos.y = 250.f;
+			pos.y = 200.f;
 			setIdle();
 		}
 	}
@@ -183,9 +206,29 @@ void Ryo::useSkill(string str)
 			SKILL& skill = skillSet[currentSkill];
 			this->damage = skill.damage;
 			//this->moveWay = skill.way;
-			//if (skill.startTime <= 0.0f) this->speed = skill.speed;
+			speed = 0;
 			KOFKeyManager::GetInstance()->ClearPlayerBuffer(player);
 			return;
+		}
+	}
+}
+
+void Ryo::CollisionUpdate()
+{
+	if (currentState != STATE::PROCESS)
+		return;
+
+	if (framecnt == skillSet[currentSkill].attackFrame)
+	{
+		FPOINT position = { pos.x + collider->GetPivot().x + skipFrames[currentSkill].collisionPivot.x,
+			pos.y + collider->GetPivot().y + skipFrames[currentSkill].collisionPivot.y };
+		HitResult hit;
+		if (CollisionManager::GetInstance()->LineTraceByObject(hit, OBJ_CHARACTER, position, { position.x + (skillSet[currentSkill].reach * (screenWay ? -1 : 1)), position.y }, this, true))
+		{
+			if (Character* OtherCharacter = dynamic_cast<Character*>(hit.Actors[0]))
+			{
+				attack(OtherCharacter);
+			}
 		}
 	}
 }
@@ -194,7 +237,7 @@ void Ryo::SkipSkillFrame()
 {
 	if (currentState == STATE::PROCESS)
 	{
-		if (framecnt >= skipFrames[currentSkill])
+		if (framecnt >= skipFrames[currentSkill].skipFrame)
 			bSkip = true;
 		else
 			bSkip = false;
@@ -216,10 +259,17 @@ void Ryo::CheckMaxFrame()
 	}
 	else
 	{
-		if (framecnt >= images[getIndex()].GetMaxFrame())//루프처리
+		const int idx = bDead ? (int)STATE::DEAD : GetIndex();
+		if (framecnt >= images[idx].GetMaxFrame())//루프처리
 		{
-			framecnt = 0;
-			timecnt = 0;
+			if (!bDead)
+			{
+				framecnt = 0;
+				timecnt = 0;
+				bBlockHit = false;
+			}
+			else
+				framecnt = images[idx].GetMaxFrame() - 1;
 		}
 	}
 }

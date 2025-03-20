@@ -22,7 +22,7 @@ void MainGame::Init()
 
 	if (FAILED(backBuffer->Init(WINSIZE_X, WINSIZE_Y)))
 	{
-		MessageBox(g_hWnd, 
+		MessageBox(g_hWnd,
 			TEXT("백버퍼 생성 실패"), TEXT("경고"), MB_OK);
 	}
 	backGround = new Image();
@@ -40,19 +40,17 @@ void MainGame::Init()
 	{
 		objectManager->Init();
 
-	/*	KOF_Iori* tempIori = new KOF_Iori;
-		tempIori->Init();
-		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempIori);*/
+		/*	KOF_Iori* tempIori = new KOF_Iori;
+			tempIori->Init();
+			objectManager->AddObject(OBJID::OBJ_CHARACTER, tempIori);*/
 
-	/*	HongCharacter* tempHong = new HongCharacter;
-		tempHong->Init();
-		tempHong->SetPos({ 100.f, 100.f });
-		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempHong);*/
+			/*	HongCharacter* tempHong = new HongCharacter;
+				tempHong->Init();
+				tempHong->SetPos({ 100.f, 100.f });
+				objectManager->AddObject(OBJID::OBJ_CHARACTER, tempHong);*/
 
 #pragma once region TaeKyung
-
 		Ryo* tempRyo = new Ryo();
-		Ryo* tempRyo2 = new Ryo();
 		{
 			vector<Image> tempImage;
 
@@ -76,13 +74,34 @@ void MainGame::Init()
 
 			Image Back;
 			Back.Init(L"Image/Ryo/Ryo_BackDash1.bmp", 120, 130, 1, 1, true, RGB(255, 0, 255));
-			//idle, 뒷걷기, 앞걷기, 숙이기, 앞대쉬, 백대쉬 순으로 넣어주세요
+
+			Image UpBlock;
+			UpBlock.Init(L"Image/Ryo/Ryo_UpperBlock.bmp", 600, 130, 5, 1, true, RGB(255, 0, 255));
+
+			Image LowerBlock;
+			LowerBlock.Init(L"Image/Ryo/Ryo_LowerBlock.bmp", 480, 130, 4, 1, true, RGB(255, 0, 255));
+
+			Image UpHit;
+			UpHit.Init(L"Image/Ryo/Ryo_UpperHit.bmp", 960, 130, 8, 1, true, RGB(255, 0, 255));
+
+			Image LowerHit;
+			LowerHit.Init(L"Image/Ryo/Ryo_LowerHit.bmp", 960, 130, 8, 1, true, RGB(255, 0, 255));
+
+			Image Dead;
+			Dead.Init(L"Image/Ryo/Ryo_Dead.bmp", 720, 130, 6, 1, true, RGB(255, 0, 255));
+
+			//idle, 뒷걷기, 앞걷기, 숙이기, 앞대쉬, 백대쉬,윗막기,아래막기 순으로 넣어주세요
 			tempImage.push_back(Idle);
 			tempImage.push_back(BackWalk);
 			tempImage.push_back(Walk);
 			tempImage.push_back(Down);
 			tempImage.push_back(Dash);
 			tempImage.push_back(Back);
+			tempImage.push_back(UpBlock);
+			tempImage.push_back(LowerBlock);
+			tempImage.push_back(UpHit);
+			tempImage.push_back(LowerHit);
+			tempImage.push_back(Dead);
 
 			tempRyo->Init(1, maiProfile, { 250,200 }, 200.f, 100.f, tempImage);
 
@@ -98,27 +117,25 @@ void MainGame::Init()
 			Image* ryoStrongKick = new Image();
 			ryoStrongKick->Init(L"Image/Ryo/Ryo_StrongKick.bmp", 1200, 130, 10, 1, true, RGB(255, 0, 255));
 
+			Image* ryoHadogen = new Image();
+			ryoHadogen->Init(L"Image/Ryo/Ryo_Hadoken.bmp", 1080, 130, 9, 1, true, RGB(255, 0, 255));
 
-			tempRyo->pushSkill("H", ryoLightPunch, 7, 5, 50, true, false, 0);
-			tempRyo->pushSkill("Y", ryoStrongPunch, 9, 10, 70, true, false, 0);
-			tempRyo->pushSkill("G", ryoLightKick, 7, 7, 60, false, true, 0);
-			tempRyo->pushSkill("T", ryoStrongKick, 10, 10, 70, true, false, 0);
-
-
-			tempRyo->PushSkipFrame(4);
-			tempRyo->PushSkipFrame(6);
-			tempRyo->PushSkipFrame(5);
-			tempRyo->PushSkipFrame(8);
+			tempRyo->pushSkill("SDYT", ryoHadogen, 9, 50, 0, true, false, 0, 0, { 0.f,0.f });
+			tempRyo->pushSkill("H", ryoLightPunch, 7, 5, 45, true, false, 2, 4, { 0.f,-30.f });
+			tempRyo->pushSkill("Y", ryoStrongPunch, 9, 10, 70, true, false, 3, 6, { 0.f,-10.f });
+			tempRyo->pushSkill("G", ryoLightKick, 7, 7, 60, false, true, 2, 5, { 0.f,-10.f });
+			tempRyo->pushSkill("T", ryoStrongKick, 10, 10, 70, true, false, 4, 8, { 0.f,-20.f });
 
 			tempRyo->InitCollider();
 
 			objectManager->AddObject(OBJID::OBJ_CHARACTER, tempRyo);
 		}
 #pragma once endregion
-		
 
+
+		//Ryo* tempRyo2 = new Ryo();
 	// tempRyo->pushSkill("TY", Down, 5, 10, 10, false, true, 3);
-	
+
 // 		tempRyo2->Init(2, new Image(), { 550,250 }, 200.f, 100.f, tempImage);
 // 		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempRyo2);
 
@@ -162,7 +179,7 @@ void MainGame::Init()
 			Image* tempAttack2 = new Image();
 			tempAttack2->Init(L"Image/converted/akuma-ts-stance.bmp/AkumaRk.bmp", 1026, 120, 9, 1, true, RGB(255, 0, 255));
 
-			tempHong->pushSkill("Y", tempAttack2, 9, 5, 10, true, false, 4);
+			tempHong->pushSkill("Y", tempAttack2, 9, 5, 10, false, true, 4);
 
 			tempHong->Init(2, maiProfile, { 550,250 }, 200.f, 100.f, tempImage2);
 			tempHong->InitCollider();
@@ -232,7 +249,7 @@ void MainGame::Release()
 
 	if (timerManager)
 		timerManager->Release();
-	
+
 	ReleaseDC(g_hWnd, hdc);
 	if (UI)
 	{
@@ -257,14 +274,14 @@ void MainGame::Release()
 void MainGame::Update()
 {
 	float TimeDelta = timerManager->GetTimeDelta(TEXT("Timer60"));
-	
+
 	if (KOFKeyManager* kofKeyMgr = KOFKeyManager::GetInstance())
 		kofKeyMgr->Update(TimeDelta);
 
 	if (objectManager)
 		objectManager->Update(TimeDelta);
 
-	if(UI)
+	if (UI)
 		UI->Update();
 
 	if (collisionManager)
@@ -286,7 +303,7 @@ void MainGame::Render()
 
 	if (objectManager)
 		objectManager->Render(hBackBufferDC);
-	
+
 #ifdef _DEBUG
 	if (collisionManager)
 		collisionManager->Render(hBackBufferDC);
