@@ -532,9 +532,9 @@ float Character::getMaxHp()
 	return hp;
 }
 
-Image Character::getProfile()
+Image* Character::getProfile()
 {
-	return *profile;
+	return profile;
 }
 
 int Character::getGuardState()

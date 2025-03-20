@@ -3,7 +3,7 @@
 
 class Image;
 class Character;
-class UserInterface
+class UserInterface : public Singleton<UserInterface>
 {
 public:
 	void Init();

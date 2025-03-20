@@ -32,7 +32,7 @@ void MainGame::Init()
 			TEXT("Image/backGround.bmp 생성 실패"), TEXT("경고"), MB_OK);
 	}
 
-	UI = new UserInterface();
+	UI = UserInterface::GetInstance();
 	UI->Init();
 
 	timerManager = TimerManager::GetInstance();
@@ -52,7 +52,7 @@ void MainGame::Init()
 #pragma once region TaeKyung
 
 		Ryo* tempRyo = new Ryo();
-		Ryo* tempRyo2 = new Ryo();
+		//Ryo* tempRyo2 = new Ryo();
 		{
 			vector<Image> tempImage;
 
@@ -251,16 +251,15 @@ void MainGame::Release()
 		backBuffer = nullptr;
 	}
 
+	if (UI)
+		UI->Release();
+		
+
 	if (timerManager)
 		timerManager->Release();
 	
 	ReleaseDC(g_hWnd, hdc);
-	if (UI)
-	{
-		UI->Release();
-		delete UI;
-		UI = nullptr;
-	}
+	
 
 	if (KOFKeyManager* kofKeyMgr = KOFKeyManager::GetInstance())
 		kofKeyMgr->Release();
