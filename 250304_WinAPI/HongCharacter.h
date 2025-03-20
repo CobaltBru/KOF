@@ -1,6 +1,9 @@
 #pragma once
 #include "Character.h"
 
+#define ENUM_TO_STRING_CASE(value) case value: return #value;
+
+
 class Image;
 class Collider;
 
@@ -27,7 +30,7 @@ private:
 	Collider* collider;
 
 	vector<Animation*> Animations;
-
+	float FrameSpeed = 5.f;
 public:
 	//void Init();
 	void InitCollider();

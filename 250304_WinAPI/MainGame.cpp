@@ -1,7 +1,6 @@
 #include "MainGame.h"
 #include "CommonFunction.h"
 #include "Image.h"
-#include "KOF_Iori.h"
 #include "TimerManager.h"
 #include "KOFKeyManager.h"
 #include "UserInterface.h"
@@ -94,7 +93,7 @@ void MainGame::Init()
 		BackWalk2.Init(L"Image/converted/akuma-ts-stance.bmp/AkumaWalkB.bmp", 1243, 120, 11, 1, true, RGB(255, 0, 255));
 
 		Image Down2;
-		Down2.Init(L"Image/converted/akuma-ts-stance.bmp/AkumaWalk.bmp", 1243, 120, 11, 1, true, RGB(255, 0, 255));
+		Down2.Init(L"Image/converted/akuma-ts-stance.bmp/AkumaDown.bmp", 990, 120, 11, 1, true, RGB(255, 0, 255));
 
 		Image Dash2;
 		Dash2.Init(L"Image/converted/akuma-ts-stance.bmp/AkumaWalk.bmp", 1243, 120, 11, 1, true, RGB(255, 0, 255));
@@ -109,6 +108,12 @@ void MainGame::Init()
 		tempImage2.push_back(Down2);
 		tempImage2.push_back(Dash2);
 		tempImage2.push_back(Back2);
+
+
+		Image* tempAttack2 = new Image();
+		tempAttack2->Init(L"Image/converted/akuma-ts-stance.bmp/AkumaRk.bmp", 1026, 120, 9, 1, true, RGB(255, 0, 255));
+
+		tempHong->pushSkill("Y", tempAttack2, 9, 5, 10, true, false, 2, 3, 0, 0);
 
 		tempHong->Init(2, new Image(), { 550,250 }, 200.f, 100.f, tempImage2);
 		tempHong->InitCollider();
@@ -191,7 +196,7 @@ void MainGame::Render()
 
 	backGround->Render(hBackBufferDC);
 
-	if(UI)
+	if (UI)
 		UI->Render(hBackBufferDC);
 
 	if (objectManager)
