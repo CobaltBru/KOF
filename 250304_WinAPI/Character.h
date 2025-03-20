@@ -8,7 +8,7 @@ class Image;
 class Character : public GameObject
 {
 protected:
-	enum class STATE { IDLE, BACK, WALK, DOWN, DASH, BACKDASH,SKILL, PROCESS };
+	enum class STATE { IDLE, BACK, WALK, DOWN, DASH, BACKDASH, BLOCKUPPER, BLOCKLOWER, HITUPPER, HITLOWER,DEAD, SKILL, PROCESS };
 	struct SKILL
 	{
 		string command;		//Ä¿¸Çµå
@@ -101,6 +101,16 @@ public:
 	void attack(Character* other);
 	void getDamage(float damage);
 	//void SetEnemy(Character* other);
+
+
+	void SetCurrentState(STATE InCurrentState) { 
+		currentState = InCurrentState; 
+		framecnt = 0;
+		timecnt = 0;
+		speed = 0.f;
+		bBlockHit = true;
+	}
+	bool bBlockHit = false;
 };
 
 

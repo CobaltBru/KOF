@@ -81,6 +81,12 @@
     <ClCompile Include="Chang.cpp">
       <Filter>MainGame\KOF_Character</Filter>
     </ClCompile>
+    <ClCompile Include="Mai.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Hadogen.cpp">
+      <Filter>MainGame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h">
@@ -151,6 +157,12 @@
     </ClInclude>
     <ClInclude Include="Chang.h">
       <Filter>MainGame\KOF_Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Mai.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Hadogen.h">
+      <Filter>MainGame</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

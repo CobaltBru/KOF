@@ -591,7 +591,10 @@ void Character::attack(Character* other)
 		if (other->getGuardState() == 2) //하단 방어일때
 		{
 			d *= 0.1f;
+			other->SetCurrentState(STATE::BLOCKLOWER);
 		}
+		else
+			other->SetCurrentState(STATE::HITLOWER);
 	}
 	else if (skill.isUpperAttack) //상단 공격일때
 	{
@@ -599,10 +602,13 @@ void Character::attack(Character* other)
 		{
 			d = 0;
 		}
-		else if (other->getGuardState() == 1) //상단 방어일때
+		else if (other->getGuardState() == 1) //상단 방어일때%
 		{
 			d *= 0.1f;
+			other->SetCurrentState(STATE::BLOCKUPPER);
 		}
+		else
+			other->SetCurrentState(STATE::HITUPPER);
 	}
 	other->getDamage(d);
 }

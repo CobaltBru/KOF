@@ -133,6 +133,7 @@
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Hadogen.cpp" />
     <ClCompile Include="HongCharacter.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="KeyManager.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="CommonFunction.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Hadogen.h" />
     <ClInclude Include="HongCharacter.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="KeyManager.h" />
