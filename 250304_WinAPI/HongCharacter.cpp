@@ -4,39 +4,6 @@
 #include "Collider.h"
 #include "CollisionManager.h"
 
-//void HongCharacter::Init()
-//{
-//	pos = { 0.0f, 0.0f };
-//	moveSpeed = 5.0f;
-//	image = new Image();
-//	/*if (FAILED(image->Init(TEXT("Image/iori_walk.bmp"), 612, 104, 9, 1,
-//		true, RGB(255, 0, 255))))
-//	{
-//		MessageBox(g_hWnd, TEXT("Image/iori_walk.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
-//	}*/
-//
-//	elapsedFrame = 0;
-//	currAnimaionFrame = 0;
-//
-//	attackImage = new Image();
-//	if (FAILED(attackImage->Init(TEXT("Image/iori_kick.bmp"), 1170, 106, 10, 1,
-//		true, RGB(255, 0, 255))))
-//	{
-//		MessageBox(g_hWnd, TEXT("Image/iori_kick.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
-//	}
-//
-//	bAttack = false;
-//
-//	collider = new Collider(this, pos, { 50.f, 100.f }, COLLIDER_TYPE::Rect);
-//	CollisionManager* manager = CollisionManager::GetInstance();
-//
-//	manager->AddObject(OBJID::OBJ_CHARACTER, collider);	
-//
-//	collider->DebugRender(true);
-//
-//	Load();
-//}
-
 void HongCharacter::InitCollider()
 {
 	collider = new Collider(this, {0.f, 0.f}, { 50.f, 100.f }, COLLIDER_TYPE::Rect);
@@ -45,114 +12,10 @@ void HongCharacter::InitCollider()
 	manager->AddObject(OBJID::OBJ_CHARACTER, collider);
 
 	collider->DebugRender(true);
-
-	//Load();
 }
 
 void HongCharacter::Update(float TimeDelta)
 {
-	//currentTime += TimeDelta;
-
-	//currentCommand = KOFKeyManager::GetInstance()->GetPlayerCommand(player);
-
-	//bool keyA = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_A);
-	//bool keyS = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_S);
-	//bool keyD = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_D);
-
-	//if (keyA && dashTime > 0.0001f && currentTime - dashTime > 0.3f)
-	//{
-	//	dashTime = currentTime;
-	//}
-	//else if (keyA)
-	//{
-	//	if (screenWay == false) //뒷걸음질
-	//	{
-	//		moveWay = -1;
-	//		speed = 0.7f;
-	//		if (currentState == STATE::BACK) currentState = STATE::BACK;
-	//		else currentState = STATE::BACK;
-	//	}
-	//	else //앞으로 
-	//	{
-	//		moveWay = 1;
-	//		speed = 1.0f;
-	//		if (currentState == STATE::WALK) currentState = STATE::DASH;
-	//		else currentState = STATE::WALK;
-	//	}
-	//}
-	//else if (keyD)
-	//{
-	//	if (screenWay == false) //앞으로
-	//	{
-	//		moveWay = 1;
-	//		speed = 1.0f;
-	//		if (currentState == STATE::WALK) currentState = STATE::DASH;
-	//		else currentState = STATE::WALK;
-	//	}
-	//	else //뒷걸음질
-	//	{
-	//		moveWay = -1;
-	//		speed = 0.7f;
-	//		if (currentState == STATE::BACK) currentState = STATE::BACK;
-	//		else currentState = STATE::BACK;
-	//	}
-	//}
-	//else if (keyS) //숙이기
-	//{
-	//	speed = 0;
-	//	currentState = STATE::DOWN;
-	//}
-	//else if (currentState == STATE::PROCESS) //기술중
-	//{
-	//	timecnt += TimeDelta;
-	//	framecnt = timecnt / (TimeDelta * 4.0f); //현재 프레임 계산
-
-	//	// TODO 공격판정해야하는 프레임이라면
-
-	//	if (framecnt == skillSet[currentSkill].attackFrame)
-	//	{
-	//		HitResult hit;
-	//		if (CollisionManager::GetInstance()->LineTraceByObject(hit, OBJ_CHARACTER, pos, { pos.x - 100.f, pos.y }, this, true))
-	//		{
-	//			if (Character* OtherCharacter = dynamic_cast<Character*>(hit.Actors[0]))
-	//			{
-	//				attack(OtherCharacter);
-
-	//				//skillSet[currentSkill].damage;
-	//			}
-	//		}
-	//	}
-
-	//	if (framecnt >= skillSet[currentSkill].maxFrame)//끝나면 IDLE로
-	//	{
-	//		endSkill();
-	//	}
-
-	//}
-	//else
-	//{
-	//	speed = 0;
-	//	currentState = STATE::IDLE;
-	//}
-
-	//if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD7) && currentState == STATE::IDLE)
-	//{
-	//	framecnt = 0;
-	//	timecnt = 0;
-	//	useSkill("Y");
-	//}
-
-
-
-	//if (currentState != STATE::PROCESS)
-	//{
-	//	timecnt += TimeDelta;
-	//	framecnt = timecnt / (TimeDelta * FrameSpeed); //현재 프레임 계산
-
-	//	CheckMaxFrame();
-	//}
-
-	//Move(TimeDelta);
 	__super::Update(TimeDelta);
 }
 
@@ -186,7 +49,7 @@ void HongCharacter::Render(HDC hdc)
 		wsprintf(szText, TEXT("STATE::PROCESS"));
 		break;
 	}
-	TextOut(hdc, pos.x - 75, pos.y - 60, szText, wcslen(szText));
+	TextOut(hdc, pos.x - 40, pos.y - 80, szText, wcslen(szText));
 
 	if (currentState == STATE::PROCESS)
 	{
@@ -202,15 +65,6 @@ void HongCharacter::Render(HDC hdc)
 		{
 			images[getIndex()].Render(hdc, pos.x - 35, pos.y - 55, framecnt, screenWay);
 		}
-	}
-}
-
-void HongCharacter::CheckMaxFrame()
-{
-	if (framecnt >= images[getIndex()].GetMaxFrame())//루프처리
-	{
-		framecnt = 0;
-		timecnt = 0;
 	}
 }
 
@@ -262,28 +116,4 @@ void HongCharacter::Load()
 	} while (FindNextFile(hFind, &findFileData) != 0);  // 다음 파일 찾기
 
 	FindClose(hFind);  // 핸들 닫기
-}
-
-void Animation::PlayAnimation(float TimeDelta)
-{
-	PlayTime += TimeDelta;
-
-	if (PlayTime >= (float)MaxFrame)
-	{
-		PlayTime = (float)MaxFrame;
-	}
-}
-
-void Animation::Render(HDC hdc)
-{
-	Images[(int)PlayTime]->Render(hdc, 0, 0);
-}
-
-void Animation::Release()
-{
-	for (auto& iter : Images)
-	{
-		delete iter;
-	}
-	Images.clear();
 }
