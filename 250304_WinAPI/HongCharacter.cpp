@@ -49,23 +49,8 @@ void HongCharacter::InitCollider()
 	//Load();
 }
 
-void HongCharacter::Release()
-{
-	collider = nullptr;
-}
-
 void HongCharacter::Update(float TimeDelta)
 {
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
-	{
-		HitResult hit;
-		if (CollisionManager::GetInstance()->LineTraceByObject(hit, OBJ_CHARACTER, pos, { pos.x - 100.f, pos.y }, this, true))
-		{
-			int a = 10;			
-			//dynamic_cast<asdf>(hit.Actors[0]);
-		}
-	}
-
 	currentTime += TimeDelta;
 
 	currentCommand = KOFKeyManager::GetInstance()->GetPlayerCommand(player);
@@ -117,53 +102,102 @@ void HongCharacter::Update(float TimeDelta)
 		speed = 0;
 		currentState = STATE::DOWN;
 	}
+	else if (currentState == STATE::PROCESS) //기술중
+	{
+		timecnt += TimeDelta;
+		framecnt = timecnt / (TimeDelta * 4.0f); //현재 프레임 계산
+
+		// TODO 공격판정해야하는 프레임이라면
+
+		if (false /* skillSet[currentSkill] */)
+		{
+			HitResult hit;
+			if (CollisionManager::GetInstance()->LineTraceByObject(hit, OBJ_CHARACTER, pos, { pos.x - 100.f, pos.y }, this, true))
+			{
+				if (Character* character = dynamic_cast<Character*>(hit.Actors[0]))
+				{
+					
+					skillSet[currentSkill].damage;
+				}
+			}
+		}
+
+		if (framecnt >= skillSet[currentSkill].maxFrame)//끝나면 IDLE로
+		{
+			endSkill();
+		}
+
+	}
 	else
 	{
 		speed = 0;
 		currentState = STATE::IDLE;
 	}
 
-	useSkill(currentCommand);
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD7) && currentState == STATE::IDLE)
+	{
+		framecnt = 0;
+		timecnt = 0;
+		useSkill("Y");
+	}
 
-	if (currentState != STATE::IDLE)
+
+
+	if (currentState != STATE::PROCESS)
 	{
 		timecnt += TimeDelta;
-		framecnt = timecnt / (TimeDelta * FRAMESPEED); //현재 프레임 계산
-		if (currentState == STATE::PROCESS) //기술중
-		{
-			if (framecnt >= skillSet[currentSkill].maxFrame)//끝나면 IDLE로
-			{
-				endSkill();
-			}
-		}
-	}
-	else
-	{
-		timecnt += TimeDelta * FRAMESPEED;//TimeDelta * FRAMESPEED;
-		framecnt = timecnt;// / (TimeDelta * FRAMESPEED); //현재 프레임 계산
-	}
+		framecnt = timecnt / (TimeDelta * FrameSpeed); //현재 프레임 계산
 
-	CheckMaxFrame();
+		CheckMaxFrame();
+	}
 
 	Move(TimeDelta);
 }
 
 void HongCharacter::Render(HDC hdc)
 {
+	wchar_t szText[255] = L"";
+	switch (currentState)
+	{
+	case Character::STATE::IDLE:
+		wsprintf(szText, TEXT("STATE::IDLE"));
+		break;
+	case Character::STATE::BACK:
+		wsprintf(szText, TEXT("STATE::BACK"));
+		break;
+	case Character::STATE::WALK:
+		wsprintf(szText, TEXT("STATE::WALK"));
+		break;
+	case Character::STATE::DOWN:
+		wsprintf(szText, TEXT("STATE::DOWN"));
+		break;
+	case Character::STATE::DASH:
+		wsprintf(szText, TEXT("STATE::DASH"));
+		break;
+	case Character::STATE::BACKDASH:
+		wsprintf(szText, TEXT("STATE::BACKDASH"));
+		break;
+	case Character::STATE::SKILL:
+		wsprintf(szText, TEXT("STATE::SKILL"));
+		break;
+	case Character::STATE::PROCESS:
+		wsprintf(szText, TEXT("STATE::PROCESS"));
+		break;
+	}
+	TextOut(hdc, pos.x - 75, pos.y - 60, szText, wcslen(szText));
+
 	if (currentState == STATE::PROCESS)
 	{
-		skillSet[currentSkill].image->Render(hdc, pos.x, pos.y, framecnt, screenWay);
+		skillSet[currentSkill].image->Render(hdc, pos.x - 75, pos.y - 60, framecnt, screenWay);
 	}
 	else
 	{
 		if (screenWay)
 		{
-			//images[getIndex()].Render(hdc, pos.x - 90, pos.y - 55, framecnt, screenWay);
 			images[getIndex()].Render(hdc, pos.x - 40, pos.y - 60, framecnt, screenWay);
 		}
 		else
 		{
-			//images[getIndex()].Render(hdc, pos.x - 35, pos.y - 55, framecnt, screenWay);
 			images[getIndex()].Render(hdc, pos.x - 35, pos.y - 55, framecnt, screenWay);
 		}
 	}
