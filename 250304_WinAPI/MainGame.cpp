@@ -6,6 +6,7 @@
 #include "UserInterface.h"
 #include "ObjectManager.h"
 #include "HongCharacter.h"
+#include "Kusanagi.h"
 #include "CollisionManager.h"
 #include "Ryo.h"
 #include "Mai.h"
@@ -51,69 +52,68 @@ void MainGame::Init()
 
 #pragma once region TaeKyung
 
-		Ryo* tempRyo = new Ryo();
-		Ryo* tempRyo2 = new Ryo();
-		{
-			vector<Image> tempImage;
+		//Ryo* tempRyo = new Ryo();
+		//{
+		//	vector<Image> tempImage;
 
-			Image* maiProfile = new Image();
-			maiProfile->Init(TEXT("Image/UI/yuri.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255));
+		//	Image* maiProfile = new Image();
+		//	maiProfile->Init(TEXT("Image/UI/yuri.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255));
 
-			Image Idle;
-			Idle.Init(L"Image/Ryo/Ryo_Idle.bmp", 840, 130, 7, 1, true, RGB(255, 0, 255));
+		//	Image Idle;
+		//	Idle.Init(L"Image/Ryo/Ryo_Idle.bmp", 840, 130, 7, 1, true, RGB(255, 0, 255));
 
-			Image Walk;
-			Walk.Init(L"Image/Ryo/Ryo_Walk1.bmp", 720, 130, 6, 1, true, RGB(255, 0, 255));
+		//	Image Walk;
+		//	Walk.Init(L"Image/Ryo/Ryo_Walk1.bmp", 720, 130, 6, 1, true, RGB(255, 0, 255));
 
-			Image BackWalk;
-			BackWalk.Init(L"Image/Ryo/Ryo_BackWalk.bmp", 720, 130, 6, 1, true, RGB(255, 0, 255));
+		//	Image BackWalk;
+		//	BackWalk.Init(L"Image/Ryo/Ryo_BackWalk.bmp", 720, 130, 6, 1, true, RGB(255, 0, 255));
 
-			Image Down;
-			Down.Init(L"Image/Ryo/Ryo_Down.bmp", 120, 130, 1, 1, true, RGB(255, 0, 255));
+		//	Image Down;
+		//	Down.Init(L"Image/Ryo/Ryo_Down.bmp", 120, 130, 1, 1, true, RGB(255, 0, 255));
 
-			Image Dash;
-			Dash.Init(L"Image/Ryo/Ryo_Dash.bmp", 720, 130, 6, 1, true, RGB(255, 0, 255));
+		//	Image Dash;
+		//	Dash.Init(L"Image/Ryo/Ryo_Dash.bmp", 720, 130, 6, 1, true, RGB(255, 0, 255));
 
-			Image Back;
-			Back.Init(L"Image/Ryo/Ryo_BackDash1.bmp", 120, 130, 1, 1, true, RGB(255, 0, 255));
-			//idle, 뒷걷기, 앞걷기, 숙이기, 앞대쉬, 백대쉬 순으로 넣어주세요
-			tempImage.push_back(Idle);
-			tempImage.push_back(BackWalk);
-			tempImage.push_back(Walk);
-			tempImage.push_back(Down);
-			tempImage.push_back(Dash);
-			tempImage.push_back(Back);
+		//	Image Back;
+		//	Back.Init(L"Image/Ryo/Ryo_BackDash1.bmp", 120, 130, 1, 1, true, RGB(255, 0, 255));
+		//	//idle, 뒷걷기, 앞걷기, 숙이기, 앞대쉬, 백대쉬 순으로 넣어주세요
+		//	tempImage.push_back(Idle);
+		//	tempImage.push_back(BackWalk);
+		//	tempImage.push_back(Walk);
+		//	tempImage.push_back(Down);
+		//	tempImage.push_back(Dash);
+		//	tempImage.push_back(Back);
 
-			tempRyo->Init(1, maiProfile, { 250,200 }, 200.f, 100.f, tempImage);
+		//	tempRyo->Init(1, maiProfile, { 250,200 }, 200.f, 100.f, tempImage);
 
-			Image* ryoLightPunch = new Image();
-			ryoLightPunch->Init(L"Image/Ryo/Ryo_LightPunch.bmp", 840, 130, 7, 1, true, RGB(255, 0, 255));
+		//	Image* ryoLightPunch = new Image();
+		//	ryoLightPunch->Init(L"Image/Ryo/Ryo_LightPunch.bmp", 840, 130, 7, 1, true, RGB(255, 0, 255));
 
-			Image* ryoStrongPunch = new Image();
-			ryoStrongPunch->Init(L"Image/Ryo/Ryo_StrongPunch.bmp", 1080, 130, 9, 1, true, RGB(255, 0, 255));
+		//	Image* ryoStrongPunch = new Image();
+		//	ryoStrongPunch->Init(L"Image/Ryo/Ryo_StrongPunch.bmp", 1080, 130, 9, 1, true, RGB(255, 0, 255));
 
-			Image* ryoLightKick = new Image();
-			ryoLightKick->Init(L"Image/Ryo/Ryo_LightKick.bmp", 840, 130, 7, 1, true, RGB(255, 0, 255));
+		//	Image* ryoLightKick = new Image();
+		//	ryoLightKick->Init(L"Image/Ryo/Ryo_LightKick.bmp", 840, 130, 7, 1, true, RGB(255, 0, 255));
 
-			Image* ryoStrongKick = new Image();
-			ryoStrongKick->Init(L"Image/Ryo/Ryo_StrongKick.bmp", 1200, 130, 10, 1, true, RGB(255, 0, 255));
-
-
-			tempRyo->pushSkill("H", ryoLightPunch, 7, 5, 50, true, false, 0);
-			tempRyo->pushSkill("Y", ryoStrongPunch, 9, 10, 70, true, false, 0);
-			tempRyo->pushSkill("G", ryoLightKick, 7, 7, 60, false, true, 0);
-			tempRyo->pushSkill("T", ryoStrongKick, 10, 10, 70, true, false, 0);
+		//	Image* ryoStrongKick = new Image();
+		//	ryoStrongKick->Init(L"Image/Ryo/Ryo_StrongKick.bmp", 1200, 130, 10, 1, true, RGB(255, 0, 255));
 
 
-			tempRyo->PushSkipFrame(4);
-			tempRyo->PushSkipFrame(6);
-			tempRyo->PushSkipFrame(5);
-			tempRyo->PushSkipFrame(8);
+		//	tempRyo->pushSkill("H", ryoLightPunch, 7, 5, 50, true, false, 0);
+		//	tempRyo->pushSkill("Y", ryoStrongPunch, 9, 10, 70, true, false, 0);
+		//	tempRyo->pushSkill("G", ryoLightKick, 7, 7, 60, false, true, 0);
+		//	tempRyo->pushSkill("T", ryoStrongKick, 10, 10, 70, true, false, 0);
 
-			tempRyo->InitCollider();
 
-			objectManager->AddObject(OBJID::OBJ_CHARACTER, tempRyo);
-		}
+		//	tempRyo->PushSkipFrame(4);
+		//	tempRyo->PushSkipFrame(6);
+		//	tempRyo->PushSkipFrame(5);
+		//	tempRyo->PushSkipFrame(8);
+
+		//	tempRyo->InitCollider();
+
+		//	objectManager->AddObject(OBJID::OBJ_CHARACTER, tempRyo);
+		//}
 #pragma once endregion
 		
 
@@ -124,6 +124,41 @@ void MainGame::Init()
 
 // 		tempRyo->SetEnemy(tempRyo2);
 // 		tempRyo2->SetEnemy(tempRyo);
+
+		Kusanagi* kusanagi = new Kusanagi();
+		vector<Image>kusaImages;
+		{
+			Image* kusaProfile = new Image;
+			kusaProfile->Init(TEXT("Image/Kusanagi/Kusanagip.bmp"), 97, 111, 1, 1, true, RGB(248, 0, 248));
+			Image* IDLE = new Image;
+			IDLE->Init(TEXT("Image/Kusanagi/idle.bmp"), 850, 110, 10, 1, true, RGB(248, 0, 248));
+			Image* DOWN = new Image;
+			DOWN->Init(TEXT("Image/Kusanagi/down.bmp"), 77, 103, 1, 1, true, RGB(248, 0, 248));
+			Image* WALK = new Image;
+			WALK->Init(TEXT("Image/Kusanagi/run.bmp"), 770, 120, 7, 1, true, RGB(248, 0, 248));
+			Image* BACK = new Image;
+			BACK->Init(TEXT("Image/Kusanagi/back.bmp"), 340, 120, 4, 1, true, RGB(248, 0, 248));
+			Image* BLOCK = new Image;
+			BLOCK->Init(TEXT("Image/Kusanagi/block2.bmp"), 900, 110, 10, 1, true, RGB(248, 0, 248));
+			Image* PUNCH1 = new Image;
+			PUNCH1->Init(TEXT("Image/Kusanagi/punch1.bmp"), 400, 113, 4, 1, true, RGB(248, 0, 248));
+
+			kusaImages.push_back(*IDLE);
+			kusaImages.push_back(*BACK);
+			kusaImages.push_back(*WALK);
+			kusaImages.push_back(*DOWN);
+			kusaImages.push_back(*WALK);
+			kusaImages.push_back(*BACK);
+			kusaImages.push_back(*BLOCK);
+			kusaImages.push_back(*BLOCK);
+
+
+			kusanagi->Init(1, kusaProfile, { 250,200 }, 100, 100, kusaImages);
+			kusanagi->pushSkill("T", PUNCH1, 4, 5, 25, true, false, 0);
+			kusanagi->InitCollider();
+			objectManager->AddObject(OBJID::OBJ_CHARACTER, kusanagi);
+
+		}
 
 		HongCharacter* tempHong = new HongCharacter();
 		vector<Image> tempImage2;
@@ -162,7 +197,7 @@ void MainGame::Init()
 			Image* tempAttack2 = new Image();
 			tempAttack2->Init(L"Image/converted/akuma-ts-stance.bmp/AkumaRk.bmp", 1026, 120, 9, 1, true, RGB(255, 0, 255));
 
-			tempHong->pushSkill("Y", tempAttack2, 9, 5, 50, true, false, 4);
+			tempHong->pushSkill("Y", tempAttack2, 9, 50, 50, false, true, 4);
 
 			tempHong->Init(2, maiProfile, { 550,250 }, 200.f, 100.f, tempImage2);
 			tempHong->InitCollider();
@@ -173,7 +208,7 @@ void MainGame::Init()
 		// Image* ryoProfile = new Image();
 		//ryoProfile->Init(TEXT("Image/UI/yuri.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255));
 
-		Mai* tempMai = new Mai();
+		//Mai* tempMai = new Mai();
 		/*vector<Image> maiImage;
 		Image maiIdle;
 		Idle.Init(L"Image/Mai/Mai_Endle.bmp", 3000, 300, 12, 1, true, RGB(255, 0, 255));
@@ -204,7 +239,11 @@ void MainGame::Init()
 		tempMai->Init(1, maiProfile, { 250,250 }, 200.f, 100.f, tempImage);*/
 		//objectManager->AddObject(OBJID::OBJ_CHARACTER, tempMai);
 
-		UI->SetPlayer(tempRyo, tempHong);
+		
+		
+
+
+		UI->SetPlayer(kusanagi, tempHong);
 	}
 
 
