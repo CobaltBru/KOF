@@ -25,12 +25,6 @@ void MainGame::Init()
 		MessageBox(g_hWnd, 
 			TEXT("백버퍼 생성 실패"), TEXT("경고"), MB_OK);
 	}
-	backGround = new Image();
-	if (FAILED(backGround->Init(TEXT("Image/BackGround.bmp"), WINSIZE_X, WINSIZE_Y)))
-	{
-		MessageBox(g_hWnd,
-			TEXT("Image/backGround.bmp 생성 실패"), TEXT("경고"), MB_OK);
-	}
 
 	UI = new UserInterface();
 	UI->Init();
@@ -40,19 +34,9 @@ void MainGame::Init()
 	{
 		objectManager->Init();
 
-	/*	KOF_Iori* tempIori = new KOF_Iori;
-		tempIori->Init();
-		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempIori);*/
-
-	/*	HongCharacter* tempHong = new HongCharacter;
-		tempHong->Init();
-		tempHong->SetPos({ 100.f, 100.f });
-		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempHong);*/
-
 #pragma once region TaeKyung
 
 		Ryo* tempRyo = new Ryo();
-		Ryo* tempRyo2 = new Ryo();
 		{
 			vector<Image> tempImage;
 
@@ -128,7 +112,6 @@ void MainGame::Init()
 		HongCharacter* tempHong = new HongCharacter();
 		vector<Image> tempImage2;
 		{
-
 			Image* maiProfile = new Image();
 			maiProfile->Init(TEXT("Image/UI/yuri.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255));
 
@@ -145,7 +128,7 @@ void MainGame::Init()
 			Down2.Init(L"Image/converted/akuma-ts-stance.bmp/AkumaDown.bmp", 990, 120, 11, 1, true, RGB(255, 0, 255));
 
 			Image Dash2;
-			Dash2.Init(L"Image/converted/akuma-ts-stance.bmp/AkumaWalk.bmp", 1243, 120, 11, 1, true, RGB(255, 0, 255));
+			Dash2.Init(L"Image/converted/akuma-ts-stance.bmp/AkumaBack.bmp", 17892, 120, 63, 1, true, RGB(255, 0, 255));
 
 			Image Back2;
 			Back2.Init(L"Image/converted/akuma-ts-stance.bmp/AkumaWalk.bmp", 1243, 120, 11, 1, true, RGB(255, 0, 255));
@@ -159,21 +142,32 @@ void MainGame::Init()
 			tempImage2.push_back(Back2);
 
 
-			Image* tempAttack2 = new Image();
-			tempAttack2->Init(L"Image/converted/akuma-ts-stance.bmp/AkumaRk.bmp", 1026, 120, 9, 1, true, RGB(255, 0, 255));
+			Image* AkumaRk = new Image();
+			AkumaRk->Init(L"Image/converted/akuma-ts-stance.bmp/AkumaRk.bmp", 1026, 120, 9, 1, true, RGB(255, 0, 255));
+			
+			Image* AkumaLk = new Image();
+			AkumaLk->Init(L"Image/converted/akuma-ts-stance.bmp/AkumaLk.bmp", 4920, 120, 30, 1, true, RGB(255, 0, 255));
 
-			tempHong->pushSkill("Y", tempAttack2, 9, 5, 50, true, false, 4);
+			Image* AkumaLp = new Image();
+			AkumaLp->Init(L"Image/converted/akuma-ts-stance.bmp/AkumaLp.bmp", 1944, 120, 12, 1, true, RGB(255, 0, 255));
+
+			Image* AkumaRp = new Image();
+			AkumaRp->Init(L"Image/converted/akuma-ts-stance.bmp/AkumaRp.bmp", 1704, 120, 12, 1, true, RGB(255, 0, 255));
+
+			tempHong->pushSkill("T", AkumaLp, 12, 5, 50, true, false, 4);
+			tempHong->pushSkill("Y", AkumaRp, 12, 5, 50, true, false, 8);
+			tempHong->pushSkill("G", AkumaLk, 30, 5, 80, false, true, 4);
+			tempHong->pushSkill("H", AkumaRk, 9, 5, 50, false, true, 4);
 
 			tempHong->Init(2, maiProfile, { 550,250 }, 200.f, 100.f, tempImage2);
 			tempHong->InitCollider();
 			objectManager->AddObject(OBJID::OBJ_CHARACTER, tempHong);
-
 		}
 		// 차승근 테스트
 		// Image* ryoProfile = new Image();
 		//ryoProfile->Init(TEXT("Image/UI/yuri.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255));
 
-		Mai* tempMai = new Mai();
+		//Mai* tempMai = new Mai();
 		/*vector<Image> maiImage;
 		Image maiIdle;
 		Idle.Init(L"Image/Mai/Mai_Endle.bmp", 3000, 300, 12, 1, true, RGB(255, 0, 255));
@@ -216,13 +210,6 @@ void MainGame::Init()
 
 void MainGame::Release()
 {
-	if (backGround)
-	{
-		backGround->Release();
-		delete backGround;
-		backGround = nullptr;
-	}
-
 	if (backBuffer)
 	{
 		backBuffer->Release();
@@ -264,7 +251,7 @@ void MainGame::Update()
 	if (objectManager)
 		objectManager->Update(TimeDelta);
 
-	if(UI)
+	if (UI)
 		UI->Update();
 
 	if (collisionManager)
@@ -278,8 +265,6 @@ void MainGame::Render()
 	HDC hBackBufferDC = backBuffer->GetMemDC();
 
 	backBuffer->Render(hdc);
-
-	backGround->Render(hBackBufferDC);
 
 	if (UI)
 		UI->Render(hBackBufferDC);
