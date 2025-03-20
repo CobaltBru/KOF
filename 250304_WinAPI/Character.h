@@ -7,8 +7,8 @@
 class Image;
 class Character : public GameObject
 {
-protected:
-	enum class STATE { IDLE, BACK, WALK, DOWN, DASH, BACKDASH, BLOCKUPPER, BLOCKLOWER, HITUPPER, HITLOWER,DEAD, SKILL, PROCESS };
+protected:																		// BLOCKUPPER, BLOCKLOWER, HITUPPER, HITLOWER,DEAD  << 임의로 테스트하려고 김태경이 넣었어요 없애도 됩니당.
+	enum class STATE { IDLE, BACK, WALK, DOWN, DASH, BACKDASH, BLOCKUPPER, BLOCKLOWER, HITUPPER, HITLOWER,DEAD, SKILL, PROCESS };			
 	struct SKILL
 	{
 		string command;		//커맨드
@@ -103,6 +103,8 @@ public:
 	//void SetEnemy(Character* other);
 
 
+
+	//  임의로 테스트하려고 김태경이 넣었어요
 	void SetCurrentState(STATE InCurrentState) { 
 		currentState = InCurrentState; 
 		framecnt = 0;

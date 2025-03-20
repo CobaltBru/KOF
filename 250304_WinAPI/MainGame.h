@@ -12,7 +12,6 @@ private:
 	HDC hdc;
 	PAINTSTRUCT ps;
 	HANDLE hTimer;
-	
 	Image* backBuffer;
 	TimerManager* timerManager;
 	ObjectManager* objectManager;

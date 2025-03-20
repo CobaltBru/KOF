@@ -39,8 +39,10 @@ void MainGame::Init()
 		{
 			vector<Image> tempImage;
 
-			Image* maiProfile = new Image();
-			maiProfile->Init(TEXT("Image/UI/yuri.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255));
+			Image* RyoProfile = new Image();
+			RyoProfile->Init(TEXT("Image/UI/yuri.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255));
+
+			//ryoProfile->Init(TEXT("Image/Ryo/Ryo_Profile.bmp"), 80, 86, true, RGB(255, 0, 255));
 
 			Image Idle;
 			Idle.Init(L"Image/Ryo/Ryo_Idle.bmp", 840, 130, 7, 1, true, RGB(255, 0, 255));
@@ -88,7 +90,7 @@ void MainGame::Init()
 			tempImage.push_back(LowerHit);
 			tempImage.push_back(Dead);
 
-			tempRyo->Init(1, maiProfile, { 250,200 }, 200.f, 100.f, tempImage);
+			tempRyo->Init(1, RyoProfile, { 250,200 }, 200.f, 100.f, tempImage);
 
 			Image* ryoLightPunch = new Image();
 			ryoLightPunch->Init(L"Image/Ryo/Ryo_LightPunch.bmp", 840, 130, 7, 1, true, RGB(255, 0, 255));
@@ -105,7 +107,11 @@ void MainGame::Init()
 			Image* ryoHadogen = new Image();
 			ryoHadogen->Init(L"Image/Ryo/Ryo_Hadoken.bmp", 1080, 130, 9, 1, true, RGB(255, 0, 255));
 
-			tempRyo->pushSkill("SDYT", ryoHadogen, 9, 50, 0, true, false, 0, 0, { 0.f,0.f });
+			Image* ryoHadogen2 = new Image();
+			ryoHadogen2->Init(L"Image/Ryo/Ryo_Hadoken.bmp", 1080, 130, 9, 1, true, RGB(255, 0, 255));
+
+			tempRyo->pushSkill("SDYT", ryoHadogen, 9, 20, 0, true, false, 3, 0, { 0.f,-60.f });
+			tempRyo->pushSkill("SDHG", ryoHadogen2, 9, 20, 0, false, true, 3, 0, { 0.f,-20.f });
 			tempRyo->pushSkill("H", ryoLightPunch, 7, 5, 45, true, false, 2, 4, { 0.f,-30.f });
 			tempRyo->pushSkill("Y", ryoStrongPunch, 9, 10, 70, true, false, 3, 6, { 0.f,-10.f });
 			tempRyo->pushSkill("G", ryoLightKick, 7, 7, 60, false, true, 2, 5, { 0.f,-10.f });
