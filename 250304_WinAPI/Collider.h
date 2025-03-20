@@ -29,6 +29,7 @@ public:
 	inline FPOINT GetPrevWorldPos() { return PrevWorldPos; }
 	inline FPOINT GetSize() { return Size; }
 	inline FPOINT GetWorldPos() { return WorldPos; }
+	inline FPOINT GetPivot() const { return Pivot; }
 	inline bool IsHit() {
 		return bHit;
 	}
