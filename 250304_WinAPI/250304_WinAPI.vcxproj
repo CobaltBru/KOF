@@ -136,6 +136,7 @@
     <ClCompile Include="KeyManager.cpp" />
     <ClCompile Include="KOFKeyManager.cpp" />
     <ClCompile Include="KOF_Iori.cpp" />
+    <ClCompile Include="Mai.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainGame.cpp" />
     <ClCompile Include="Ryo.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="KeyManager.h" />
     <ClInclude Include="KOFKeyManager.h" />
     <ClInclude Include="KOF_Iori.h" />
+    <ClInclude Include="Mai.h" />
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="resource.h" />
