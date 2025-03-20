@@ -69,6 +69,12 @@
     <ClCompile Include="Ryo.cpp">
       <Filter>MainGame\KOF_Character</Filter>
     </ClCompile>
+    <ClCompile Include="CollisionManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Character2.cpp">
+      <Filter>MainGame\KOF_Character</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h">
@@ -126,6 +132,12 @@
       <Filter>리소스 파일</Filter>
     </ClInclude>
     <ClInclude Include="Ryo.h">
+      <Filter>MainGame\KOF_Character</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Character2.h">
       <Filter>MainGame\KOF_Character</Filter>
     </ClInclude>
   </ItemGroup>

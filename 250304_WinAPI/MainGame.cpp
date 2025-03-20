@@ -47,14 +47,15 @@ void MainGame::Init()
 		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempHong);*/
 
 		Ryo* tempRyo = new Ryo();
+		Ryo* tempRyo2 = new Ryo();
 		vector<Image> tempImage;
 		Image Idle;
-		Idle.Init(L"Image/Ryo/Ryo_Idle.bmp", 616, 109, 7, 1, true, RGB(255, 0, 255));
+		Idle.Init(L"Image/yuki/idle.bmp", 896, 128, 8, 1, true, RGB(255, 0, 255));
 
 		Image Walk;
-		Walk.Init(L"Image/Ryo/Ryo_Walk1.bmp", 422, 105, 6, 1, true, RGB(255, 0, 255));
+		Walk.Init(L"Image/yuki/run.bmp", 1120, 128, 10, 1, true, RGB(255, 0, 255));
 		Image BackWalk;
-		BackWalk.Init(L"Image/Ryo/Ryo_BackWalk.bmp", 408, 105, 6, 1, true, RGB(255, 0, 255));
+		BackWalk.Init(L"Image/yuki/back.bmp", 1120, 128, 10, 1, true, RGB(255, 0, 255));
 
 		Image* Down = new Image;
 		Down->Init(L"Image/Ryo/Ryo_DownUp.bmp", 409, 109, 5, 1, true, RGB(255, 0, 255));
@@ -70,7 +71,13 @@ void MainGame::Init()
 
 		tempRyo->Init(1, new Image(),{250,250},200.f,100.f, tempImage);
 		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempRyo);
-		tempRyo->pushSkill("TY", Down, 5, 10, 10, false, true, 0, 1, 1, 1.5);
+		tempRyo->pushSkill("TY", Down, 5, 10, 10, false, true, 3);
+	
+		tempRyo2->Init(2, new Image(), { 550,250 }, 200.f, 100.f, tempImage);
+		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempRyo2);
+
+		tempRyo->SetEnemy(tempRyo2);
+		tempRyo2->SetEnemy(tempRyo);
 	}
 
 	UI = new UserInterface();
