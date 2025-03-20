@@ -224,10 +224,10 @@ void Ryo::CollisionUpdate()
 		FPOINT position = { pos.x + collider->GetPivot().x + otherSkillInfo[currentSkill].collisionPivot.x,
 			pos.y + collider->GetPivot().y + otherSkillInfo[currentSkill].collisionPivot.y };
 
-		if (currentSkill == 0)
+		if (currentSkill == 0 || currentSkill == 1)
 		{
 			Hadogen* hadogen = new Hadogen();
-			hadogen->Init(position, otherSkillInfo[currentSkill].collisionPivot, skillSet[currentSkill].damage);
+			hadogen->Init(position, otherSkillInfo[currentSkill].collisionPivot, skillSet[currentSkill].damage, currentSkill);
 
 			if (ObjectManager* ObjMgr = ObjectManager::GetInstance())
 				ObjMgr->AddObject(OBJID::OBJ_CHARACTER, hadogen);

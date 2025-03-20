@@ -5,14 +5,25 @@
 #include "Character.h"
 
 Hadogen::Hadogen()
-	:bDead(false), bRender(true)
+	:bDead(false), bRender(true), hadogenMaxFrame(0), collisionPivot({0,0})
 {
 }
 
-void Hadogen::Init(FPOINT pos, FPOINT pivot,int damage)
+void Hadogen::Init(FPOINT pos, FPOINT pivot,int damage, int type)
 {
 	HadogenImage = new Image();
-	HadogenImage->Init(L"Image/Ryo/hadogen.bmp", 600, 200, 6, 1, true, RGB(255, 0, 255));
+	if (type)
+	{
+		HadogenImage->Init(L"Image/Ryo/6by.bmp", 100, 63, 1, 1, true, RGB(255, 0, 255));
+		hadogenMaxFrame = 1;
+		collisionPivot = { 100 * 0.5f,63 * 0.5f };
+	}
+	else
+	{
+		HadogenImage->Init(L"Image/Ryo/hadogen.bmp", 600, 200, 6, 1, true, RGB(255, 0, 255));
+		hadogenMaxFrame = 6;
+		collisionPivot = { 100 * 0.5f,200 * 0.5f };
+	}
 
 	DestroyImage = new Image();
 	DestroyImage->Init(L"Image/Ryo/HadogenDead.bmp", 900, 200, 9, 1, true, RGB(255, 0, 255));
@@ -56,12 +67,17 @@ void Hadogen::Update(float TimeDelta)
 void Hadogen::Render(HDC hdc)
 {
 	if (bRender)
-		bDead ? DestroyImage->Render(hdc, pos.x, pos.y, frameCnt) : HadogenImage->Render(hdc, pos.x, pos.y, frameCnt);
+	{
+		if(hadogenMaxFrame == 1)
+			bDead ? DestroyImage->Render(hdc, pos.x, pos.y - (collisionPivot.y * 2), frameCnt) : HadogenImage->Render(hdc, pos.x, pos.y, frameCnt);
+		else
+			bDead ? DestroyImage->Render(hdc, pos.x, pos.y, frameCnt) : HadogenImage->Render(hdc, pos.x, pos.y, frameCnt);
+	}
 }
 
 void Hadogen::CheckMaxFrame()
 {
-	const int maxFrame = bDead ? 9 : 6;
+	const int maxFrame = bDead ? 9 : hadogenMaxFrame;
 	if (frameCnt >= maxFrame)//루프처리
 	{
 		timeCnt = 0;
@@ -77,7 +93,7 @@ void Hadogen::CollisionUpdate()
 	if (!bDead)
 	{
 		HitResult hit;
-		FPOINT position = { pos.x + 50.f, pos.y + 100.f };
+		FPOINT position = { pos.x + collisionPivot.x, pos.y + collisionPivot.y};
 		if (CollisionManager::GetInstance()->LineTraceByObject(hit, OBJ_CHARACTER, position, position, this, true))
 		{
 			if (Character* OtherCharacter = dynamic_cast<Character*>(hit.Actors[0]))
