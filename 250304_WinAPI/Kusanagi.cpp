@@ -1,14 +1,16 @@
 #include "Kusanagi.h"
 #include "Collider.h"
 #include "CollisionManager.h"
+#include "Image.h"
 
 Kusanagi::Kusanagi()
 {
-
+	
 }
 
 Kusanagi::~Kusanagi()
 {
+
 }
 
 

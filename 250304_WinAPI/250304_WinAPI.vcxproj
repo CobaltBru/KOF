@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Chang.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="Character2.cpp" />
@@ -149,6 +150,7 @@
     <ClCompile Include="TimerManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="Chang.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="Character2.h" />
