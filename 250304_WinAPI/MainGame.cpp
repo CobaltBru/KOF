@@ -120,7 +120,7 @@ void MainGame::Init()
 			Image* ryoHadogen = new Image();
 			ryoHadogen->Init(L"Image/Ryo/Ryo_Hadoken.bmp", 1080, 130, 9, 1, true, RGB(255, 0, 255));
 
-			tempRyo->pushSkill("SDYT", ryoHadogen, 9, 50, 0, true, false, 0, 0, { 0.f,0.f });
+			tempRyo->pushSkill("SDYT", ryoHadogen, 9, 20, 0, true, false, 3, 0, { 0.f,-60.f });
 			tempRyo->pushSkill("H", ryoLightPunch, 7, 5, 45, true, false, 2, 4, { 0.f,-30.f });
 			tempRyo->pushSkill("Y", ryoStrongPunch, 9, 10, 70, true, false, 3, 6, { 0.f,-10.f });
 			tempRyo->pushSkill("G", ryoLightKick, 7, 7, 60, false, true, 2, 5, { 0.f,-10.f });
@@ -179,7 +179,7 @@ void MainGame::Init()
 			Image* tempAttack2 = new Image();
 			tempAttack2->Init(L"Image/converted/akuma-ts-stance.bmp/AkumaRk.bmp", 1026, 120, 9, 1, true, RGB(255, 0, 255));
 
-			tempHong->pushSkill("Y", tempAttack2, 9, 5, 10, false, true, 4);
+			tempHong->pushSkill("Y", tempAttack2, 9, 5, 100, true, false, 4);
 
 			tempHong->Init(2, maiProfile, { 550,250 }, 200.f, 100.f, tempImage2);
 			tempHong->InitCollider();

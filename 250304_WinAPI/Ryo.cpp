@@ -3,9 +3,10 @@
 #include "KOFKeyManager.h"
 #include "Collider.h"
 #include "CollisionManager.h"
-
+#include "Hadogen.h"
+#include "ObjectManager.h"
 Ryo::Ryo()
-	:currentTime(0.f), aDashTime(0.f), bDashTime(0.f), KeyBufferTime(0.f), dy(-20), gravity(4), bCheckPreBackDash(false), bBackDash(false), bSkip(false)
+	:currentTime(0.f), aDashTime(0.f), bDashTime(0.f), KeyBufferTime(0.f), dy(-20), gravity(4), bCheckPreBackDash(false), bBackDash(false), bSkip(false), bFirstAttack(false)
 {
 }
 
@@ -32,7 +33,7 @@ void Ryo::pushSkill(string command, Image* image, int maxFrame, int damage, int 
 	skill.attackFrame = attackFrame;
 	skillSet.push_back(skill);
 
-	skipFrames.push_back({ skipFrame ,collisionPivot });
+	otherSkillInfo.push_back({ skipFrame ,collisionPivot });
 }
 
 void Ryo::Update(float deltaTime)
@@ -46,7 +47,7 @@ void Ryo::Update(float deltaTime)
 		framecnt = 0;
 		timecnt = 0.f;
 	}
-		
+
 	if (!bDead && (currentState != STATE::PROCESS || bSkip) && !bBackDash && !bBlockHit)
 	{
 		bool bA = KeyManager::GetInstance()->IsOnceKeyUp('A');
@@ -68,7 +69,6 @@ void Ryo::Update(float deltaTime)
 			}
 			else if (bCheckPreBackDash)
 				bCheckPreBackDash = false;
-
 			else
 				bA ? aDashTime = currentTime : bDashTime = currentTime;
 		}
@@ -96,7 +96,7 @@ void Ryo::Render(HDC hdc)
 	{
 		const int idx = bDead ? (int)STATE::DEAD : GetIndex();
 		images[idx].Render(hdc, pos.x, pos.y, framecnt, screenWay);
-	}		
+	}
 }
 
 void Ryo::StateUpdate(float deltaTime)
@@ -141,9 +141,9 @@ void Ryo::StateUpdate(float deltaTime)
 	{
 		setDown();
 		if (!screenWay)
-			guardState = basicKeys[EKeyType::KEY_A] ? 2 : 0;		
+			guardState = basicKeys[EKeyType::KEY_A] ? 2 : 0;
 		else
-			guardState = basicKeys[EKeyType::KEY_D] ? 2 : 0;		
+			guardState = basicKeys[EKeyType::KEY_D] ? 2 : 0;
 	}
 	else if (basicKeys[EKeyType::KEY_A] && currentState != STATE::BACKDASH && currentState != STATE::DASH)
 	{
@@ -207,6 +207,7 @@ void Ryo::useSkill(string str)
 			this->damage = skill.damage;
 			//this->moveWay = skill.way;
 			speed = 0;
+			bFirstAttack = true;
 			KOFKeyManager::GetInstance()->ClearPlayerBuffer(player);
 			return;
 		}
@@ -218,18 +219,32 @@ void Ryo::CollisionUpdate()
 	if (currentState != STATE::PROCESS)
 		return;
 
-	if (framecnt == skillSet[currentSkill].attackFrame)
+	if (bFirstAttack && framecnt == skillSet[currentSkill].attackFrame)
 	{
-		FPOINT position = { pos.x + collider->GetPivot().x + skipFrames[currentSkill].collisionPivot.x,
-			pos.y + collider->GetPivot().y + skipFrames[currentSkill].collisionPivot.y };
-		HitResult hit;
-		if (CollisionManager::GetInstance()->LineTraceByObject(hit, OBJ_CHARACTER, position, { position.x + (skillSet[currentSkill].reach * (screenWay ? -1 : 1)), position.y }, this, true))
+		FPOINT position = { pos.x + collider->GetPivot().x + otherSkillInfo[currentSkill].collisionPivot.x,
+			pos.y + collider->GetPivot().y + otherSkillInfo[currentSkill].collisionPivot.y };
+
+		if (currentSkill == 0)
 		{
-			if (Character* OtherCharacter = dynamic_cast<Character*>(hit.Actors[0]))
+			Hadogen* hadogen = new Hadogen();
+			hadogen->Init(position, otherSkillInfo[currentSkill].collisionPivot, skillSet[currentSkill].damage);
+
+			if (ObjectManager* ObjMgr = ObjectManager::GetInstance())
+				ObjMgr->AddObject(OBJID::OBJ_CHARACTER, hadogen);
+		}
+		else
+		{
+			HitResult hit;
+			if (CollisionManager::GetInstance()->LineTraceByObject(hit, OBJ_CHARACTER, position, { position.x + (skillSet[currentSkill].reach * (screenWay ? -1 : 1)), position.y }, this, true))
 			{
-				attack(OtherCharacter);
+				if (Character* OtherCharacter = dynamic_cast<Character*>(hit.Actors[0]))
+				{
+					attack(OtherCharacter);
+				}
 			}
 		}
+
+		bFirstAttack = false;
 	}
 }
 
@@ -237,7 +252,7 @@ void Ryo::SkipSkillFrame()
 {
 	if (currentState == STATE::PROCESS)
 	{
-		if (framecnt >= skipFrames[currentSkill].skipFrame)
+		if (framecnt >= otherSkillInfo[currentSkill].skipFrame)
 			bSkip = true;
 		else
 			bSkip = false;
