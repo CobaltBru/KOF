@@ -1,6 +1,7 @@
 #include "Character.h"
 #include "Image.h"
 #include "KOFKeyManager.h"
+#include "CollisionManager.h"
 #include <math.h>
 
 Character::Character()
@@ -374,6 +375,17 @@ void Character::Update(float deltaTime)
 		{
 			if (framecnt == skillSet[currentSkill].attackFrame)
 			{
+				HitResult hit;
+				//(skill.reach > (player == 1 ? 1 : -1) * (other->GetPos().x - pos.x))
+				if (CollisionManager::GetInstance()->LineTraceByObject(hit, OBJ_CHARACTER, pos, { pos.x+(float)((player == 1 ? 1 : -1) * skillSet[currentSkill].reach), pos.y }, this, true))
+				{
+					if (Character* OtherCharacter = dynamic_cast<Character*>(hit.Actors[0]))
+					{
+						attack(OtherCharacter);
+
+						//skillSet[currentSkill].damage;
+					}
+				}
 				//attack();
 			}
 		}

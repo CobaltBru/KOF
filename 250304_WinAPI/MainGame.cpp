@@ -162,7 +162,7 @@ void MainGame::Init()
 			Image* tempAttack2 = new Image();
 			tempAttack2->Init(L"Image/converted/akuma-ts-stance.bmp/AkumaRk.bmp", 1026, 120, 9, 1, true, RGB(255, 0, 255));
 
-			tempHong->pushSkill("Y", tempAttack2, 9, 5, 10, true, false, 4);
+			tempHong->pushSkill("Y", tempAttack2, 9, 5, 50, true, false, 4);
 
 			tempHong->Init(2, maiProfile, { 550,250 }, 200.f, 100.f, tempImage2);
 			tempHong->InitCollider();
