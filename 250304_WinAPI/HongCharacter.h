@@ -1,6 +1,5 @@
 #pragma once
-#include "GameObject.h"
-#include "KOF_Iori.h"
+#include "Character.h"
 
 class Image;
 class Collider;
@@ -12,50 +11,39 @@ struct Animation
 
 	void PlayAnimation(float TimeDelta);
 
-
 	void Render(HDC hdc);
 	
 	vector<Image*> Images;
+
+	void Release();
 };
 
-class HongCharacter : public GameObject
+class HongCharacter : public Character
 {
 private:
 	float moveSpeed;
-	Image* image;
-	int elapsedFrame;
-	int currAnimaionFrame;	// 0 ~ 8
-
-	bool characterKey[(int)EMoveKey::END] = { 0, };
-
-	float stepTime = 0.f;
 	float currentTime;
-
-	Image* attackImage;
-
-	bool bAttack = false;
 
 	Collider* collider;
 
 	vector<Animation*> Animations;
+
+	vector<int> pixels;
 public:
-	void Init();
+	//void Init();
+	void InitCollider();
 	void Release();
-	void Update(float TimeDelta);
-	void Render(HDC hdc);
+	virtual void Update(float TimeDelta) override;
+	virtual void Render(HDC hdc) override;
 
 
-	void Move();
-
-	void KeyUpdate(float TimeDelta);
-	void StateUpdate();
-	void Attack();
-
+	void CheckMaxFrame();
 	//Hong Interface
 	HongCharacter();
 	~HongCharacter();
 
 private:
+	void SetPixel(int pixel) { pixels.push_back(pixel); }
 	void Load();
 };
 

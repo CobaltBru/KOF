@@ -27,7 +27,7 @@ protected:
 	};
 	int		player; //1, 2
 	Image*	profile;
-	FPOINT	pos;
+	//FPOINT	pos;
 	bool	screenWay; //화면에서 보고있는 방향
 	int		moveWay; //이동방향
 	float	characterSpeed;

@@ -93,4 +93,5 @@ private:
 private:
 	list<Collider*>	CollisionList[OBJ_END];
 	list<Line*> LineList;
+	float FixedTimeStep = 0.1f;
 };
