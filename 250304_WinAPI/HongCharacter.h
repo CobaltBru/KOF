@@ -31,10 +31,8 @@ private:
 public:
 	//void Init();
 	void InitCollider();
-	void Release();
 	virtual void Update(float TimeDelta) override;
 	virtual void Render(HDC hdc) override;
-
 
 	void CheckMaxFrame();
 	//Hong Interface

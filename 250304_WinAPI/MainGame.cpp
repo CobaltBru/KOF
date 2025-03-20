@@ -101,6 +101,7 @@ void MainGame::Init()
 
 		Image Back2;
 		Back2.Init(L"Image/converted/akuma-ts-stance.bmp/AkumaWalk.bmp", 1243, 120, 11, 1, true, RGB(255, 0, 255));
+		
 		//idle, 뒷걷기, 앞걷기, 숙이기, 앞대쉬, 백대쉬 순으로 넣어주세요
 		tempImage2.push_back(Idle2);
 		tempImage2.push_back(BackWalk2);

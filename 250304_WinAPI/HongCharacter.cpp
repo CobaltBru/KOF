@@ -49,11 +49,6 @@ void HongCharacter::InitCollider()
 	//Load();
 }
 
-void HongCharacter::Release()
-{
-	collider = nullptr;
-}
-
 void HongCharacter::Update(float TimeDelta)
 {
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
