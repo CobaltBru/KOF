@@ -8,6 +8,7 @@
 #include "HongCharacter.h"
 #include "CollisionManager.h"
 #include "Ryo.h"
+#include "Mai.h"
 /*
 	실습1. 이오리 집에 보내기
 	실습2. 배경 바꾸기 (킹오파 애니메이션 배경)
@@ -30,6 +31,9 @@ void MainGame::Init()
 		MessageBox(g_hWnd,
 			TEXT("Image/backGround.bmp 생성 실패"), TEXT("경고"), MB_OK);
 	}
+
+	UI = new UserInterface();
+	UI->Init();
 
 	timerManager = TimerManager::GetInstance();
 	if (objectManager = ObjectManager::GetInstance())
@@ -144,11 +148,46 @@ void MainGame::Init()
 		tempHong->Init(2, new Image(), { 550,250 }, 200.f, 100.f, tempImage2);
 		tempHong->InitCollider();
 		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempHong);
+
+
+		// 차승근 테스트
+		// Image* ryoProfile = new Image();
+		//ryoProfile->Init(TEXT("Image/UI/yuri.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255));
+
+		Mai* tempMai = new Mai();
+		/*vector<Image> maiImage;
+		Image maiIdle;
+		Idle.Init(L"Image/Mai/Mai_Endle.bmp", 3000, 300, 12, 1, true, RGB(255, 0, 255));
+
+		Image maiWalk;
+		maiWalk.Init(L"Image/Mai/Mai_Smove_Front.bmp", 1901, 300, 6, 1, true, RGB(255, 0, 255));
+
+		Image maiBackWalk;
+		maiBackWalk.Init(L"Image/Mai/Mai_Smove_Back.bmp", 1677, 300, 6, 1, true, RGB(255, 0, 255));
+
+		Image maiDown;
+		maiDown.Init(L"Image/Mai/Mai_Sit.bmp", 1016, 300, 4, 1, true, RGB(255, 0, 255));
+
+		Image maiDash;
+		maiDash.Init(L"Image/Mai/Mai_Run.bmp", 2265, 300, 6, 1, true, RGB(255, 0, 255));
+
+		Image maiBack;
+		maiBack.Init(L"Image/Mai/Mai_Smove_Back.bmp", 1677, 300, 6, 1, true, RGB(255, 0, 255));
+		maiImage.push_back(maiIdle);
+		maiImage.push_back(maiBackWalk);
+		maiImage.push_back(maiWalk);
+		maiImage.push_back(maiDown);
+		maiImage.push_back(maiDash);
+		maiImage.push_back(maiBack);
+		*/
+		Image* maiProfile = new Image();
+		maiProfile->Init(TEXT("Image/UI/yuri.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255));
+		tempMai->Init(1, maiProfile, { 250,250 }, 200.f, 100.f, tempImage);
+		//objectManager->AddObject(OBJID::OBJ_CHARACTER, tempMai);
+
+		UI->SetPlayer(tempMai, tempMai);
 	}
 
-	UI = new UserInterface();
-	UI->Init();
-	// UI->SetPlayer(a, b);
 
 	if (collisionManager = CollisionManager::GetInstance())
 	{
@@ -206,7 +245,8 @@ void MainGame::Update()
 	if (objectManager)
 		objectManager->Update(TimeDelta);
 
-	UI->Update();
+	if(UI)
+		UI->Update();
 
 	if (collisionManager)
 		collisionManager->Update(TimeDelta);

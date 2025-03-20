@@ -7,8 +7,6 @@ void UserInterface::Init()
     hpCalculate = 214*1.4 /100.0f;
     p1Health = 100;
     p2Health = 100;
-    characterP1 = nullptr;
-    characterP2 = nullptr;
     for (int i = 0; i < eBattle::eBattleEnd; i++)
     {
         battleImage[i] = new Image();
@@ -38,44 +36,40 @@ void UserInterface::Init()
     {
         MessageBox(g_hWnd, TEXT("Image/king.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
     }
-    // p1프로필
-    // battleImage[eBattle::P1Character] = characterP1->getProfile();
-    if (FAILED(battleImage[eBattle::P1Character]->Init(TEXT("Image/UI/king.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255))))
-    {
-        MessageBox(g_hWnd, TEXT("Image/king.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
-    }
+    //// p1프로필
+    //if (FAILED(battleImage[eBattle::P1Character]->Init(TEXT("Image/UI/king.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255))))
+    //{
+    //    MessageBox(g_hWnd, TEXT("Image/king.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
+    //}
 
-    // p2프로필
-    // battleImage[eBattle::P2Character] = characterP2->getProfile();
-    if (FAILED(battleImage[eBattle::P2Character]->Init(TEXT("Image/UI/king_reverse.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255))))
-    {
-        MessageBox(g_hWnd, TEXT("Image/king_reverse.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
-    }
+    //// p2프로필
+    //if (FAILED(battleImage[eBattle::P2Character]->Init(TEXT("Image/UI/king_reverse.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255))))
+    //{
+    //    MessageBox(g_hWnd, TEXT("Image/king_reverse.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
+    //}
 }
 
 void UserInterface::Release()
 {
 	for (int i = 0; i < eBattle::eBattleEnd; i++)
 	{
+        if (i == eBattle::P1Character || i == eBattle::P2Character)
+            continue;
 		if (battleImage[i])
 		{
-			battleImage[i]->Release();
-			delete battleImage[i];
+            battleImage[i]->Release();
+            delete battleImage[i];
             battleImage[i] = nullptr;
 		}
 	}
 
     if (characterP1)
     {
-        characterP1->Release();
-        delete characterP1;
         characterP1 = nullptr;
     }
 
     if (characterP2)
     {
-        characterP2->Release();
-        delete characterP2;
         characterP2 = nullptr;
     }
 }
@@ -83,8 +77,12 @@ void UserInterface::Release()
 void UserInterface::Update()
 {
     // 캐릭터 HP 동기화
-    // p1Health = *(characterP1->getCurrentHp());
-    // p2Health = *(characterP2->getCurrentHp());
+    p1Health = *(characterP1->getCurrentHp());
+    p2Health = *(characterP2->getCurrentHp());
+
+    *battleImage[eBattle::P1Character] = characterP1->getProfile();
+    *battleImage[eBattle::P2Character] = characterP1->getProfile();
+
 }
 
 void UserInterface::Render(HDC hdc)
