@@ -83,30 +83,31 @@ void MainGame::Init()
 
 		HongCharacter* tempHong = new HongCharacter();
 		vector<Image> tempImage2;
+
 		Image Idle2;
-		Idle.Init(L"Image/Ryo/Ryo_Idle.bmp", 840, 109, 7, 1, true, RGB(255, 0, 255));
+		Idle2.Init(L"Image/converted/akuma-ts-stance.bmp/gouki.bmp", 780, 120, 10, 1, true, RGB(255, 0, 255));
 
 		Image Walk2;
-		Walk.Init(L"Image/Ryo/Ryo_Walk1.bmp", 720, 109, 6, 1, true, RGB(255, 0, 255));
+		Walk2.Init(L"Image/converted/akuma-ts-stance.bmp/AkumaWalk.bmp", 1243, 120, 11, 1, true, RGB(255, 0, 255));
 
 		Image BackWalk2;
-		BackWalk.Init(L"Image/Ryo/Ryo_BackWalk.bmp", 720, 109, 6, 1, true, RGB(255, 0, 255));
+		BackWalk2.Init(L"Image/converted/akuma-ts-stance.bmp/AkumaWalkB.bmp", 1243, 120, 11, 1, true, RGB(255, 0, 255));
 
 		Image Down2;
-		Down.Init(L"Image/Ryo/Ryo_DownUp.bmp", 600, 109, 5, 1, true, RGB(255, 0, 255));
+		Down2.Init(L"Image/converted/akuma-ts-stance.bmp/AkumaWalk.bmp", 1243, 120, 11, 1, true, RGB(255, 0, 255));
 
 		Image Dash2;
-		Dash.Init(L"Image/Ryo/Ryo_Walk1.bmp", 720, 109, 6, 1, true, RGB(255, 0, 255));
+		Dash2.Init(L"Image/converted/akuma-ts-stance.bmp/AkumaWalk.bmp", 1243, 120, 11, 1, true, RGB(255, 0, 255));
 
 		Image Back2;
-		Back.Init(L"Image/Ryo/Ryo_Walk1.bmp", 720, 109, 6, 1, true, RGB(255, 0, 255));
+		Back2.Init(L"Image/converted/akuma-ts-stance.bmp/AkumaWalk.bmp", 1243, 120, 11, 1, true, RGB(255, 0, 255));
 		//idle, 뒷걷기, 앞걷기, 숙이기, 앞대쉬, 백대쉬 순으로 넣어주세요
-		tempImage2.push_back(Idle);
-		tempImage2.push_back(BackWalk);
-		tempImage2.push_back(Walk);
-		tempImage2.push_back(Down);
-		tempImage2.push_back(Dash);
-		tempImage2.push_back(Back);
+		tempImage2.push_back(Idle2);
+		tempImage2.push_back(BackWalk2);
+		tempImage2.push_back(Walk2);
+		tempImage2.push_back(Down2);
+		tempImage2.push_back(Dash2);
+		tempImage2.push_back(Back2);
 
 		tempHong->Init(2, new Image(), { 550,250 }, 200.f, 100.f, tempImage2);
 		tempHong->InitCollider();

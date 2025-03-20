@@ -46,7 +46,7 @@ void HongCharacter::InitCollider()
 
 	collider->DebugRender(true);
 
-	Load();
+	//Load();
 }
 
 void HongCharacter::Release()
@@ -139,8 +139,8 @@ void HongCharacter::Update(float TimeDelta)
 	}
 	else
 	{
-		timecnt += TimeDelta;
-		framecnt = timecnt / (TimeDelta * FRAMESPEED); //현재 프레임 계산
+		timecnt += TimeDelta * FRAMESPEED;//TimeDelta * FRAMESPEED;
+		framecnt = timecnt;// / (TimeDelta * FRAMESPEED); //현재 프레임 계산
 	}
 
 	CheckMaxFrame();
@@ -158,10 +158,12 @@ void HongCharacter::Render(HDC hdc)
 	{
 		if (screenWay)
 		{
-			images[getIndex()].Render(hdc, pos.x - 90, pos.y - 55, framecnt, screenWay);
+			//images[getIndex()].Render(hdc, pos.x - 90, pos.y - 55, framecnt, screenWay);
+			images[getIndex()].Render(hdc, pos.x - 40, pos.y - 60, framecnt, screenWay);
 		}
 		else
 		{
+			//images[getIndex()].Render(hdc, pos.x - 35, pos.y - 55, framecnt, screenWay);
 			images[getIndex()].Render(hdc, pos.x - 35, pos.y - 55, framecnt, screenWay);
 		}
 	}
@@ -190,7 +192,7 @@ void HongCharacter::Load()
 	HANDLE hFind = INVALID_HANDLE_VALUE;
 
 	// 폴더 내 모든 파일을 찾기 위한 패턴 설정 (여기서는 *.bmp 파일을 찾음)
-	wstring folderPath = L"Image/converted/";
+	wstring folderPath = L"Image/converted/akuma-ts-stance.bmp/";
 	wstring searchPattern = folderPath + L"*.bmp";
 
 	// 첫 번째 파일을 찾기
@@ -210,7 +212,7 @@ void HongCharacter::Load()
 		// 찾은 파일 경로 생성
 		std::wstring filePath = folderPath + findFileData.cFileName;
 
-		Animation* animation = new Animation;
+		/*Animation* animation = new Animation;
 
 		Image* image = new Image;
 
@@ -220,7 +222,7 @@ void HongCharacter::Load()
 		}
 
 		animation->Images.push_back(image);
-		Animations.push_back(animation);
+		Animations.push_back(animation);*/
 	} while (FindNextFile(hFind, &findFileData) != 0);  // 다음 파일 찾기
 
 	FindClose(hFind);  // 핸들 닫기

@@ -28,7 +28,6 @@ private:
 
 	vector<Animation*> Animations;
 
-	vector<int> pixels;
 public:
 	//void Init();
 	void InitCollider();
@@ -43,7 +42,6 @@ public:
 	~HongCharacter();
 
 private:
-	void SetPixel(int pixel) { pixels.push_back(pixel); }
 	void Load();
 };
 
