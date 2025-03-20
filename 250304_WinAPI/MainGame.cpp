@@ -171,7 +171,7 @@ void MainGame::Init()
 		}
 		
 		// 차승근 테스트
-		Mai* tempMai = new Mai();
+		/*Mai* tempMai = new Mai();
 		vector<Image> maiImage;
 		{
 			Image* maiProfile = new Image();
@@ -224,8 +224,8 @@ void MainGame::Init()
 			tempMai->InitCollider();
 
 			objectManager->AddObject(OBJID::OBJ_CHARACTER, tempMai);
-		}
-		UI->SetPlayer(tempRyo, tempMai);
+		}*/
+		UI->SetPlayer(tempRyo, tempHong);
 	}
 
 
