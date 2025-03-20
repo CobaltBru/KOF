@@ -15,12 +15,32 @@ struct HitResult
 struct Line
 {
 	Line(FPOINT st, FPOINT ed)
-		: start(st), end(ed)
+		: start(st), end(ed), bDebugDraw(false), CurrentTime(0.f), DebugDuration(0.f), DebugColor(RGB(0, 255, 0))
 	{
 
 	}
+
+	void Render(HDC hdc)
+	{
+		MoveToEx(hdc, start.x, start.y, NULL);
+		LineTo(hdc, end.x, end.y);
+	}
+	void Update(float TimeDelta)
+	{
+		CurrentTime += TimeDelta;
+		if (CurrentTime >= DebugDuration)
+		{
+			CurrentTime = 0.f;
+			bDebugDraw = false;
+		}
+	}
 	FPOINT start;
 	FPOINT end;
+
+	float CurrentTime;
+	float DebugDuration;
+	bool bDebugDraw;
+	COLORREF DebugColor;
 };
 
 class CollisionManager : public Singleton<CollisionManager>
@@ -34,9 +54,22 @@ public:
 	void Release();
 
 	//eObjID그룹으로 레이를 쏜다!
-	bool LineTraceByObject(HitResult& hitResult, OBJID eObjID, FPOINT start, FPOINT end, GameObject* Owner, bool bIgnoreSelf = true);
+	bool LineTraceByObject(
+		HitResult& hitResult, 
+		OBJID eObjID, 
+		FPOINT start, 
+		FPOINT end, 
+		GameObject* Owner, 
+		bool bIgnoreSelf = true,
+		bool bDebugDraw = true,
+		float DebugDuration = 3.f,
+		COLORREF DebugColor = RGB(0, 255, 0));
 
 private:
+	void UpdatePivot(float TimeDelta);
+
+	void DebugLineUpdate(float TimeDelta);
+	void DebugLineRender(HDC hdc);
 	// CCW 알고리즘을 사용하여 세 점의 방향을 계산
 	float CCW(const FPOINT& p, const FPOINT& q, const FPOINT& r) {
 		return (q.x - p.x) * (r.y - p.y) - (q.y - p.y) * (r.x - p.x);

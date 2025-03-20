@@ -64,6 +64,43 @@ HRESULT Image::Init(const wchar_t* filePath, int width, int height,
     return S_OK;   // S_OK, E_FAIL
 }
 
+HRESULT Image::Init(const wchar_t* filePath, bool isTransparent, COLORREF transColor)
+{
+    HDC hdc = GetDC(g_hWnd);
+
+    imageInfo = new IMAGE_INFO();
+    imageInfo->resID = 0;
+    imageInfo->hMemDC = CreateCompatibleDC(hdc);
+    imageInfo->hBitmap = (HBITMAP)LoadImage(
+        g_hInstance, filePath, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+    imageInfo->hOldBit = (HBITMAP)SelectObject(imageInfo->hMemDC, imageInfo->hBitmap);
+
+    imageInfo->hTempDC = CreateCompatibleDC(hdc);
+    imageInfo->hTempBit = (HBITMAP)LoadImage(
+        g_hInstance, filePath, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+    imageInfo->hOldTemp = (HBITMAP)SelectObject(imageInfo->hTempDC, imageInfo->hTempBit);
+
+    BITMAP bitmap;
+    GetObject(imageInfo->hBitmap, sizeof(BITMAP), &bitmap);
+
+    imageInfo->width = bitmap.bmWidth;
+    imageInfo->height = bitmap.bmHeight;
+    imageInfo->loadType = IMAGE_LOAD_TYPE::File;
+
+    ReleaseDC(g_hWnd, hdc);
+
+    if (imageInfo->hBitmap == NULL)
+    {
+        Release();
+        return E_FAIL;
+    }
+
+    this->isTransparent = isTransparent;
+    this->transColor = transColor;
+
+    return S_OK;   // S_OK, E_FAIL
+}
+
 HRESULT Image::Init(const wchar_t* filePath, int width, int height, int maxFrameX, int maxFrameY, bool isTransparent, COLORREF transColor)
 {
     HDC hdc = GetDC(g_hWnd);

@@ -163,9 +163,10 @@ void MainGame::Render()
 	if (objectManager)
 		objectManager->Render(hBackBufferDC);
 	
+#ifdef _DEBUG
 	if (collisionManager)
 		collisionManager->Render(hBackBufferDC);
-
+#endif
 }
 
 float MainGame::GetTimeDelta(const wchar_t* pTimerTag)

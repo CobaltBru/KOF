@@ -4,6 +4,20 @@
 
 class Image;
 class Collider;
+
+struct Animation
+{
+	float PlayTime;
+	int MaxFrame;
+
+	void PlayAnimation(float TimeDelta);
+
+
+	void Render(HDC hdc);
+	
+	vector<Image*> Images;
+};
+
 class HongCharacter : public GameObject
 {
 private:
@@ -22,6 +36,8 @@ private:
 	bool bAttack = false;
 
 	Collider* collider;
+
+	vector<Animation*> Animations;
 public:
 	void Init();
 	void Release();
@@ -36,8 +52,10 @@ public:
 	void Attack();
 
 	//Hong Interface
-	void SetPos(FPOINT pos) { this->pos = pos; }
 	HongCharacter();
 	~HongCharacter();
+
+private:
+	void Load();
 };
 

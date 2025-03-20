@@ -19,9 +19,9 @@ GameObject* Collider::GetOwner()
 void Collider::DebugRender(bool bDuration, float Duration)
 {
 	this->DebugDuration = Duration;
-	this->bDuration = bDuration;
+	this->bDuration = bDebugDraw;
 	CurrentTime = 0.f;
-	bDebugDraw = true;
+	this->bDebugDraw = true;
 }
 
 void Collider::DebugRender(bool bDraw)
@@ -37,17 +37,8 @@ bool Collider::Update(float TimeDelta)
 	WorldPos.x = Owner->GetPos().x + Pos.x;
 	WorldPos.y = Owner->GetPos().y + Pos.y;
 
-	if (!bDuration)
-		return false;
-	
-	CurrentTime += TimeDelta;
-	if (CurrentTime >= DebugDuration)
-	{
-		CurrentTime = 0.f;
-		bDebugDraw = false;
-		bDuration = false;
-	}
-	return true;
+	bool bDraw = DebugUpdate(TimeDelta);
+	return bDraw;
 }
 
 void Collider::Render(HDC hdc)
@@ -90,4 +81,21 @@ void Collider::DrawRectLine(HDC hdc, FPOINT HalfSize)
 	LineTo(hdc, WorldPos.x + HalfSize.x, WorldPos.y + HalfSize.y);
 	LineTo(hdc, WorldPos.x - HalfSize.x, WorldPos.y + HalfSize.y);
 	LineTo(hdc, WorldPos.x - HalfSize.x, WorldPos.y - HalfSize.y);
+}
+
+bool Collider::DebugUpdate(float TimeDelta)
+{
+	if (!bDebugDraw)
+		return false;
+
+	if (bDuration)
+	{
+		CurrentTime += TimeDelta;
+		if (CurrentTime >= DebugDuration)
+		{
+			CurrentTime = 0.f;
+			bDebugDraw = false;
+		}
+	}
+	return true;
 }

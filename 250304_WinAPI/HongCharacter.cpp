@@ -9,11 +9,11 @@ void HongCharacter::Init()
 	pos = { 0.0f, 0.0f };
 	moveSpeed = 5.0f;
 	image = new Image();
-	if (FAILED(image->Init(TEXT("Image/iori_walk.bmp"), 612, 104, 9, 1,
+	/*if (FAILED(image->Init(TEXT("Image/iori_walk.bmp"), 612, 104, 9, 1,
 		true, RGB(255, 0, 255))))
 	{
 		MessageBox(g_hWnd, TEXT("Image/iori_walk.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
-	}
+	}*/
 
 	elapsedFrame = 0;
 	currAnimaionFrame = 0;
@@ -33,6 +33,8 @@ void HongCharacter::Init()
 	manager->AddObject(OBJID::OBJ_CHARACTER, collider);	
 
 	collider->DebugRender(true);
+
+	Load();
 }
 
 void HongCharacter::Release()
@@ -67,6 +69,7 @@ void HongCharacter::Update(float TimeDelta)
 			currAnimaionFrame = 0;
 		}
 		elapsedFrame = 0;
+
 		HitResult hit;
 		if (CollisionManager::GetInstance()->LineTraceByObject(hit, OBJ_CHARACTER, pos, { pos.x + 100.f, pos.y }, this, true))
 		{
@@ -76,9 +79,6 @@ void HongCharacter::Update(float TimeDelta)
 			//dynamic_cast<asdf>(hit.Actors[0]);
 		}
 	}
-
-
-
 }
 
 void HongCharacter::Render(HDC hdc)
@@ -90,7 +90,11 @@ void HongCharacter::Render(HDC hdc)
 	else
 	{
 		if (image)
-			image->Render(hdc, pos.x - 34, pos.y - 52, currAnimaionFrame);
+		{
+			/*image->Render(hdc, pos.x - 34, pos.y - 52, currAnimaionFrame);*/
+			image->Render(hdc, pos.x - 34, pos.y - 52);
+			//Animations[0]->Render(hdc);
+		}
 
 		
 	}
@@ -175,4 +179,55 @@ HongCharacter::HongCharacter()
 
 HongCharacter::~HongCharacter()
 {
+}
+
+void HongCharacter::Load()
+{
+	WIN32_FIND_DATA findFileData;
+	HANDLE hFind = INVALID_HANDLE_VALUE;
+
+	// 폴더 내 모든 파일을 찾기 위한 패턴 설정 (여기서는 *.bmp 파일을 찾음)
+	wstring folderPath = L"Image/converted/";
+	wstring searchPattern = folderPath + L"*.bmp";
+
+	// 첫 번째 파일을 찾기
+	hFind = FindFirstFile(searchPattern.c_str(), &findFileData);
+
+	if (hFind == INVALID_HANDLE_VALUE) {
+		std::wcerr << L"폴더를 찾을 수 없습니다: " << folderPath << std::endl;
+		return;
+	}
+
+	do {
+		// 숨김 파일은 무시
+		if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+			continue;
+		}
+
+		// 찾은 파일 경로 생성
+		std::wstring filePath = folderPath + findFileData.cFileName;
+
+		if (FAILED(image->Init(filePath.c_str())))
+		{
+			MessageBox(g_hWnd, filePath.c_str(), TEXT("경고"), MB_OK);
+		}
+
+	} while (FindNextFile(hFind, &findFileData) != 0);  // 다음 파일 찾기
+
+	FindClose(hFind);  // 핸들 닫기
+}
+
+void Animation::PlayAnimation(float TimeDelta)
+{
+	PlayTime += TimeDelta;
+
+	if (PlayTime >= (float)MaxFrame)
+	{
+		PlayTime = (float)MaxFrame;
+	}
+}
+
+void Animation::Render(HDC hdc)
+{
+	Images[(int)PlayTime]->Render(hdc, 0, 0);
 }
