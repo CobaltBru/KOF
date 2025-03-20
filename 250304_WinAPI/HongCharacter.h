@@ -52,7 +52,6 @@ public:
 	void Attack();
 
 	//Hong Interface
-	void SetPos(FPOINT pos) { this->pos = pos; }
 	HongCharacter();
 	~HongCharacter();
 
