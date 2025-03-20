@@ -59,6 +59,8 @@ void UserInterface::Release()
     {
         characterP2 = nullptr;
     }
+
+    ReleaseInstance();
 }
 
 void UserInterface::Update()
