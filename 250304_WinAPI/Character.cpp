@@ -1,7 +1,7 @@
 #include "Character.h"
 #include "Image.h"
 #include "KOFKeyManager.h"
-
+#include <math.h>
 
 Character::Character()
 {
@@ -18,6 +18,7 @@ Character::Character()
 	//images
 	currentCommand = "";
 
+	memset(oldKeys, false, sizeof(oldKeys));
 	memset(basicKeys, false, sizeof(basicKeys));
 
 	//skillSet
@@ -36,6 +37,7 @@ Character::Character()
 
 Character::~Character()
 {
+	
 }
 
 void Character::setPlayer(int p)//1, 2
@@ -43,10 +45,25 @@ void Character::setPlayer(int p)//1, 2
 	this->player = p;
 	screenWay = player == 1 ? false : true;
 }
+bool Character::isJustPressed(int key)
+{
+	return (!oldKeys[key] && basicKeys[key]);
+}
+bool Character::isJustReleased(int key)
+{
+	return (oldKeys[key] && !basicKeys[key]);
+}
+bool Character::isKeepPressed(int key)
+{
+	return (oldKeys[key] && basicKeys[key]);
+}
+bool Character::isKeepReleased(int key)
+{
+	return (!oldKeys[key] && !basicKeys[key]);
+}
 void Character::setIdle()
 {
 	timecnt = 0;
-	framecnt = 0;
 	speed = 0;
 	guardState = 0;
 	currentState = STATE::IDLE;
@@ -86,7 +103,6 @@ void Character::checkDash(string key)
 		dashTimer = 0.0f;
 		dashTime = 0.0f;
 		dashKey = "n";
-		setWalk();
 	}
 }
 void Character::setDash()
@@ -126,7 +142,6 @@ void Character::setBackDash()
 void Character::setDown()
 {
 	speed = 0.0f;
-	guardState = 0;
 	currentState = STATE::DOWN;
 }
 void Character::Init(int player, Image* profile, FPOINT pos, float characterSpeed,
@@ -181,8 +196,7 @@ void Character::pushCommon(Image* image, int maxFrame)
 }
 
 void Character::pushSkill(string command, Image* image, int maxFrame,
-			int damage, int reach, bool isUpperAttack, bool isLowerAttack,
-			float startTime, float endTime, int way, int speed)
+			int damage, int reach, bool isUpperAttack, bool isLowerAttack, int attackFrame)
 {
 	SKILL skill;
 	skill.command = command;
@@ -192,35 +206,24 @@ void Character::pushSkill(string command, Image* image, int maxFrame,
 	skill.reach = reach;
 	skill.isUpperAttack = isUpperAttack;
 	skill.isLowerAttack = isLowerAttack;
-	skill.startTime = startTime;
-	skill.endTime = endTime;
-	skill.way = way;
-	skill.speed = speed;
-	
+	skill.attackFrame = attackFrame;
 	skillSet.push_back(skill);
 }
 //조작 커맨드 asd
 void Character::Update(float deltaTime)
 {
-
-	if (currentState != STATE::PROCESS)
+	
+	if ((currentState != STATE::PROCESS) && (currentState != STATE::BACKDASH))
 	{
 		currentCommand = KOFKeyManager::GetInstance()->GetPlayerCommand(player);
 		basicKeys[EKeyType::KEY_W] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_W);
 		basicKeys[EKeyType::KEY_A] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_A);
 		basicKeys[EKeyType::KEY_S] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_S);
 		basicKeys[EKeyType::KEY_D] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_D);
-		
-		if (currentState == STATE::DOWN && basicKeys[EKeyType::KEY_S] ||
-			currentState == STATE::BACK && basicKeys[EKeyType::KEY_A] ||
-			currentState == STATE::WALK && basicKeys[EKeyType::KEY_D])
-		{
-			currentState == STATE::IDLE;
-		}
+
 		dashTimer += deltaTime;
-		if (basicKeys[EKeyType::KEY_A])
+		if (isJustPressed(EKeyType::KEY_A)) //방금 눌렸는가?
 		{
-			if (dashKey == "a1_1") dashKey = "a2";
 			if (screenWay == false) //뒷걸음질
 			{
 				if (currentState == STATE::DOWN)//숙이고 있었으면 하단방어
@@ -230,35 +233,19 @@ void Character::Update(float deltaTime)
 				else
 				{
 					setBack();
-					checkBackDash("a2");
+					checkBackDash("a");
 				}
-				
+
 			}
 			else //앞으로 
 			{
 				setWalk();
-				checkDash("a2");
-			}
-			dashKey = "a1";
-		}
-		else
-		{
-			if (dashKey == "a1")
-			{
-				startDashTimer();
-				dashKey = "a1_1";
+				checkDash("a");
 			}
 		}
-
-		if (basicKeys[EKeyType::KEY_D])
+		if (isKeepPressed(EKeyType::KEY_A)) //계속 누르고 있는가
 		{
-			if (dashKey == "d1_1") dashKey = "d2";
-			if (screenWay == false) //앞으로
-			{
-				setWalk();
-				checkDash("d2");
-			}
-			else //뒷걸음질
+			if (screenWay == false) //뒷걸음질
 			{
 				if (currentState == STATE::DOWN)//숙이고 있었으면 하단방어
 				{
@@ -267,64 +254,159 @@ void Character::Update(float deltaTime)
 				else
 				{
 					setBack();
-					checkBackDash("d2");
+				}
+
+			}
+			else //앞으로 
+			{
+				if (currentState == STATE::DASH) {}
+				else setWalk();
+				checkDash("a");
+			}
+		}
+		
+		if (isJustReleased(EKeyType::KEY_A)) //방금 뗐나?
+		{
+			if (currentState == STATE::DOWN)
+			{
+				guardState = 0;
+			}
+			else
+			{
+				setIdle(); //걷기 종료
+			}
+			startDashTimer();
+			dashKey = "a";
+		}
+		if (isJustPressed(EKeyType::KEY_D)) //방금 눌렸는가?
+		{
+			if (screenWay == false) //앞으로
+			{
+					
+				setWalk();
+				checkDash("d");
+			}
+			else //뒷걸음질 
+			{
+				if (currentState == STATE::DOWN)//숙이고 있었으면 하단방어
+				{
+					guardState = 2;
+				}
+				else
+				{
+					setBack();
+					checkBackDash("d");
 				}
 			}
-			dashKey = "d1";
 		}
-		else
+		if (isKeepPressed(EKeyType::KEY_D))
 		{
-			if (dashKey == "d1")
+			if (screenWay == false) //앞으로
 			{
-				startDashTimer();
-				dashKey = "d1_1";
+
+				if (currentState == STATE::DASH) {}
+				else setWalk();
+			}
+			else //뒷걸음질 
+			{
+				if (currentState == STATE::DOWN)//숙이고 있었으면 하단방어
+				{
+					guardState = 2;
+				}
+				else
+				{
+					setBack();
+				}
 			}
 		}
-		if (basicKeys[EKeyType::KEY_S]) //숙이기
+		
+		if (isJustReleased(EKeyType::KEY_D)) //방금 뗐나?
+		{
+			if (currentState == STATE::DOWN)
+			{
+				guardState = 0;
+			}
+			else
+			{
+				setIdle(); //걷기 종료
+			}
+			startDashTimer();
+			dashKey = "d";
+		}
+
+		
+		if (isJustPressed(EKeyType::KEY_S)) //숙이기
+		{
+			setDown();
+			guardState = 0;
+		}
+		if (isKeepPressed(EKeyType::KEY_S)) //숙이기
 		{
 			setDown();
 		}
-
-		if (!basicKeys[EKeyType::KEY_W] && !basicKeys[EKeyType::KEY_A] &&
-			!basicKeys[EKeyType::KEY_S] && !basicKeys[EKeyType::KEY_D])
+		if (isJustReleased(EKeyType::KEY_S))
 		{
 			setIdle();
+			guardState = 0;
 		}
 
+
+		for (int i = 0; i < 4; i++)oldKeys[i] = basicKeys[i];
+
 	}
-	useSkill(currentCommand);
-	//동작중
-	if (currentState != STATE::IDLE)
+
+
+	useSkill(currentCommand); // 스킬 커맨드 판독
+
+	timecnt += deltaTime;
+	if (timecnt >= FRAMESPEED)
 	{
-		timecnt += deltaTime;
-		framecnt = timecnt / (deltaTime / FRAMESPEED); //현재 프레임 계산
-		if (currentState == STATE::PROCESS) //기술중
+		/*framecnt += (timecnt / FRAMESPEED);
+		timecnt = fmodf(timecnt, FRAMESPEED);*/
+		framecnt++;
+		timecnt = 0;
+	}
+
+
+	if (currentState == STATE::PROCESS) //기술중
+	{
+		if (currentSkill != -1)
 		{
-			if (framecnt >= skillSet[currentSkill].maxFrame)//끝나면 IDLE로
+			if (framecnt == skillSet[currentSkill].attackFrame)
 			{
-				endSkill();
+				//attack();
 			}
 		}
-		else if (currentState == STATE::BACKDASH) //백대쉬는 끝나면 BACK으로
+		if (framecnt >= skillSet[currentSkill].maxFrame)//끝나면 IDLE로
 		{
-			if (framecnt >= images[getIndex()].GetMaxFrame())
-			{
-				framecnt = 0;
-				timecnt = 0;
-				setIdle();
-			}
+			framecnt = 0;
+			endSkill();
 		}
-		else //일반동작
+	}
+	else if (currentState == STATE::BACKDASH) //백대쉬는 끝나면 BACK으로
+	{
+		if (framecnt >= images[getIndex()].GetMaxFrame())
 		{
-			if (framecnt >= images[getIndex()].GetMaxFrame())//루프처리
-			{
-				framecnt = 0;
-				timecnt = 0;
-			}
+			//int tmp = images[getIndex()].GetMaxFrame();
+			framecnt = 0;
+			timecnt = 0;
+			setBack();
+		}
+	}
+	else //일반동작
+	{
+		if (framecnt >= images[getIndex()].GetMaxFrame())//루프처리
+		{
+			STATE tmp = currentState;
+			framecnt = 0;
+			timecnt = 0;
 		}
 	}
 	
-	
+	if (currentState == STATE::IDLE)
+	{
+		currentState;
+	}
 	
 	Move(deltaTime);
 	
@@ -345,8 +427,9 @@ void Character::Render(HDC hdc)
 
 void Character::Move(float deltaTime)
 {
-	if (currentState == STATE::PROCESS)
+	/*if (currentState == STATE::PROCESS)
 	{
+		int tmp = framecnt;
 		int maxFrame = skillSet[currentSkill].maxFrame;
 		if (skillSet[currentSkill].startTime >= ((float)framecnt / (float)maxFrame))
 		{
@@ -356,7 +439,7 @@ void Character::Move(float deltaTime)
 		{
 			speed = 0;
 		}
-	}
+	}*/
 	pos.x += ((screenWay ? -1 : 1) * moveWay) * speed * characterSpeed * deltaTime;
 }
 
@@ -374,20 +457,23 @@ void Character::useSkill(string str)
 {
 	if (str == "")
 	{
-		setIdle();
 		return;
 	}
+	KOFKeyManager::GetInstance()->GetPlayerCommand(player);
 	for (int i = 0;i<skillSet.size();i++)
 	{
 		if (str.find(skillSet[i].command) != string::npos)
 		{
+			setIdle();
 			currentSkill = i;
 			currentState = STATE::PROCESS;
 
 			SKILL& skill = skillSet[currentSkill];
 			this->damage = skill.damage;
-			this->moveWay = skill.way;
-			if(skill.startTime <= 0.0f) this->speed = skill.speed;
+			//if(skill.startTime <= 0.0f) this->speed = skill.speed;
+			framecnt = 0;
+			KOFKeyManager::GetInstance()->ClearPlayerBuffer(player);
+			currentCommand = "";
 			return;
 		}
 	}
@@ -396,9 +482,8 @@ void Character::useSkill(string str)
 
 void Character::endSkill()
 {
-	currentState = STATE::IDLE;
-	this->damage = 0;
-	this->speed = 0;
+	currentSkill = -1;
+	setIdle();
 }
 
 
@@ -435,6 +520,8 @@ int Character::getIndex()
 	return idx;
 }
 
+
+
 float* Character::getCurrentHp()
 {
 	return &currentHp;
@@ -459,4 +546,59 @@ Character::STATE Character::getState()
 {
 	return currentState;
 }
+
+void Character::attack(Character* other)
+{
+	SKILL& skill = skillSet[currentSkill];
+	int d = damage;
+	//if (skill.reach > (player == 1 ? 1 : -1) * (other->GetPos().x - pos.x))
+	//{
+	//	if (skill.isLowerAttack) //하단 공격일때
+	//	{
+	//		if (other->getGuardState() == 2) //하단 방어일때
+	//		{
+	//			d *= 0.1f;
+	//		}
+	//	}
+	//	else if (skill.isUpperAttack) //상단 공격일때
+	//	{
+	//		if (other->getState() == STATE::DOWN) //상대가 숙였을때
+	//		{
+	//			d = 0;
+	//		}
+	//		else if (other->getGuardState() == 1) //상단 방어일때
+	//		{
+	//			d *= 0.1f;
+	//		}
+	//	}
+	//	other->getDamage(d);
+	//}
+
+	if (skill.isLowerAttack) //하단 공격일때
+	{
+		if (other->getGuardState() == 2) //하단 방어일때
+		{
+			d *= 0.1f;
+		}
+	}
+	else if (skill.isUpperAttack) //상단 공격일때
+	{
+		if (other->getState() == STATE::DOWN) //상대가 숙였을때
+		{
+			d = 0;
+		}
+		else if (other->getGuardState() == 1) //상단 방어일때
+		{
+			d *= 0.1f;
+		}
+	}
+	other->getDamage(d);
+}
+
+void Character::getDamage(float damage)
+{
+	currentHp -= damage;
+	//
+}
+
 

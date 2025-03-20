@@ -109,15 +109,16 @@ void HongCharacter::Update(float TimeDelta)
 
 		// TODO 공격판정해야하는 프레임이라면
 
-		if (false /* skillSet[currentSkill] */)
+		if (framecnt == skillSet[currentSkill].attackFrame)
 		{
 			HitResult hit;
 			if (CollisionManager::GetInstance()->LineTraceByObject(hit, OBJ_CHARACTER, pos, { pos.x - 100.f, pos.y }, this, true))
 			{
-				if (Character* character = dynamic_cast<Character*>(hit.Actors[0]))
+				if (Character* OtherCharacter = dynamic_cast<Character*>(hit.Actors[0]))
 				{
-					
-					skillSet[currentSkill].damage;
+					attack(OtherCharacter);
+
+					//skillSet[currentSkill].damage;
 				}
 			}
 		}
@@ -152,6 +153,7 @@ void HongCharacter::Update(float TimeDelta)
 	}
 
 	Move(TimeDelta);
+	//__super::Update(TimeDelta);
 }
 
 void HongCharacter::Render(HDC hdc)

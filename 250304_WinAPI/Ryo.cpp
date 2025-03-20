@@ -19,7 +19,7 @@ void Ryo::InitCollider()
 
 	manager->AddObject(OBJID::OBJ_CHARACTER, collider);
 
-	collider->DebugRender(false);
+	collider->DebugRender(true);
 }
 
 void Ryo::Update(float deltaTime)
@@ -182,8 +182,8 @@ void Ryo::useSkill(string str)
 			timecnt = 0;
 			SKILL& skill = skillSet[currentSkill];
 			this->damage = skill.damage;
-			this->moveWay = skill.way;
-			if (skill.startTime <= 0.0f) this->speed = skill.speed;
+			//this->moveWay = skill.way;
+			//if (skill.startTime <= 0.0f) this->speed = skill.speed;
 			KOFKeyManager::GetInstance()->ClearPlayerBuffer(player);
 			return;
 		}
