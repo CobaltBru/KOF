@@ -7,97 +7,50 @@ void UserInterface::Init()
     hpCalculate = 214*1.4 /100.0f;
     p1Health = 100;
     p2Health = 100;
+    characterP1 = nullptr;
+    characterP2 = nullptr;
     for (int i = 0; i < eBattle::eBattleEnd; i++)
     {
         battleImage[i] = new Image();
     }
     // 스테이지
-    if (FAILED(battleImage[eBattle::Stage]->Init(TEXT("Image/Japan_Stage.bmp"), WINSIZE_X, WINSIZE_Y, true, RGB(255, 0, 255))))
+    if (FAILED(battleImage[eBattle::Stage]->Init(TEXT("Image/UI/Japan_Stage.bmp"), WINSIZE_X, WINSIZE_Y, true, RGB(255, 0, 255))))
     {
         MessageBox(g_hWnd, TEXT("Image/Japan_Stage.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
     }
     // 체력바
-    if (FAILED(battleImage[eBattle::HP_bar]->Init(TEXT("Image/HP_bar.bmp"), 676*1.4, 79*1.4, true, RGB(255, 0, 255))))
+    if (FAILED(battleImage[eBattle::HP_bar]->Init(TEXT("Image/UI/HP_bar.bmp"), 676*1.4, 79*1.4, true, RGB(255, 0, 255))))
     {
         MessageBox(g_hWnd, TEXT("Image/p1.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
     }
     // p1체력
-    if (FAILED(battleImage[eBattle::HP_gage_p1]->Init(TEXT("Image/HP_gage.bmp"), 214*1.4, 9*1.4, true, RGB(255, 0, 255))))
+    if (FAILED(battleImage[eBattle::HP_gage_p1]->Init(TEXT("Image/UI/HP_gage.bmp"), 214*1.4, 9*1.4, true, RGB(255, 0, 255))))
     {
         MessageBox(g_hWnd, TEXT("Image/p1.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
     }
     // p2체력
-    if (FAILED(battleImage[eBattle::HP_gage_p2]->Init(TEXT("Image/HP_gage_2.bmp"), 214*1.4, 9*1.4, true, RGB(255, 0, 255))))
+    if (FAILED(battleImage[eBattle::HP_gage_p2]->Init(TEXT("Image/UI/HP_gage_2.bmp"), 214*1.4, 9*1.4, true, RGB(255, 0, 255))))
     {
         MessageBox(g_hWnd, TEXT("Image/p1.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
     }
     // 시간 무한
-    if (FAILED(battleImage[eBattle::Time_infinite]->Init(TEXT("Image/time_infinite.bmp"), 640, 480, true, RGB(255, 0, 255))))
+    if (FAILED(battleImage[eBattle::Time_infinite]->Init(TEXT("Image/UI/time_infinite.bmp"), 640, 480, true, RGB(255, 0, 255))))
     {
         MessageBox(g_hWnd, TEXT("Image/king.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
     }
     // p1프로필
-    if (FAILED(battleImage[eBattle::P1Character]->Init(TEXT("Image/king.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255))))
+    // battleImage[eBattle::P1Character] = characterP1->getProfile();
+    if (FAILED(battleImage[eBattle::P1Character]->Init(TEXT("Image/UI/king.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255))))
     {
         MessageBox(g_hWnd, TEXT("Image/king.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
     }
-    /*switch (characterP1->get캐릭터종류)
-    {
-    case "king":
-        if (FAILED(battleImage[eBattle::P1Character]->Init(TEXT("Image/king.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255))))
-        {
-            MessageBox(g_hWnd, TEXT("Image/king.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
-        }
-        break;
-    case "yuri":
-        if (FAILED(battleImage[eBattle::P1Character]->Init(TEXT("Image/yuri.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255))))
-        {
-            MessageBox(g_hWnd, TEXT("Image/yuri.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
-        }
-        break;
-    case "hwajai":
-        if (FAILED(battleImage[eBattle::P1Character]->Init(TEXT("Image/hwajai.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255))))
-        {
-            MessageBox(g_hWnd, TEXT("Image/hwajai.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
-        }
-        break;
-    default:
-        break;
-    }*/
 
     // p2프로필
-    if (FAILED(battleImage[eBattle::P2Character]->Init(TEXT("Image/king_reverse.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255))))
+    // battleImage[eBattle::P2Character] = characterP2->getProfile();
+    if (FAILED(battleImage[eBattle::P2Character]->Init(TEXT("Image/UI/king_reverse.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255))))
     {
         MessageBox(g_hWnd, TEXT("Image/king_reverse.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
     }
-    /*switch (characterP2->get캐릭터종류)
-    {
-    case "king":
-        if (FAILED(battleImage[eBattle::P2Character]->Init(TEXT("Image/king_reverse.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255))))
-        {
-            MessageBox(g_hWnd, TEXT("Image/king_reverse.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
-        }
-        break;
-    case "yuri":
-        if (FAILED(battleImage[eBattle::P2Character]->Init(TEXT("Image/yuri_reverse.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255))))
-        {
-            MessageBox(g_hWnd, TEXT("Image/yuri_reverse.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
-        }
-        break;
-    case "hwajai":
-        if (FAILED(battleImage[eBattle::P2Character]->Init(TEXT("Image/hwajai_reverse.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255))))
-        {
-            MessageBox(g_hWnd, TEXT("Image/hwajai_reverse.bmp.bmp 파일 로드에 실패"), TEXT("경고"), MB_OK);
-        }
-        break;
-    default:
-        break;
-    }*/
-    // 타이머
-
-    //가드 게이지
-  
-
 }
 
 void UserInterface::Release()
@@ -129,12 +82,9 @@ void UserInterface::Release()
 
 void UserInterface::Update()
 {
-    // TODO. 캐릭터 체력 업데이트
-    //p1Health = characterP1.get;
-    //p1Health = characterP2.get;
-    // 
-    // TODO. 캐릭터에 맞게 프사 업데이트
-
+    // 캐릭터 HP 동기화
+    // p1Health = *(characterP1->getCurrentHp());
+    // p2Health = *(characterP2->getCurrentHp());
 }
 
 void UserInterface::Render(HDC hdc)
@@ -160,7 +110,3 @@ UserInterface::UserInterface()
 UserInterface::~UserInterface()
 {
 }
-
-// TODO image에 체력바 렌더 따로 만들기
-// p1은 왼쪽 상단 p2는 우측 상단기준
-// 이미지를 체력 퍼센트만큼 자를 수 있어야 함
