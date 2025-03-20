@@ -35,8 +35,9 @@ public:
 		return (p == 1 ? player1MoveKey[keyType] : player2MoveKey[keyType]);
 	}
 
-	void ClearPlayer1Buffer() { player1KeyBuffer.clear(); }
-	void ClearPlayer2Buffer() { player2KeyBuffer.clear(); }
+	void ClearPlayerBuffer(int p) { 
+		p == 1 ? player1KeyBuffer.clear() : player2KeyBuffer.clear();
+	}
 	
 	void Reset() {
 		currentTime = 0.f;
