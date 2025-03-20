@@ -31,6 +31,19 @@ public:
 	void AddTimer(const wchar_t* pTimerTag);
 	void UpdateTimer(const wchar_t* pTimerTag);
 
+	void DrawQuadraticBezier(HDC hdc, FPOINT p0, FPOINT p1, FPOINT p2) {
+		MoveToEx(hdc, p0.x, p0.y, NULL);  // 시작점 설정
+
+		for (double t = 0; t <= 1; t += 0.01) {  // t 값을 0에서 1까지 변화시키면서 점을 그림
+			double u = 1 - t;
+			int x = (int)(u * u * p0.x + 2 * u * t * p1.x + t * t * p2.x);
+			int y = (int)(u * u * p0.y + 2 * u * t * p1.y + t * t * p2.y);
+			LineTo(hdc, x, y);
+		}
+	}
+	void UpdateCharacterPosition(float TimeDelta, FPOINT P0, FPOINT P1, FPOINT P2);
+	class Character* test;
+	float CurrentTime = 0.f;
 	MainGame();
 	~MainGame();
 };

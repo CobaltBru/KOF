@@ -28,6 +28,8 @@ void CollisionManager::Update(float TimeDelta)
 		{
 			if (Dest == Sour)
 				continue;
+			if (Dest->GetOwner()->IsActive() == false || Sour->GetOwner()->IsActive() == false)
+				continue;
 
 			FPOINT SourMin = { Sour->GetWorldPos().x - (Sour->GetSize().x / 2.f), Sour->GetWorldPos().y - (Sour->GetSize().y / 2.f) };
 			FPOINT SourMax = { Sour->GetWorldPos().x + (Sour->GetSize().x / 2.f), Sour->GetWorldPos().y + (Sour->GetSize().y / 2.f) };
@@ -88,7 +90,7 @@ void CollisionManager::Render(HDC hdc)
 		for (auto iter = CollisionList[i].begin();
 			iter != CollisionList[i].end(); )
 		{
-			if ((*iter)->IsDraw() == true)
+			if ((*iter)->IsDraw() == true && (*iter)->GetOwner()->IsActive())
 				(*iter)->Render(hdc);
 			++iter;
 		}

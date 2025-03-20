@@ -15,7 +15,17 @@ public:
 	GameObject();
 	virtual ~GameObject();
 
+	inline void SetActive(bool bActive)
+	{
+		this->bActive = bActive;
+	}
+	inline bool IsActive() 
+	{ 
+		return bActive; 
+	}
+
 protected:
 	FPOINT pos;
+	bool bActive = true;
 };
 

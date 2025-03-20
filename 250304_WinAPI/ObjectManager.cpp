@@ -19,8 +19,11 @@ void ObjectManager::Update(float TimeDelta)
 		for (auto iter = m_ObjList[i].begin();
 			iter != m_ObjList[i].end(); )
 		{
-			(*iter)->Update(TimeDelta);
-
+			if ((*iter)->IsActive())
+			{
+				(*iter)->Update(TimeDelta);
+			}
+			
 			/*if (OBJ_DEAD == iResult)
 			{
 				delete *iter;
@@ -40,7 +43,10 @@ void ObjectManager::Render(HDC hDC)
 		for (auto iter = m_ObjList[i].begin();
 			iter != m_ObjList[i].end(); )
 		{
-			(*iter)->Render(hDC);
+			if ((*iter)->IsActive())
+			{
+				(*iter)->Render(hDC);
+			}	
 
 			++iter;
 		}
