@@ -57,6 +57,42 @@ void MainGame::Init()
 
 
 
+
+
+	//Chang Character Test//
+	/*Chang* tempChang = new Chang();
+	tempChang->InitCollider();
+	objectManager->AddObject(OBJID::OBJ_CHARACTER, tempChang);*/
+	//Ryo* tempRyo2 = new Ryo();
+	//tempRyo->pushSkill("TY", Down, 5, 10, 10, false, true, 3);
+
+	//tempRyo2->Init(2, new Image(), { 550,250 }, 200.f, 100.f, tempImage);
+	//objectManager->AddObject(OBJID::OBJ_CHARACTER, tempRyo2);
+
+	//tempRyo->SetEnemy(tempRyo2);
+	//tempRyo2->SetEnemy(tempRyo);
+
+
+
+
+
+
+	//Chang Character Test//
+	// Chang* tempChang = new Chang();
+	// tempChang->InitCollider();
+	// objectManager->AddObject(OBJID::OBJ_CHARACTER, tempChang);
+	//Ryo* tempRyo2 = new Ryo();
+	//tempRyo->pushSkill("TY", Down, 5, 10, 10, false, true, 3);
+
+	//tempRyo2->Init(2, new Image(), { 550,250 }, 200.f, 100.f, tempImage);
+	//objectManager->AddObject(OBJID::OBJ_CHARACTER, tempRyo2);
+
+	//tempRyo->SetEnemy(tempRyo2);
+	//tempRyo2->SetEnemy(tempRyo);
+
+
+
+
 	if (collisionManager = CollisionManager::GetInstance())
 	{
 		collisionManager->Init();
