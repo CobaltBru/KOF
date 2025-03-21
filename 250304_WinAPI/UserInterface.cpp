@@ -70,7 +70,7 @@ void UserInterface::Update()
     p2Health = *(characterP2->getCurrentHp());
 
     battleImage[eBattle::P1Character] = characterP1->getProfile();
-    battleImage[eBattle::P2Character] = characterP1->getProfile();
+    battleImage[eBattle::P2Character] = characterP2->getProfile();
 
 }
 
