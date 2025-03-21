@@ -68,7 +68,7 @@ void GameManager::Init()
 		tempImage.push_back(LowerHit);
 		tempImage.push_back(Dead);
 
-		tempRyo->Init(1, RyoProfile, { 250,200 }, 200.f, 100.f, tempImage);
+		tempRyo->Init(1, RyoProfile, { 250.f,320.f }, 200.f, 100.f, tempImage);
 
 		Image* ryoLightPunch = new Image();
 		ryoLightPunch->Init(L"Image/Ryo/Ryo_LightPunch.bmp", 840, 130, 7, 1, true, RGB(255, 0, 255));
@@ -149,7 +149,7 @@ void GameManager::Init()
 		tempHong->pushSkill("G", AkumaLk, 30, 5, 80, false, true, 4);
 		tempHong->pushSkill("H", AkumaRk, 9, 5, 50, false, true, 4);
 
-		tempHong->Init(2, maiProfile, { 550,250 }, 200.f, 100.f, tempImage2);
+		tempHong->Init(2, maiProfile, { 550.f,320.f }, 200.f, 100.f, tempImage2);
 		tempHong->InitCollider();
 	}
 #pragma endregion
@@ -185,7 +185,7 @@ void GameManager::Init()
 
 		Image* maiProfile = new Image();
 		maiProfile->Init(TEXT("Image/UI/yuri.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255));
-		tempMai->Init(2, maiProfile, { 400,250 }, 200.f, 100.f, maiImage);
+		tempMai->Init(2, maiProfile, { 550.f,320.f }, 200.f, 100.f, maiImage);
 
 		Image* maiLightPunch = new Image();
 		maiLightPunch->Init(L"Image/Mai/Mai_Wpunch.bmp", 533, 100, 4, 1, true, RGB(255, 0, 255));
@@ -248,7 +248,7 @@ void GameManager::Init()
 		kusaImages.push_back(*BLOCK);
 
 
-		kusanagi->Init(2, kusaProfile, { 550,250 }, 100, 100, kusaImages);
+		kusanagi->Init(2, kusaProfile, { 550.f,320.f }, 100, 100, kusaImages);
 		kusanagi->pushSkill("T", PUNCH1, 4, 5, 25, true, false, 0);
 		kusanagi->pushSkill("Y", PUNCH2, 7, 5, 35, true, false, 0);
 		kusanagi->pushSkill("G", KICK1, 8, 10, 40, false, true, 0);
@@ -287,9 +287,9 @@ void GameManager::Init()
 	UserInterface::GetInstance()->SetPlayer(CurrentPlayer[P1], CurrentPlayer[P2]);
 
 	{
-		FPOINT p0 = { 0.f, 150.f };  // 시작점
-		FPOINT p1 = { 200.f, 150.f };  // 제어점
-		FPOINT p2 = { 300.f, 400.f };  // 끝점
+		FPOINT p0 = { 0.f, 70.f };  // 시작점
+		FPOINT p1 = { 200.f, 70.f };  // 제어점
+		FPOINT p2 = { 300.f, 320.f };  // 끝점
 
 		P1TagPath.push_back(p0);
 		P1TagPath.push_back(p1);
@@ -297,9 +297,9 @@ void GameManager::Init()
 	}
 
 	{
-		FPOINT p0 = { 1080.f, 150.f };  // 시작점
-		FPOINT p1 = { 880.f, 150.f };  // 제어점
-		FPOINT p2 = { 780.f, 400.f };  // 끝점
+		FPOINT p0 = { 1080.f, 70.f };  // 시작점
+		FPOINT p1 = { 880.f, 70.f };  // 제어점
+		FPOINT p2 = { 780.f, 320.f };  // 끝점
 
 		P2TagPath.push_back(p0);
 		P2TagPath.push_back(p1);

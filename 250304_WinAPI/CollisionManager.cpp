@@ -139,6 +139,11 @@ bool CollisionManager::LineTraceByObject(HitResult& hitResult, OBJID eObjID, FPO
 	for (auto iter = CollisionList[eObjID].begin();
 		iter != CollisionList[eObjID].end(); )
 	{
+		if ((*iter)->GetOwner()->IsActive() == false)
+		{
+			++iter;
+			continue;
+		}
 		bool bCollision = false;
 
 		FPOINT pos = (*iter)->GetWorldPos();
