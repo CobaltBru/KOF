@@ -1,9 +1,10 @@
 #pragma once
 #include "GameObject.h"
+#include "Singleton.h"
 
 class Image;
 class Character;
-class UserInterface
+class UserInterface : public Singleton<UserInterface>
 {
 public:
 	void Init();

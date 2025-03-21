@@ -94,7 +94,7 @@ public:
 	//FPOINT getPos();
 	float* getCurrentHp();
 	float getMaxHp();
-	Image getProfile();
+	Image* getProfile();
 	//0 노가드 , 1상단가드, 2하단가드
 	int getGuardState();
 	STATE getState();

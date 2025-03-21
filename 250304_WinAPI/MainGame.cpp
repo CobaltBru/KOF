@@ -28,7 +28,7 @@ void MainGame::Init()
 			TEXT("백버퍼 생성 실패"), TEXT("경고"), MB_OK);
 	}
 
-	UI = new UserInterface();
+	UI = UserInterface::GetInstance();
 	UI->Init();
 
 	timerManager = TimerManager::GetInstance();
@@ -240,46 +240,61 @@ void MainGame::Init()
 		tempHong->InitCollider();
 		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempHong);
 	}
-	// 차승근 테스트
-	// Image* ryoProfile = new Image();
-	//ryoProfile->Init(TEXT("Image/UI/yuri.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255));
+#pragma region 차승근 테스트
+	{
+		// Image* ryoProfile = new Image();
+		//ryoProfile->Init(TEXT("Image/UI/yuri.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255));
 
-	//Mai* tempMai = new Mai();
-	/*vector<Image> maiImage;
-	Image maiIdle;
-	Idle.Init(L"Image/Mai/Mai_Endle.bmp", 3000, 300, 12, 1, true, RGB(255, 0, 255));
+		/*Image maiIdle;
+		maiIdle.Init(L"Image/Mai/Mai_Endle.bmp", 1300, 130, 12, 1, true, RGB(255, 0, 255));
 
-	Image maiWalk;
-	maiWalk.Init(L"Image/Mai/Mai_Smove_Front.bmp", 1901, 300, 6, 1, true, RGB(255, 0, 255));
+		Image maiWalk;
+		maiWalk.Init(L"Image/Mai/Mai_Smove_Front.bmp", 824, 130, 6, 1, true, RGB(255, 0, 255));
 
-	Image maiBackWalk;
-	maiBackWalk.Init(L"Image/Mai/Mai_Smove_Back.bmp", 1677, 300, 6, 1, true, RGB(255, 0, 255));
+		Image maiBackWalk;
+		maiBackWalk.Init(L"Image/Mai/Mai_Smove_Back.bmp", 727, 130, 6, 1, true, RGB(255, 0, 255));
 
-	Image maiDown;
-	maiDown.Init(L"Image/Mai/Mai_Sit.bmp", 1016, 300, 4, 1, true, RGB(255, 0, 255));
+		Image maiDown;
+		maiDown.Init(L"Image/Mai/Mai_Sit.bmp", 440, 130, 4, 1, true, RGB(255, 0, 255));
 
-	Image maiDash;
-	maiDash.Init(L"Image/Mai/Mai_Run.bmp", 2265, 300, 6, 1, true, RGB(255, 0, 255));
+		Image maiDash;
+		maiDash.Init(L"Image/Mai/Mai_Run.bmp", 982, 130, 6, 1, true, RGB(255, 0, 255));
 
-	Image maiBack;
-	maiBack.Init(L"Image/Mai/Mai_Smove_Back.bmp", 1677, 300, 6, 1, true, RGB(255, 0, 255));
-	maiImage.push_back(maiIdle);
-	maiImage.push_back(maiBackWalk);
-	maiImage.push_back(maiWalk);
-	maiImage.push_back(maiDown);
-	maiImage.push_back(maiDash);
-	maiImage.push_back(maiBack);
-	*/
-	/*Image* maiProfile = new Image();
-	maiProfile->Init(TEXT("Image/UI/yuri.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255));
-	tempMai->Init(1, maiProfile, { 250,250 }, 200.f, 100.f, tempImage);*/
-	//objectManager->AddObject(OBJID::OBJ_CHARACTER, tempMai);
+		Image maiBack;
+		maiBack.Init(L"Image/Mai/Mai_Smove_Back.bmp", 727, 130, 6, 1, true, RGB(255, 0, 255));
+		maiImage.push_back(maiIdle);
+		maiImage.push_back(maiBackWalk);
+		maiImage.push_back(maiWalk);
+		maiImage.push_back(maiDown);
+		maiImage.push_back(maiDash);
+		maiImage.push_back(maiBack);
+
+		tempMai->Init(2, maiProfile, { 400,250 }, 200.f, 100.f, maiImage);
+
+		Image* maiLightPunch = new Image();
+		maiLightPunch->Init(L"Image/Mai/Mai_Wpunch.bmp", 693, 130, 4, 1, true, RGB(255, 0, 255));
+
+		Image* maiStrongPunch = new Image();
+		maiStrongPunch->Init(L"Image/Mai/Mai_Spunch.bmp", 573, 130, 5, 1, true, RGB(255, 0, 255));
+
+		Image* maiLightKick = new Image();
+		maiLightKick->Init(L"Image/Mai/Mai_Middlekick.bmp", 786, 130, 6, 1, true, RGB(255, 0, 255));
+
+		Image* maiStrongKick = new Image();
+		maiStrongKick->Init(L"Image/Mai/Mai_HighKick.bmp", 683, 130, 6, 1, true, RGB(255, 0, 255));
 
 
+		tempMai->pushSkill("H", maiLightPunch, 7, 5, 50, true, false, 2);
+		tempMai->pushSkill("Y", maiStrongPunch, 9, 10, 70, true, false, 0);
+		tempMai->pushSkill("G", maiLightKick, 7, 7, 60, true, false, 2);
+		tempMai->pushSkill("T", maiStrongKick, 10, 10, 70, true, false, 3);
 
+		tempMai->InitCollider();
 
-
-	UI->SetPlayer(kusanagi, tempHong);
+		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempMai);*/
+	}
+#pragma endregion
+	UI->SetPlayer(tempRyo, tempHong);
 
 
 
@@ -298,16 +313,15 @@ void MainGame::Release()
 		backBuffer = nullptr;
 	}
 
+	if (UI)
+		UI->Release();
+
+
 	if (timerManager)
 		timerManager->Release();
 
 	ReleaseDC(g_hWnd, hdc);
-	if (UI)
-	{
-		UI->Release();
-		delete UI;
-		UI = nullptr;
-	}
+
 
 	if (KOFKeyManager* kofKeyMgr = KOFKeyManager::GetInstance())
 		kofKeyMgr->Release();
