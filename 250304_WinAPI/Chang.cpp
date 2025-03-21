@@ -10,28 +10,33 @@ Chang::Chang() {
 	currentTime = 0.f;
 	dashTime = 0.f;
 
-	vector<Image> tempImage;
+	
+
+	vector<Image> ChangImage;
+
+	Image* maiProfile = new Image();
+	maiProfile->Init(TEXT("Image/UI/yuri.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255));
 
 	Image idle;
-	idle.Init(L"Image/Chang/Chang_Idle.bmp",576,146, 6, 1, true, RGB(255, 0, 255));
+	idle.Init(L"Image/Chang/Chang_Idle.bmp", 576, 146, 6, 1, true, RGB(255, 0, 255));
 	Image BackWalk;
 	BackWalk.Init(L"Image/Chang/Chang_Walk.bmp", 910, 136, 10, 1, true, RGB(255, 0, 255));
 	Image Walk;
 	Walk.Init(L"Image/Chang/Chang_Walk.bmp", 910, 136, 10, 1, true, RGB(255, 0, 255));
-	Image Attack1;
-	Attack1.Init(L"Image/Chang/Chang_MiddleAttack.bmp", 685, 146, 5, 1, true, RGB(255, 0, 255));
-	Image Walk3;
-	Walk3.Init(L"Image/Chang/Chang_Walk.bmp", 910, 136, 10, 1, true, RGB(255, 0, 255));
-	Image Walk4;
-	Walk4.Init(L"Image/Chang/Chang_Jump.bmp", 644, 163, 7, 1, true, RGB(255, 0, 255));
+	Image Sit;
+	Sit.Init(L"Image/Chang/Chang_Sit.bmp", 819, 136, 9, 1, true, RGB(255, 0, 255));
+	Image Dash;
+	Dash.Init(L"Image/Chang/Chang_Walk.bmp", 910, 136, 10, 1, true, RGB(255, 0, 255));
+	Image BackDash;
+	BackDash.Init(L"Image/Chang/Chang_BackDush.bmp", 192, 140, 3, 1, true, RGB(255, 0, 255));
 
-	
-	tempImage.push_back(idle);
-	tempImage.push_back(BackWalk);
-	tempImage.push_back(Walk);
-	tempImage.push_back(Attack1);
-	tempImage.push_back(Walk3);
-	tempImage.push_back(Walk4);
+
+	ChangImage.push_back(idle);
+	ChangImage.push_back(BackWalk);
+	ChangImage.push_back(Walk);
+	ChangImage.push_back(Sit);
+	ChangImage.push_back(Dash);
+	ChangImage.push_back(BackDash);
 
 	Image* MiddlePunch = new Image();
 	MiddlePunch->Init(L"Image/Chang/Chang_MiddleAttack.bmp", 685, 146, 5, 1, true, RGB(255, 0, 255));
@@ -45,28 +50,35 @@ Chang::Chang() {
 	FirstCommandAttack->Init(L"Image/Chang/Chang_Command1.bmp", 1815, 136, 11, 1, true, RGB(255, 0, 255));
 
 
-	pushSkill("H", MiddlePunch, 5, 5, 50, false, true, 0);
-	pushSkill("Y", PowerPunch, 10, 10, 100, true, false, 0);
-	pushSkill("G", BottomKick, 5, 7, 60, false, true, 0);
-	pushSkill("T", PowerKick, 7, 10, 70, true, false, 0);
-	pushSkill("DGH", FirstCommandAttack, 11, 10, 100, false, true, 0);
 
-	this->Init(1, new Image(), { 250,250 }, 100.f, 100.f, tempImage);
+	pushSkill("DH", FirstCommandAttack, 11, 10, 100, false, true, 4);
+	pushSkill("H", MiddlePunch, 5, 5, 80, false, true, 0);
+	pushSkill("Y", PowerPunch, 10, 10, 100, true, false, 0);
+	pushSkill("G", BottomKick, 5, 7, 70, false, true, 0);
+	pushSkill("T", PowerKick, 7, 10, 80, true, false, 0);
+
+
+	this->Init(1, maiProfile, { 250,250 }, 100.f, 100.f, ChangImage);
+
 
 	
 };
 void Chang::Update(float deltaTime)
 {
 	__super::Update(deltaTime);
+	
 }
 
 void Chang::Render(HDC hdc)
 {
 	if (currentState == STATE::PROCESS)
 	{
-		if(skillSet[currentSkill].command=="DGH")
+		if(skillSet[currentSkill].command=="DH")
 		{ 
-			skillSet[currentSkill].image->Render(hdc, pos.x += 6, pos.y, framecnt, screenWay);
+			if(player==1)
+				skillSet[currentSkill].image->Render(hdc, pos.x += 3, pos.y, framecnt, screenWay);
+			else
+				skillSet[currentSkill].image->Render(hdc, pos.x -= 3, pos.y, framecnt, screenWay);
 		}
 		else if (skillSet[currentSkill].command == "Y")
 		{
@@ -86,6 +98,7 @@ void Chang::Render(HDC hdc)
 			images[getIndex()].Render(hdc, pos.x - 35, pos.y - 15, framecnt, screenWay);
 		}
 	}
+
 
 }
 

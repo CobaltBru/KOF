@@ -26,7 +26,7 @@ private:
 	float currentTime;
 	Collider* collider;
 	vector<int> pixels;
-
+	
 
 
 };
