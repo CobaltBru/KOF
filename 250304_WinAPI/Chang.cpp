@@ -41,11 +41,15 @@ Chang::Chang() {
 	BottomKick->Init(L"Image/Chang/Chang_ButtomKick.bmp", 625, 144, 5, 1, true, RGB(255, 0, 255));
 	Image* PowerKick = new Image();
 	PowerKick->Init(L"Image/Chang/Chang_StrongKick.bmp", 959, 132, 7, 1, true, RGB(255, 0, 255));
+	Image* FirstCommandAttack = new Image();
+	FirstCommandAttack->Init(L"Image/Chang/Chang_Command1.bmp", 1815, 136, 11, 1, true, RGB(255, 0, 255));
+
 
 	pushSkill("H", MiddlePunch, 5, 5, 50, false, true, 0);
 	pushSkill("Y", PowerPunch, 10, 10, 100, true, false, 0);
 	pushSkill("G", BottomKick, 5, 7, 60, false, true, 0);
 	pushSkill("T", PowerKick, 7, 10, 70, true, false, 0);
+	pushSkill("DGH", FirstCommandAttack, 11, 10, 100, false, true, 0);
 
 	this->Init(1, new Image(), { 250,250 }, 100.f, 100.f, tempImage);
 
@@ -60,7 +64,16 @@ void Chang::Render(HDC hdc)
 {
 	if (currentState == STATE::PROCESS)
 	{
-		skillSet[currentSkill].image->Render(hdc, pos.x - 75, pos.y - 60, framecnt, screenWay);
+		if(skillSet[currentSkill].command=="DGH")
+		{ 
+			skillSet[currentSkill].image->Render(hdc, pos.x += 6, pos.y, framecnt, screenWay);
+		}
+		else if (skillSet[currentSkill].command == "Y")
+		{
+			skillSet[currentSkill].image->Render(hdc, pos.x-15, pos.y-30, framecnt, screenWay);
+		}
+		else
+			skillSet[currentSkill].image->Render(hdc, pos.x , pos.y , framecnt, screenWay);
 	}
 	else
 	{
@@ -70,7 +83,7 @@ void Chang::Render(HDC hdc)
 		}
 		else
 		{
-			images[getIndex()].Render(hdc, pos.x - 35, pos.y - 55, framecnt, screenWay);
+			images[getIndex()].Render(hdc, pos.x - 35, pos.y - 15, framecnt, screenWay);
 		}
 	}
 
@@ -115,7 +128,7 @@ void Chang::CheckMaxFrame()
 
 }
 void Chang::InitCollider() {
-	collider = new Collider(this, { 15.f, 20.f }, { 100.f, 150.f }, COLLIDER_TYPE::Rect);
+	collider = new Collider(this, { 15.f, 60.f }, { 100.f, 150.f }, COLLIDER_TYPE::Rect);
 	CollisionManager* manager = CollisionManager::GetInstance();
 
 	manager->AddObject(OBJID::OBJ_CHARACTER, collider);
