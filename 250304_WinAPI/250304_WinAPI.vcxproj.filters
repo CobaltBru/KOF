@@ -90,6 +90,9 @@
     <ClCompile Include="Hadogen.cpp">
       <Filter>MainGame</Filter>
     </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>MainGame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h">
@@ -168,6 +171,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Hadogen.h">
+      <Filter>MainGame</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
       <Filter>MainGame</Filter>
     </ClInclude>
   </ItemGroup>
