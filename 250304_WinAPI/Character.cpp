@@ -502,7 +502,7 @@ void Character::Update(float deltaTime)
 			//int tmp = images[getIndex()].GetMaxFrame();
 			framecnt = 0;
 			timecnt = 0;
-			setBack();
+			setIdle();
 		}
 	}
 	else //일반동작
