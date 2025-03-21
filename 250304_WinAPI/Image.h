@@ -90,5 +90,8 @@ public:
 		return NULL;
 	}
 	inline int GetMaxFrame(){ return imageInfo->maxFrameX; }
+
+	int GetWidth() const { return imageInfo->width; }
+	int GetHeight() const { return imageInfo->height; }
 };
 

@@ -99,7 +99,8 @@ public:
 	int getGuardState();
 	STATE getState();
 
-	void attack(Character* other);
+	void attack(Character* other, FPOINT hit = { 0.f, });
+	void hit(float damage,bool bUpperAttack,FPOINT hit = { 0.f, }); // ±Ë≈¬∞Ê¿Ã ∏∏µÎ
 	void getDamage(float damage);
 	//void SetEnemy(Character* other);
 

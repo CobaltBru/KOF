@@ -10,6 +10,7 @@
 #include "CollisionManager.h"
 #include "Ryo.h"
 #include "Mai.h"
+#include "EffectManager.h"
 #include "Chang.h"
 #include "GameManager.h"
 /*
@@ -33,6 +34,8 @@ void MainGame::Init()
 	UI->Init();
 
 	timerManager = TimerManager::GetInstance();
+	effectManager = EffectManager::GetInstance();
+	effectManager->Init();
 	if (objectManager = ObjectManager::GetInstance())
 	{
 		objectManager->Init();
@@ -93,6 +96,9 @@ void MainGame::Release()
 
 	if (collisionManager)
 		collisionManager->Release();
+
+	if (effectManager)
+		effectManager->Release();
 }
 
 void MainGame::Update()
@@ -110,6 +116,9 @@ void MainGame::Update()
 
 	if (collisionManager)
 		collisionManager->Update(TimeDelta);
+
+	if (effectManager)
+		effectManager->Update(TimeDelta);
 }
 
 void MainGame::Render()
@@ -128,6 +137,9 @@ void MainGame::Render()
 	if (collisionManager)
 		collisionManager->Render(hBackBufferDC);
 #endif
+
+	if (effectManager)
+		effectManager->Render(hBackBufferDC);
 }
 
 float MainGame::GetTimeDelta(const wchar_t* pTimerTag)

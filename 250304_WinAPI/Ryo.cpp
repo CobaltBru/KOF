@@ -181,11 +181,11 @@ void Ryo::Move(float deltaTime)
 		pos.x += ((screenWay ? -1 : 1) * moveWay) * speed * characterSpeed * deltaTime;
 		pos.y += dy;
 
-		if (pos.y >= 200.f)
+		if (pos.y >= 320.f)
 		{
 			bBackDash = false;
 			dy = -20;
-			pos.y = 200.f;
+			pos.y = 320.f;
 			setIdle();
 		}
 	}
@@ -227,7 +227,7 @@ void Ryo::CollisionUpdate()
 		if (currentSkill == 0 || currentSkill == 1)
 		{
 			Hadogen* hadogen = new Hadogen();
-			hadogen->Init(position, otherSkillInfo[currentSkill].collisionPivot, skillSet[currentSkill].damage, currentSkill);
+			hadogen->Init(position, otherSkillInfo[currentSkill].collisionPivot, skillSet[currentSkill].damage, currentSkill, skillSet[currentSkill].isUpperAttack);
 
 			if (ObjectManager* ObjMgr = ObjectManager::GetInstance())
 				ObjMgr->AddObject(OBJID::OBJ_CHARACTER, hadogen);
@@ -235,11 +235,12 @@ void Ryo::CollisionUpdate()
 		else
 		{
 			HitResult hit;
-			if (CollisionManager::GetInstance()->LineTraceByObject(hit, OBJ_CHARACTER, position, { position.x + (skillSet[currentSkill].reach * (screenWay ? -1 : 1)), position.y }, this, true))
+			FPOINT endPoint = { position.x + (skillSet[currentSkill].reach * (screenWay ? -1 : 1)), position.y };
+			if (CollisionManager::GetInstance()->LineTraceByObject(hit, OBJ_CHARACTER, position, endPoint, this, true))
 			{
 				if (Character* OtherCharacter = dynamic_cast<Character*>(hit.Actors[0]))
 				{
-					attack(OtherCharacter);
+					attack(OtherCharacter, endPoint);
 				}
 			}
 		}

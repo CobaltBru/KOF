@@ -5,11 +5,11 @@
 #include "Character.h"
 
 Hadogen::Hadogen()
-	:bDead(false), bRender(true), hadogenMaxFrame(0), collisionPivot({0,0})
+	:bDead(false), bRender(true), bUpperAttack(false), hadogenMaxFrame(0), collisionPivot({0,0})
 {
 }
 
-void Hadogen::Init(FPOINT pos, FPOINT pivot,int damage, int type)
+void Hadogen::Init(FPOINT pos, FPOINT pivot,int damage, int type, bool bUpperAttack)
 {
 	HadogenImage = new Image();
 	if (type)
@@ -31,6 +31,7 @@ void Hadogen::Init(FPOINT pos, FPOINT pivot,int damage, int type)
 	this->pos.x = pos.x + pivot.x;
 	this->pos.y = pos.y + pivot.y;
 	this->damage = damage;
+	this->bUpperAttack = bUpperAttack;
 }
 
 void Hadogen::Release()
@@ -98,8 +99,7 @@ void Hadogen::CollisionUpdate()
 		{
 			if (Character* OtherCharacter = dynamic_cast<Character*>(hit.Actors[0]))
 			{
-				OtherCharacter->getDamage(damage);
-				//attack(OtherCharacter);
+				OtherCharacter->hit(damage, bUpperAttack, position);				
 				bDead = true;
 			}
 		}
