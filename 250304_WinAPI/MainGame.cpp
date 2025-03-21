@@ -178,22 +178,22 @@ void MainGame::Init()
 			maiProfile->Init(TEXT("Image/UI/yuri.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255));
 
 			Image maiIdle;
-			maiIdle.Init(L"Image/Mai/Mai_Endle.bmp", 1300, 130, 12, 1, true, RGB(255, 0, 255));
+			maiIdle.Init(L"Image/Mai/Mai_Endle.bmp", 1200, 100, 12, 1, true, RGB(255, 0, 255));
 
 			Image maiWalk;
-			maiWalk.Init(L"Image/Mai/Mai_Smove_Front.bmp", 824, 130, 6, 1, true, RGB(255, 0, 255));
+			maiWalk.Init(L"Image/Mai/Mai_Smove_Front.bmp", 600, 100, 6, 1, true, RGB(255, 0, 255));
 
 			Image maiBackWalk;
-			maiBackWalk.Init(L"Image/Mai/Mai_Smove_Back.bmp", 727, 130, 6, 1, true, RGB(255, 0, 255));
+			maiBackWalk.Init(L"Image/Mai/Mai_Smove_Back.bmp", 600, 100, 6, 1, true, RGB(255, 0, 255));
 
 			Image maiDown;
-			maiDown.Init(L"Image/Mai/Mai_Sit.bmp", 440, 130, 4, 1, true, RGB(255, 0, 255));
+			maiDown.Init(L"Image/Mai/Mai_Sit.bmp", 100, 100, 4, 1, true, RGB(255, 0, 255));
 
 			Image maiDash;
-			maiDash.Init(L"Image/Mai/Mai_Run.bmp", 982, 130, 6, 1, true, RGB(255, 0, 255));
+			maiDash.Init(L"Image/Mai/Mai_Run.bmp", 800, 100, 6, 1, true, RGB(255, 0, 255));
 
 			Image maiBack;
-			maiBack.Init(L"Image/Mai/Mai_Smove_Back.bmp", 727, 130, 6, 1, true, RGB(255, 0, 255));
+			maiBack.Init(L"Image/Mai/Mai_Smove_Back.bmp", 600, 100, 6, 1, true, RGB(255, 0, 255));
 			maiImage.push_back(maiIdle);
 			maiImage.push_back(maiBackWalk);
 			maiImage.push_back(maiWalk);
@@ -204,21 +204,21 @@ void MainGame::Init()
 			tempMai->Init(2, maiProfile, { 400,250 }, 200.f, 100.f, maiImage);
 
 			Image* maiLightPunch = new Image();
-			maiLightPunch->Init(L"Image/Mai/Mai_Wpunch.bmp", 693, 130, 4, 1, true, RGB(255, 0, 255));
+			maiLightPunch->Init(L"Image/Mai/Mai_Wpunch.bmp", 533, 100, 4, 1, true, RGB(255, 0, 255));
 
 			Image* maiStrongPunch = new Image();
-			maiStrongPunch->Init(L"Image/Mai/Mai_Spunch.bmp", 573, 130, 5, 1, true, RGB(255, 0, 255));
+			maiStrongPunch->Init(L"Image/Mai/Mai_Spunch.bmp", 801, 165, 5, 1, true, RGB(255, 0, 255));
 
 			Image* maiLightKick = new Image();
-			maiLightKick->Init(L"Image/Mai/Mai_Middlekick.bmp", 786, 130, 6, 1, true, RGB(255, 0, 255));
+			maiLightKick->Init(L"Image/Mai/Mai_Middlekick.bmp", 961, 149, 6, 1, true, RGB(255, 0, 255));
 
 			Image* maiStrongKick = new Image();
-			maiStrongKick->Init(L"Image/Mai/Mai_HighKick.bmp", 683, 130, 6, 1, true, RGB(255, 0, 255));
+			maiStrongKick->Init(L"Image/Mai/Mai_HighKick.bmp", 961, 165, 6, 1, true, RGB(255, 0, 255));
 
 
 			tempMai->pushSkill("H", maiLightPunch, 7, 5, 50, true, false, 2);
-			tempMai->pushSkill("Y", maiStrongPunch, 9, 10, 70, true, false, 0);
-			tempMai->pushSkill("G", maiLightKick, 7, 7, 60, true, false, 2);
+			tempMai->pushSkill("Y", maiStrongPunch, 9, 10, 70, true, false, 4);
+			tempMai->pushSkill("G", maiLightKick, 7, 7, 60, true, false, 3);
 			tempMai->pushSkill("T", maiStrongKick, 10, 10, 70, true, false, 3);
 
 			tempMai->InitCollider();
