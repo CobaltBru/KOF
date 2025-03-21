@@ -235,11 +235,12 @@ void Ryo::CollisionUpdate()
 		else
 		{
 			HitResult hit;
-			if (CollisionManager::GetInstance()->LineTraceByObject(hit, OBJ_CHARACTER, position, { position.x + (skillSet[currentSkill].reach * (screenWay ? -1 : 1)), position.y }, this, true))
+			FPOINT endPoint = { position.x + (skillSet[currentSkill].reach * (screenWay ? -1 : 1)), position.y };
+			if (CollisionManager::GetInstance()->LineTraceByObject(hit, OBJ_CHARACTER, position, endPoint, this, true))
 			{
 				if (Character* OtherCharacter = dynamic_cast<Character*>(hit.Actors[0]))
 				{
-					attack(OtherCharacter);
+					attack(OtherCharacter, endPoint);
 				}
 			}
 		}

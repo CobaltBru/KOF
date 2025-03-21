@@ -3,6 +3,8 @@
 #include "KOFKeyManager.h"
 #include "CollisionManager.h"
 #include <math.h>
+#include "EffectManager.h"
+#include "Effect.h"
 
 Character::Character()
 {
@@ -377,11 +379,12 @@ void Character::Update(float deltaTime)
 			{
 				HitResult hit;
 				//(skill.reach > (player == 1 ? 1 : -1) * (other->GetPos().x - pos.x))
-				if (CollisionManager::GetInstance()->LineTraceByObject(hit, OBJ_CHARACTER, pos, { pos.x+(float)((player == 1 ? 1 : -1) * skillSet[currentSkill].reach), pos.y }, this, true))
+				FPOINT endPoint = { pos.x + (float)((player == 1 ? 1 : -1) * skillSet[currentSkill].reach), pos.y };
+				if (CollisionManager::GetInstance()->LineTraceByObject(hit, OBJ_CHARACTER, pos, endPoint, this, true))
 				{
 					if (Character* OtherCharacter = dynamic_cast<Character*>(hit.Actors[0]))
 					{
-						attack(OtherCharacter);
+						attack(OtherCharacter, endPoint);
 
 						//skillSet[currentSkill].damage;
 					}
@@ -559,10 +562,10 @@ Character::STATE Character::getState()
 	return currentState;
 }
 
-void Character::attack(Character* other)
+void Character::attack(Character* other, FPOINT hit)
 {
 	SKILL& skill = skillSet[currentSkill];
-	int d = damage;
+	float d = damage;
 	//if (skill.reach > (player == 1 ? 1 : -1) * (other->GetPos().x - pos.x))
 	//{
 	//	if (skill.isLowerAttack) //하단 공격일때
@@ -610,7 +613,23 @@ void Character::attack(Character* other)
 		else
 			other->SetCurrentState(STATE::HITUPPER);
 	}
+	
 	other->getDamage(d);
+
+	if (d > 0.f)
+	{
+		const wchar_t* filePath = other->getGuardState() ? L"Image/Effect/block.bmp" : L"Image/Effect/hit.bmp";
+		const int width = other->getGuardState() ? 420 : 480;
+		const int maxFrameX = other->getGuardState() ? 7 : 8;
+		Image* effectImage = new Image();
+		effectImage->Init(filePath, width, 60, maxFrameX, 1, true, RGB(255, 0, 255));
+
+		Effect* effect = new Effect();
+		FPOINT hitPosition = (abs(hit.x) > 0.001f || abs(hit.y) > 0.001f) ? hit : other->GetPos();
+		effect->Init(effectImage, hitPosition, screenWay);
+		if (EffectManager* effectmanager = EffectManager::GetInstance())
+			effectmanager->AddEffect(effect);
+	}
 }
 
 void Character::getDamage(float damage)

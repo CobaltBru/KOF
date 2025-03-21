@@ -6,6 +6,7 @@ class TimerManager;
 class ObjectManager;
 class UserInterface;
 class CollisionManager;
+class EffectManager;
 class MainGame : public GameObject
 {
 private:
@@ -16,6 +17,7 @@ private:
 	TimerManager* timerManager;
 	ObjectManager* objectManager;
 	CollisionManager* collisionManager;
+	EffectManager* effectManager;
 
 	UserInterface* UI;
 
