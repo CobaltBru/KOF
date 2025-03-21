@@ -56,7 +56,7 @@ public:
 				float hp, vector<Image>images);*/
 
 	void Init(int player, Image* profile, FPOINT pos, float characterSpeed,
-		float hp, vector<Image>images);
+		float hp, vector<Image> images);
 
 	void Release();
 	//idle, 뒷걷기, 앞걷기, 숙이기, 앞대쉬, 백대쉬,윗방어,아랫방어 순으로 넣어주세요

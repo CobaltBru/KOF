@@ -226,8 +226,13 @@ void GameManager::Init()
 		WALK->Init(TEXT("Image/Kusanagi/run1.bmp"), 510, 130, 6, 1, true, RGB(248, 0, 248));
 		Image* BACK = new Image;
 		BACK->Init(TEXT("Image/Kusanagi/back3.bmp"), 510, 130, 6, 1, true, RGB(248, 0, 248));
-		Image* BLOCK = new Image;
-		BLOCK->Init(TEXT("Image/Kusanagi/block2.bmp"), 900, 110, 10, 1, true, RGB(248, 0, 248));
+		Image* BACKDASH = new Image;
+		BACKDASH->Init(TEXT("Image/Kusanagi/back3.bmp"), 510, 130, 6, 1, true, RGB(248, 0, 248));
+		Image* BLOCKUPPER = new Image;
+		BLOCKUPPER->Init(TEXT("Image/Kusanagi/block2.bmp"), 900, 110, 10, 1, true, RGB(248, 0, 248));
+		Image* BLOCKLOWER = new Image;
+		BLOCKLOWER->Init(TEXT("Image/Kusanagi/block2.bmp"), 900, 110, 10, 1, true, RGB(248, 0, 248));
+
 		Image* PUNCH1 = new Image;
 		PUNCH1->Init(TEXT("Image/Kusanagi/punch1.bmp"), 400, 130, 4, 1, true, RGB(248, 0, 248));
 		Image* PUNCH2 = new Image;
@@ -243,9 +248,9 @@ void GameManager::Init()
 		kusaImages.push_back(*WALK);
 		kusaImages.push_back(*DOWN);
 		kusaImages.push_back(*DASH);
-		kusaImages.push_back(*BACK);
-		kusaImages.push_back(*BLOCK);
-		kusaImages.push_back(*BLOCK);
+		kusaImages.push_back(*BACKDASH);
+		kusaImages.push_back(*BLOCKUPPER);
+		kusaImages.push_back(*BLOCKLOWER);
 
 
 		kusanagi->Init(2, kusaProfile, { 550.f,320.f }, 100, 100, kusaImages);

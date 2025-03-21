@@ -401,8 +401,9 @@ void Character::Update(float deltaTime)
 			{
 				HitResult hit;
 				//(skill.reach > (player == 1 ? 1 : -1) * (other->GetPos().x - pos.x))
-				FPOINT endPoint = { pos.x + (float)((player == 1 ? 1 : -1) * skillSet[currentSkill].reach), pos.y };
-				if (CollisionManager::GetInstance()->LineTraceByObject(hit, OBJ_CHARACTER, pos, endPoint, this, true))
+				FPOINT tempPos = { pos.x,pos.y+50.f };
+				FPOINT endPoint = { tempPos.x + (float)((player == 1 ? 1 : -1) * skillSet[currentSkill].reach + (float)(player == 1 ? 0 : 50)), tempPos.y };
+				if (CollisionManager::GetInstance()->LineTraceByObject(hit, OBJ_CHARACTER, tempPos, endPoint, this, true))
 				{
 					if (Character* OtherCharacter = dynamic_cast<Character*>(hit.Actors[0]))
 					{
