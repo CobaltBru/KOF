@@ -1,6 +1,9 @@
 #include "Chang.h"
 #include "Image.h"
 #include "KOFKeyManager.h"
+#include "Collider.h"
+#include "CollisionManager.h"
+
 
 Chang::Chang() {
 	screenWay = false;
@@ -16,7 +19,7 @@ Chang::Chang() {
 	Image Walk;
 	Walk.Init(L"Image/Chang/Chang_Walk.bmp", 910, 136, 10, 1, true, RGB(255, 0, 255));
 	Image Attack1;
-	Attack1.Init(L"Image/Chang/Chang_WeakAttack.bmp", 685, 146, 5, 1, true, RGB(255, 0, 255));
+	Attack1.Init(L"Image/Chang/Chang_MiddleAttack.bmp", 685, 146, 5, 1, true, RGB(255, 0, 255));
 	Image Walk3;
 	Walk3.Init(L"Image/Chang/Chang_Walk.bmp", 910, 136, 10, 1, true, RGB(255, 0, 255));
 	Image Walk4;
@@ -30,118 +33,45 @@ Chang::Chang() {
 	tempImage.push_back(Walk3);
 	tempImage.push_back(Walk4);
 
-	this->Init(1, new Image(), { 250,250 }, 200.f, 100.f, tempImage);
+	Image* MiddlePunch = new Image();
+	MiddlePunch->Init(L"Image/Chang/Chang_MiddleAttack.bmp", 685, 146, 5, 1, true, RGB(255, 0, 255));
+	Image* PowerPunch = new Image();
+	PowerPunch->Init(L"Image/Chang/Chang_StrongAttack.bmp", 1830, 164, 10, 1, true, RGB(255, 0, 255));
+	Image* BottomKick = new Image();
+	BottomKick->Init(L"Image/Chang/Chang_ButtomKick.bmp", 625, 144, 5, 1, true, RGB(255, 0, 255));
+	Image* PowerKick = new Image();
+	PowerKick->Init(L"Image/Chang/Chang_StrongKick.bmp", 959, 132, 7, 1, true, RGB(255, 0, 255));
+
+	pushSkill("H", MiddlePunch, 5, 5, 50, false, true, 0);
+	pushSkill("Y", PowerPunch, 10, 10, 100, true, false, 0);
+	pushSkill("G", BottomKick, 5, 7, 60, false, true, 0);
+	pushSkill("T", PowerKick, 7, 10, 70, true, false, 0);
+
+	this->Init(1, new Image(), { 250,250 }, 100.f, 100.f, tempImage);
+
 	
 };
 void Chang::Update(float deltaTime)
 {
-	currentTime += deltaTime;
-
-	currentCommand = KOFKeyManager::GetInstance()->GetPlayerCommand(player);
-
-	bool keyA = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_A);
-	bool keyS = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_S);
-	bool keyD = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_D);
-	bool keyW = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_W);
-
-	if (keyA && dashTime > 0.0001f && currentTime - dashTime > 0.3f)
-	{
-		dashTime = currentTime;
-	}
-	else if (keyA)
-	{
-		if (screenWay == false) //뒷걸음질
-		{
-			moveWay = -1;
-			speed = 0.7f;
-			if (currentState == STATE::BACK) currentState = STATE::BACK;
-			else currentState = STATE::BACK;
-		}
-		else //앞으로 
-		{
-			moveWay = 1;
-			speed = 1.0f;
-			if (currentState == STATE::WALK) currentState = STATE::DASH;
-			else currentState = STATE::WALK;
-		}
-	}
-	else if (keyD)
-	{
-		if (screenWay == false) //앞으로
-		{
-			moveWay = 1;
-			speed = 1.0f;
-			if (currentState == STATE::WALK) currentState = STATE::DASH;
-			else currentState = STATE::WALK;
-		}
-		else //뒷걸음질
-		{
-			moveWay = -1;
-			speed = 0.7f;
-			if (currentState == STATE::BACK) currentState = STATE::BACK;
-			else currentState = STATE::BACK;
-		}
-	}
-	else if (keyS) //숙이기
-	{
-		speed = 0;
-		currentState = STATE::DOWN;
-	}
-	else if (keyW)
-	{
-		
-		
-		moveWay = 1;
-		speed = 0.5f;
-
-		Jump(deltaTime);
-		currentState = STATE::BACKDASH;
-		
-		
-	}
-	else
-	{
-		speed = 0;
-		currentState = STATE::IDLE;
-	}
-
-	useSkill(currentCommand);
-
-	if (currentState != STATE::IDLE)
-	{
-		timecnt += deltaTime;
-		framecnt = timecnt / (deltaTime * FRAMESPEED); //현재 프레임 계산
-		if (currentState == STATE::PROCESS) //기술중
-		{
-			if (framecnt >= skillSet[currentSkill].maxFrame)//끝나면 IDLE로
-			{
-				endSkill();
-			}
-		}
-	}
-	else
-	{
-			timecnt += deltaTime;
-			framecnt = timecnt / (deltaTime * FRAMESPEED); //현재 프레임 계산		
-	}
-	CheckMaxFrame();
-	
-
-	Move(deltaTime);
+	__super::Update(deltaTime);
 }
 
 void Chang::Render(HDC hdc)
 {
-	
 	if (currentState == STATE::PROCESS)
 	{
-		skillSet[currentSkill].image->Render(hdc, pos.x, pos.y, framecnt, screenWay);
+		skillSet[currentSkill].image->Render(hdc, pos.x - 75, pos.y - 60, framecnt, screenWay);
 	}
 	else
 	{
-		
-		int pixel = pixels.empty() ? 0 : pixels[getIndex()];
-		images[getIndex()].Render(hdc, pos.x - pixel, pos.y, framecnt, screenWay);
+		if (screenWay)
+		{
+			images[getIndex()].Render(hdc, pos.x - 40, pos.y - 60, framecnt, screenWay);
+		}
+		else
+		{
+			images[getIndex()].Render(hdc, pos.x - 35, pos.y - 55, framecnt, screenWay);
+		}
 	}
 
 }
@@ -183,4 +113,12 @@ void Chang::CheckMaxFrame()
 		timecnt = 0;
 	}
 
+}
+void Chang::InitCollider() {
+	collider = new Collider(this, { 15.f, 20.f }, { 100.f, 150.f }, COLLIDER_TYPE::Rect);
+	CollisionManager* manager = CollisionManager::GetInstance();
+
+	manager->AddObject(OBJID::OBJ_CHARACTER, collider);
+
+	collider->DebugRender(true);
 }

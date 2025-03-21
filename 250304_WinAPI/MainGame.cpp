@@ -9,6 +9,7 @@
 #include "CollisionManager.h"
 #include "Ryo.h"
 #include "Mai.h"
+#include "Chang.h"
 /*
 	실습1. 이오리 집에 보내기
 	실습2. 배경 바꾸기 (킹오파 애니메이션 배경)
@@ -123,7 +124,10 @@ void MainGame::Init()
 		}
 #pragma once endregion
 
-
+		//Chang Character Test//
+		/*Chang* tempChang = new Chang();
+		tempChang->InitCollider();
+		objectManager->AddObject(OBJID::OBJ_CHARACTER, tempChang);*/
 		//Ryo* tempRyo2 = new Ryo();
 	// tempRyo->pushSkill("TY", Down, 5, 10, 10, false, true, 3);
 
