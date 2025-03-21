@@ -131,23 +131,32 @@ void MainGame::Init()
 			Image* kusaProfile = new Image;
 			kusaProfile->Init(TEXT("Image/Kusanagi/Kusanagip.bmp"), 97, 111, 1, 1, true, RGB(248, 0, 248));
 			Image* IDLE = new Image;
-			IDLE->Init(TEXT("Image/Kusanagi/idle.bmp"), 850, 110, 10, 1, true, RGB(248, 0, 248));
+			IDLE->Init(TEXT("Image/Kusanagi/idle.bmp"), 850, 130, 10, 1, true, RGB(248, 0, 248));
+			Image* DASH = new Image;
+			DASH->Init(TEXT("Image/Kusanagi/run2.bmp"), 630, 130, 6, 1, true, RGB(248, 0, 248));
 			Image* DOWN = new Image;
-			DOWN->Init(TEXT("Image/Kusanagi/down.bmp"), 77, 103, 1, 1, true, RGB(248, 0, 248));
+			DOWN->Init(TEXT("Image/Kusanagi/down.bmp"), 85, 130, 1, 1, true, RGB(248, 0, 248));
 			Image* WALK = new Image;
-			WALK->Init(TEXT("Image/Kusanagi/run.bmp"), 770, 120, 7, 1, true, RGB(248, 0, 248));
+			WALK->Init(TEXT("Image/Kusanagi/run1.bmp"), 510, 130, 6, 1, true, RGB(248, 0, 248));
 			Image* BACK = new Image;
-			BACK->Init(TEXT("Image/Kusanagi/back.bmp"), 340, 120, 4, 1, true, RGB(248, 0, 248));
+			BACK->Init(TEXT("Image/Kusanagi/back3.bmp"), 510, 130, 6, 1, true, RGB(248, 0, 248));
 			Image* BLOCK = new Image;
 			BLOCK->Init(TEXT("Image/Kusanagi/block2.bmp"), 900, 110, 10, 1, true, RGB(248, 0, 248));
 			Image* PUNCH1 = new Image;
-			PUNCH1->Init(TEXT("Image/Kusanagi/punch1.bmp"), 400, 113, 4, 1, true, RGB(248, 0, 248));
+			PUNCH1->Init(TEXT("Image/Kusanagi/punch1.bmp"), 400, 130, 4, 1, true, RGB(248, 0, 248));
+			Image* PUNCH2 = new Image;
+			PUNCH2->Init(TEXT("Image/Kusanagi/punch2.bmp"), 910, 130, 7, 1, true, RGB(248, 0, 248));
+			Image* KICK1 = new Image;
+			KICK1->Init(TEXT("Image/Kusanagi/kick1.bmp"), 960, 130, 8, 1, true, RGB(248, 0, 248));
+			Image* KICK2 = new Image;
+			KICK2->Init(TEXT("Image/Kusanagi/kick2.bmp"), 990, 130, 11, 1, true, RGB(248, 0, 248));
 
+			//idle, µÞ°È±â, ¾Õ°È±â, ¼÷ÀÌ±â, ¾Õ´ë½¬, ¹é´ë½¬,À­¹æ¾î,¾Æ·§¹æ¾î
 			kusaImages.push_back(*IDLE);
 			kusaImages.push_back(*BACK);
 			kusaImages.push_back(*WALK);
 			kusaImages.push_back(*DOWN);
-			kusaImages.push_back(*WALK);
+			kusaImages.push_back(*DASH);
 			kusaImages.push_back(*BACK);
 			kusaImages.push_back(*BLOCK);
 			kusaImages.push_back(*BLOCK);
@@ -155,6 +164,9 @@ void MainGame::Init()
 
 			kusanagi->Init(1, kusaProfile, { 250,200 }, 100, 100, kusaImages);
 			kusanagi->pushSkill("T", PUNCH1, 4, 5, 25, true, false, 0);
+			kusanagi->pushSkill("Y", PUNCH2, 7, 5, 35, true, false, 0);
+			kusanagi->pushSkill("G", KICK1, 8, 10, 40, false, true, 0);
+			kusanagi->pushSkill("H", KICK2, 11, 10, 40, false, true, 0);
 			kusanagi->InitCollider();
 			objectManager->AddObject(OBJID::OBJ_CHARACTER, kusanagi);
 
