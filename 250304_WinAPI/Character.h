@@ -59,11 +59,11 @@ public:
 		float hp, vector<Image>images);
 
 	void Release();
-	//idle, 뒷걷기, 앞걷기, 숙이기, 앞대쉬, 백대쉬 순으로 넣어주세요
+	//idle, 뒷걷기, 앞걷기, 숙이기, 앞대쉬, 백대쉬,윗방어,아랫방어 순으로 넣어주세요
 	void pushCommon(Image* image, int maxFrame);
 
 	void pushSkill(string command, Image* image, int maxFrame,
-		int damage, int reach, bool isUpperAttack, bool isLowerAttack, int attackFrame);
+		float damage, float reach, bool isUpperAttack, bool isLowerAttack, int attackFrame);
 	void Update(float deltaTime);
 	void Render(HDC hdc);
 	void Move(float deltaTime);
@@ -85,6 +85,7 @@ public:
 	void checkBackDash(string key);
 	void setBackDash();
 	void setDown();
+	void setBlock();
 
 	void useSkill(string str);
 	void endSkill();

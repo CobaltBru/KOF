@@ -145,6 +145,13 @@ void Character::setDown()
 	speed = 0.0f;
 	currentState = STATE::DOWN;
 }
+void Character::setBlock()
+{
+	if(guardState == 1)currentState = STATE::BLOCKUPPER;
+	else if (guardState == 2)currentState = STATE::BLOCKLOWER;
+	framecnt = 0;
+	timecnt = 0;
+}
 void Character::Init(int player, Image* profile, FPOINT pos, float characterSpeed,
 	float hp, vector<Image>images)
 /*Init(int player, Image* profile, FPOINT pos, float characterSpeed,
@@ -197,7 +204,7 @@ void Character::pushCommon(Image* image, int maxFrame)
 }
 
 void Character::pushSkill(string command, Image* image, int maxFrame,
-			int damage, int reach, bool isUpperAttack, bool isLowerAttack, int attackFrame)
+			float damage, float reach, bool isUpperAttack, bool isLowerAttack, int attackFrame)
 {
 	SKILL skill;
 	skill.command = command;
@@ -227,7 +234,7 @@ void Character::Update(float deltaTime)
 		{
 			if (screenWay == false) //뒷걸음질
 			{
-				if (currentState == STATE::DOWN)//숙이고 있었으면 하단방어
+				if (currentState == STATE::DOWN || currentState == STATE::BLOCKLOWER)//숙이고 있었으면 하단방어
 				{
 					guardState = 2;
 				}
@@ -248,7 +255,7 @@ void Character::Update(float deltaTime)
 		{
 			if (screenWay == false) //뒷걸음질
 			{
-				if (currentState == STATE::DOWN)//숙이고 있었으면 하단방어
+				if (currentState == STATE::DOWN || currentState == STATE::BLOCKLOWER)//숙이고 있었으면 하단방어
 				{
 					guardState = 2;
 				}
@@ -289,7 +296,7 @@ void Character::Update(float deltaTime)
 			}
 			else //뒷걸음질 
 			{
-				if (currentState == STATE::DOWN)//숙이고 있었으면 하단방어
+				if (currentState == STATE::DOWN || currentState == STATE::BLOCKLOWER)//숙이고 있었으면 하단방어
 				{
 					guardState = 2;
 				}
@@ -310,7 +317,7 @@ void Character::Update(float deltaTime)
 			}
 			else //뒷걸음질 
 			{
-				if (currentState == STATE::DOWN)//숙이고 있었으면 하단방어
+				if (currentState == STATE::DOWN || currentState == STATE::BLOCKLOWER)//숙이고 있었으면 하단방어
 				{
 					guardState = 2;
 				}
@@ -335,15 +342,30 @@ void Character::Update(float deltaTime)
 			dashKey = "d";
 		}
 
-		
+		if (currentState == STATE::BLOCKUPPER)
+		{
+			currentState;
+		}
 		if (isJustPressed(EKeyType::KEY_S)) //숙이기
 		{
 			setDown();
-			guardState = 0;
 		}
 		if (isKeepPressed(EKeyType::KEY_S)) //숙이기
 		{
-			setDown();
+			if (currentState == STATE::BLOCKLOWER)
+			{
+				currentState;
+			}
+			else
+			{
+
+				setDown();
+			}
+		}
+
+		if (currentState == STATE::BLOCKUPPER)
+		{
+			currentState;
 		}
 		if (isJustReleased(EKeyType::KEY_S))
 		{
@@ -432,6 +454,7 @@ void Character::Render(HDC hdc)
 	}
 	else
 	{
+		
 		images[getIndex()].Render(hdc, pos.x, pos.y, framecnt, screenWay);
 	}
 	
@@ -522,6 +545,12 @@ int Character::getIndex()
 	case STATE::BACKDASH:
 		idx = 5;
 		break;
+	case STATE::BLOCKUPPER:
+		idx = 6;
+		break;
+	case STATE::BLOCKLOWER:
+		idx = 7;
+		break;
 	case STATE::SKILL:
 		idx = -1;
 		break;
@@ -562,7 +591,7 @@ Character::STATE Character::getState()
 void Character::attack(Character* other)
 {
 	SKILL& skill = skillSet[currentSkill];
-	int d = damage;
+	float d = damage;
 	//if (skill.reach > (player == 1 ? 1 : -1) * (other->GetPos().x - pos.x))
 	//{
 	//	if (skill.isLowerAttack) //하단 공격일때
@@ -616,7 +645,7 @@ void Character::attack(Character* other)
 void Character::getDamage(float damage)
 {
 	currentHp -= damage;
-	//
+	if (guardState != 0 && damage > 0) setBlock();
 }
 
 

@@ -1,116 +1,96 @@
 #pragma once
 #include "GameObject.h"
-#include <vector>
-#include <MAP>
-
-#define FRAMESPEED 0.05f
-
+#include <map>
+class Animation;
 class Image;
-class Character2 : public GameObject
+class Character2:public GameObject
 {
 protected:
-	enum class STATE { OPEN, LOCK };
-	enum class BEHAVE { IDLE, BACK, WALK, DOWN, DASH, BACKDASH,SKILL, PROCESS };
-	
-	struct SKILL
+	enum STATE { IDLE, BACK, WALK, DOWN, DASH, BACKDASH,
+		BLOCKUPPER, BLOCKLOWER, SKILL};
+	enum INTERRUPTFLAG { OPEN, LOCK };
+	enum BLOCK {NONE, UPPER, LOWER};
+	enum PLAYFLAG { NORMAL, LOOP, NEXT };
+
+	struct BEHAVE
 	{
-		int imageIdx;		//이미지 인덱스
-		int maxFrame;		//총 프레임
+		STATE state;
+		INTERRUPTFLAG interruptFlag;
+		PLAYFLAG playFlag;
 
-		int damage;			//데미지
-		int reach;			//사정거리
-		bool isUpperAttack;	//상단피격여부
-		bool isLowerAttack;	//하단피격여부
+		int maxFrame;
+		float frameSpeed;
 
-		//현재 x축으로만 이동 가능
-		//float startTime;	//이동 시작 타이밍
-		//float endTime;		//이동 끝 타이밍
-		//int way;			//이동방향
-		//float speed;			//이동속도
+		float damage;
+		float reach;
+		bool isUpperAttack;
+		bool isLowerAttack;
+		int attacFrame;
 
 		string next;
 	};
-	map<string, SKILL> behaviorMap;
+	map<string, BEHAVE> behaves;
+	Animation* animation;
+	Image* profile;
 
-	Character2* other;
-	int		player; //1, 2
-	Image*	profile;
-	FPOINT	pos;
-	bool	screenWay; //화면에서 보고있는 방향
-	int		moveWay; //이동방향
-	float	characterSpeed;
-	float	speed; //속도
-	float	hp;
-	float	currentHp;
-	float	damage;
-	vector<Image> images;
-	string	currentCommand; //들어온 커맨드
-	
+	int player;
+	bool screenWay;
+
+	float moveDir;
+	float characterSpeed;
+	float currentSpeed;
+
+	float maxHp;
+	float currentHp;
+
+	bool currentKeys[4];
 	bool oldKeys[4];
-	bool basicKeys[4];
+	string currentCommand;
 
-	string		currentSkill; //현재 재생중인 기술
+	STATE oldState;
+	STATE currentState;
+	INTERRUPTFLAG flag;
+	BLOCK blockState;
 
-	int		framecnt;
-	float	timecnt;
-	float	dashTimer;
-	float	dashTime;
-	string	dashKey; // 대쉬인지 백대쉬인지 판단
+	float timer;
+	int currentFrame;
 
-	STATE	currentState; //상태
-	BEHAVE	currentBehave; //상태
-	int		guardState; //0 노가드 , 1상단가드, 2하단가드
+	float doubleClickTimerA;
+	bool clickedKeyA;
+	float doubleClickTimerD;
+	bool clickedKeyD;
+
 public:
 	Character2();
 	~Character2();
-	/*void Init(int player,Image* profile, FPOINT pos, float characterSpeed,
-				float hp, vector<Image>images);*/
 
-	void Init(int player, Image* profile, FPOINT pos, float characterSpeed,
-		float hp);
-
+	void Init(int player,Image* profile, FPOINT pos,float characterSpeed, int maxHp);
 	void Release();
-	//IDLE, BACK, WALK, DOWN, DASH, BACKDASH 순으로 넣어주세요
-	void pushCommon(string str, Image* image, string nextBehave);
-
-	void pushSkill(string command, Image* image, int maxFrame,
-		int damage, int reach, bool isUpperAttack, bool isLowerAttack);
 	void Update(float deltaTime);
 	void Render(HDC hdc);
 	void Move(float deltaTime);
-	void updateCurrentScreenWay(Character2* otherCharacter);
-	void setPlayer(int p);
+	void StateProcess();
 
 	bool isJustPressed(int key);
 	bool isJustReleased(int key);
 	bool isKeepPressed(int key);
 	bool isKeepReleased(int key);
+	bool doubleClickCheck(int key);
+	
+	/*
+	* flag1-> 0.NORMAEL / 1.LOOP / 2.STAY LAST FRAME / 3.PLAY NEXT
+	* flag2-> 0.OPEN /1.LOCK
+	*/
+	void PushAnimation(string name,Image* image, float frameSpeed,
+		int flag1, int flag2);
+	/*
+	* flag1-> 0.NORMAEL / 1.LOOP / 2.STAY LAST FRAME / 3.PLAY NEXT
+	* flag2-> 0.OPEN /1.LOCK
+	*/
+	void PushAnimation(string name,Image* image, float frameSpeed,
+		int flag1, int flag2, string next);
 
-	void setIdle();
-	void setWalk();
-	void setBack();
-	void startDashTimer();
-	void checkDash(string key);
-	void setDash();
-	void checkBackDash(string key);
-	void setBackDash();
-	void setDown();
-
-	void useSkill(string str);
-	void endSkill();
-	int getCurrentIndex();
-	int getIndex(BEHAVE behave);
-	float* getCurrentHp();
-	float getMaxHp();
+	inline float* getCurrentHp() { return &currentHp; }
 	Image getProfile();
-	//0 노가드 , 1상단가드, 2하단가드
-	int getGuardState();
-	//BEHAVE getBehave();
-	BEHAVE getBehave();
-	void attack();
-	void getDamage(float damage);
-	void SetEnemy(Character2* other);
-	FPOINT getPos();
 };
-
 
