@@ -8,7 +8,8 @@ class Image;
 class Character : public GameObject
 {
 protected:																		// BLOCKUPPER, BLOCKLOWER, HITUPPER, HITLOWER,DEAD  << 임의로 테스트하려고 김태경이 넣었어요 없애도 됩니당.
-	enum class STATE { IDLE, BACK, WALK, DOWN, DASH, BACKDASH, BLOCKUPPER, BLOCKLOWER, HITUPPER, HITLOWER,DEAD, SKILL, PROCESS };			
+	enum class STATE { IDLE, BACK, WALK, DOWN, DASH, BACKDASH, BLOCKUPPER, 
+		BLOCKLOWER, HITUPPER, HITLOWER,DEAD, SKILL, PROCESS };			
 	struct SKILL
 	{
 		string command;		//커맨드
@@ -50,19 +51,26 @@ protected:																		// BLOCKUPPER, BLOCKLOWER, HITUPPER, HITLOWER,DEAD  
 	STATE	currentState; //상태
 	int		guardState; //0 노가드 , 1상단가드, 2하단가드
 
+	//임시
+	float doubleClickTimerA;
+	bool clickedKeyA;
+	float doubleClickTimerD;
+	bool clickedKeyD;
+
 public:
 	Character();
 	~Character();
 	/*void Init(int player,Image* profile, FPOINT pos, float characterSpeed,
 				float hp, vector<Image>images);*/
 
+	//초기화
 	void Init(int player, Image* profile, FPOINT pos, float characterSpeed,
 		float hp, vector<Image> images);
-
+	//메모리 해제
 	void Release();
-	//idle, 뒷걷기, 앞걷기, 숙이기, 앞대쉬, 백대쉬,윗방어,아랫방어 순으로 넣어주세요
+	//idle, 뒷걷기, 앞걷기, 숙이기, 앞대쉬, 백대쉬,윗방어,아랫방어의 기본적인 동작을 저장
+	//특별한 추가 동작이 없는 기본적인 행동들이라 스킬과 분리
 	void pushCommon(Image* image, int maxFrame);
-
 	void pushSkill(string command, Image* image, int maxFrame,
 		float damage, float reach, bool isUpperAttack, bool isLowerAttack, int attackFrame);
 	void Update(float deltaTime);
@@ -116,6 +124,8 @@ public:
 		bBlockHit = true;
 	}
 	bool bBlockHit = false;
+
+	bool doubleClickCheck(int key);
 };
 
 

@@ -181,6 +181,11 @@ void Character::Init(int player, Image* profile, FPOINT pos, float characterSpee
 	this->dashKey = "n";
 	this->currentState = STATE::IDLE;
 	this->guardState = 0;
+	 //임시
+	doubleClickTimerA = 0;
+	clickedKeyA = false;
+	doubleClickTimerA = 0;
+	clickedKeyA = false;
 }
 
 void Character::Release()
@@ -222,163 +227,232 @@ void Character::pushSkill(string command, Image* image, int maxFrame,
 //조작 커맨드 asd
 void Character::Update(float deltaTime)
 {
-	
-	if ((currentState != STATE::PROCESS) && (currentState != STATE::BACKDASH))
+	basicKeys[EKeyType::KEY_W] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_W);
+	basicKeys[EKeyType::KEY_A] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_A);
+	basicKeys[EKeyType::KEY_S] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_S);
+	basicKeys[EKeyType::KEY_D] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_D);
+	//A키와 D키의 동작을 플레이어에 관계없이 통일
+	if (player == 2) swap(basicKeys[EKeyType::KEY_A], basicKeys[EKeyType::KEY_D]);
+	currentCommand = KOFKeyManager::GetInstance()->GetPlayerCommand(player);
+
+	if (clickedKeyA) doubleClickTimerA += deltaTime;
+	if (clickedKeyD) doubleClickTimerD += deltaTime;
+
+	if (currentState != STATE::PROCESS && currentState != STATE::BACKDASH) //열려있을때만 동작
 	{
-		currentCommand = KOFKeyManager::GetInstance()->GetPlayerCommand(player);
-		basicKeys[EKeyType::KEY_W] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_W);
-		basicKeys[EKeyType::KEY_A] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_A);
-		basicKeys[EKeyType::KEY_S] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_S);
-		basicKeys[EKeyType::KEY_D] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_D);
-
-		dashTimer += deltaTime;
-		if (isJustPressed(EKeyType::KEY_A)) //방금 눌렸는가?
-		{
-			if (screenWay == false) //뒷걸음질
-			{
-				if (currentState == STATE::DOWN || currentState == STATE::BLOCKLOWER)//숙이고 있었으면 하단방어
-				{
-					guardState = 2;
-				}
-				else
-				{
-					setBack();
-					checkBackDash("a");
-				}
-
-			}
-			else //앞으로 
-			{
-				setWalk();
-				checkDash("a");
-			}
-		}
-		if (isKeepPressed(EKeyType::KEY_A)) //계속 누르고 있는가
-		{
-			if (screenWay == false) //뒷걸음질
-			{
-				if (currentState == STATE::DOWN || currentState == STATE::BLOCKLOWER)//숙이고 있었으면 하단방어
-				{
-					guardState = 2;
-				}
-				else
-				{
-					setBack();
-				}
-
-			}
-			else //앞으로 
-			{
-				if (currentState == STATE::DASH) {}
-				else setWalk();
-				checkDash("a");
-			}
-		}
-		
-		if (isJustReleased(EKeyType::KEY_A)) //방금 뗐나?
-		{
-			if (currentState == STATE::DOWN)
-			{
-				guardState = 0;
-			}
-			else
-			{
-				setIdle(); //걷기 종료
-			}
-			startDashTimer();
-			dashKey = "a";
-		}
-		if (isJustPressed(EKeyType::KEY_D)) //방금 눌렸는가?
-		{
-			if (screenWay == false) //앞으로
-			{
-					
-				setWalk();
-				checkDash("d");
-			}
-			else //뒷걸음질 
-			{
-				if (currentState == STATE::DOWN || currentState == STATE::BLOCKLOWER)//숙이고 있었으면 하단방어
-				{
-					guardState = 2;
-				}
-				else
-				{
-					setBack();
-					checkBackDash("d");
-				}
-			}
-		}
-		if (isKeepPressed(EKeyType::KEY_D))
-		{
-			if (screenWay == false) //앞으로
-			{
-
-				if (currentState == STATE::DASH) {}
-				else setWalk();
-			}
-			else //뒷걸음질 
-			{
-				if (currentState == STATE::DOWN || currentState == STATE::BLOCKLOWER)//숙이고 있었으면 하단방어
-				{
-					guardState = 2;
-				}
-				else
-				{
-					setBack();
-				}
-			}
-		}
-		
-		if (isJustReleased(EKeyType::KEY_D)) //방금 뗐나?
-		{
-			if (currentState == STATE::DOWN)
-			{
-				guardState = 0;
-			}
-			else
-			{
-				setIdle(); //걷기 종료
-			}
-			startDashTimer();
-			dashKey = "d";
-		}
-
-		if (currentState == STATE::BLOCKUPPER)
-		{
-			currentState;
-		}
-		if (isJustPressed(EKeyType::KEY_S)) //숙이기
+		if (basicKeys[EKeyType::KEY_S]) //숙이기
 		{
 			setDown();
+			if (basicKeys[EKeyType::KEY_A]) guardState = 1;
+			else guardState = 0;
 		}
-		if (isKeepPressed(EKeyType::KEY_S)) //숙이기
+		else if (basicKeys[EKeyType::KEY_A]) //뒤
 		{
-			if (currentState == STATE::BLOCKLOWER)
-			{
-				currentState;
-			}
-			else
-			{
-
-				setDown();
-			}
+			guardState = 2;
+			setBack();
 		}
-
-		if (currentState == STATE::BLOCKUPPER)
+		else if (basicKeys[EKeyType::KEY_D]) //앞
 		{
-			currentState;
+			if (currentState != STATE::DASH)
+			{
+				setWalk();
+			}
 		}
+
+		//각 키 해제한 순간
 		if (isJustReleased(EKeyType::KEY_S))
 		{
 			setIdle();
+		}
+		if (isJustReleased(EKeyType::KEY_A))
+		{
+			if (!basicKeys[EKeyType::KEY_S]) setIdle();
 			guardState = 0;
+
+		}
+		if (isJustReleased(EKeyType::KEY_D))
+		{
+			setIdle();
 		}
 
+		//각 키 누른 순간
+		if (isJustPressed(EKeyType::KEY_S))
+		{
 
-		for (int i = 0; i < 4; i++)oldKeys[i] = basicKeys[i];
+		}
+		if (isJustPressed(EKeyType::KEY_A))
+		{
+			if (doubleClickCheck(EKeyType::KEY_A))
+			{
+				setBackDash();
+			}
+		}
+		if (isJustPressed(EKeyType::KEY_D))
+		{
+			if (doubleClickCheck(EKeyType::KEY_D))
+			{
+				setDash();
+			}
+		}
 
 	}
+	for (int i = 0; i < 4; i++)oldKeys[i] = basicKeys[i];
+	//if ((currentState != STATE::PROCESS) && (currentState != STATE::BACKDASH))
+	//{
+	//	currentCommand = KOFKeyManager::GetInstance()->GetPlayerCommand(player);
+	//	basicKeys[EKeyType::KEY_W] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_W);
+	//	basicKeys[EKeyType::KEY_A] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_A);
+	//	basicKeys[EKeyType::KEY_S] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_S);
+	//	basicKeys[EKeyType::KEY_D] = KOFKeyManager::GetInstance()->HasPlayerMoveKey(player, EKeyType::KEY_D);
+
+	//	dashTimer += deltaTime;
+	//	if (isJustPressed(EKeyType::KEY_A)) //방금 눌렸는가?
+	//	{
+	//		if (screenWay == false) //뒷걸음질
+	//		{
+	//			if (currentState == STATE::DOWN || currentState == STATE::BLOCKLOWER)//숙이고 있었으면 하단방어
+	//			{
+	//				guardState = 2;
+	//			}
+	//			else
+	//			{
+	//				setBack();
+	//				checkBackDash("a");
+	//			}
+
+	//		}
+	//		else //앞으로 
+	//		{
+	//			setWalk();
+	//			checkDash("a");
+	//		}
+	//	}
+	//	if (isKeepPressed(EKeyType::KEY_A)) //계속 누르고 있는가
+	//	{
+	//		if (screenWay == false) //뒷걸음질
+	//		{
+	//			if (currentState == STATE::DOWN || currentState == STATE::BLOCKLOWER)//숙이고 있었으면 하단방어
+	//			{
+	//				guardState = 2;
+	//			}
+	//			else
+	//			{
+	//				setBack();
+	//			}
+
+	//		}
+	//		else //앞으로 
+	//		{
+	//			if (currentState == STATE::DASH) {}
+	//			else setWalk();
+	//			checkDash("a");
+	//		}
+	//	}
+	//	
+	//	if (isJustReleased(EKeyType::KEY_A)) //방금 뗐나?
+	//	{
+	//		if (currentState == STATE::DOWN)
+	//		{
+	//			guardState = 0;
+	//		}
+	//		else
+	//		{
+	//			setIdle(); //걷기 종료
+	//		}
+	//		startDashTimer();
+	//		dashKey = "a";
+	//	}
+	//	if (isJustPressed(EKeyType::KEY_D)) //방금 눌렸는가?
+	//	{
+	//		if (screenWay == false) //앞으로
+	//		{
+	//				
+	//			setWalk();
+	//			checkDash("d");
+	//		}
+	//		else //뒷걸음질 
+	//		{
+	//			if (currentState == STATE::DOWN || currentState == STATE::BLOCKLOWER)//숙이고 있었으면 하단방어
+	//			{
+	//				guardState = 2;
+	//			}
+	//			else
+	//			{
+	//				setBack();
+	//				checkBackDash("d");
+	//			}
+	//		}
+	//	}
+	//	if (isKeepPressed(EKeyType::KEY_D))
+	//	{
+	//		if (screenWay == false) //앞으로
+	//		{
+
+	//			if (currentState == STATE::DASH) {}
+	//			else setWalk();
+	//		}
+	//		else //뒷걸음질 
+	//		{
+	//			if (currentState == STATE::DOWN || currentState == STATE::BLOCKLOWER)//숙이고 있었으면 하단방어
+	//			{
+	//				guardState = 2;
+	//			}
+	//			else
+	//			{
+	//				setBack();
+	//			}
+	//		}
+	//	}
+	//	
+	//	if (isJustReleased(EKeyType::KEY_D)) //방금 뗐나?
+	//	{
+	//		if (currentState == STATE::DOWN)
+	//		{
+	//			guardState = 0;
+	//		}
+	//		else
+	//		{
+	//			setIdle(); //걷기 종료
+	//		}
+	//		startDashTimer();
+	//		dashKey = "d";
+	//	}
+
+	//	if (currentState == STATE::BLOCKUPPER)
+	//	{
+	//		currentState;
+	//	}
+	//	if (isJustPressed(EKeyType::KEY_S)) //숙이기
+	//	{
+	//		setDown();
+	//	}
+	//	if (isKeepPressed(EKeyType::KEY_S)) //숙이기
+	//	{
+	//		if (currentState == STATE::BLOCKLOWER)
+	//		{
+	//			currentState;
+	//		}
+	//		else
+	//		{
+
+	//			setDown();
+	//		}
+	//	}
+
+	//	if (currentState == STATE::BLOCKUPPER)
+	//	{
+	//		currentState;
+	//	}
+	//	if (isJustReleased(EKeyType::KEY_S))
+	//	{
+	//		setIdle();
+	//		guardState = 0;
+	//	}
+
+
+	//	for (int i = 0; i < 4; i++)oldKeys[i] = basicKeys[i];
+
+	//}
 
 
 	useSkill(currentCommand); // 스킬 커맨드 판독
@@ -595,29 +669,7 @@ void Character::attack(Character* other, FPOINT hit)
 {
 	SKILL& skill = skillSet[currentSkill];
 	float d = damage;
-	//if (skill.reach > (player == 1 ? 1 : -1) * (other->GetPos().x - pos.x))
-	//{
-	//	if (skill.isLowerAttack) //하단 공격일때
-	//	{
-	//		if (other->getGuardState() == 2) //하단 방어일때
-	//		{
-	//			d *= 0.1f;
-	//		}
-	//	}
-	//	else if (skill.isUpperAttack) //상단 공격일때
-	//	{
-	//		if (other->getState() == STATE::DOWN) //상대가 숙였을때
-	//		{
-	//			d = 0;
-	//		}
-	//		else if (other->getGuardState() == 1) //상단 방어일때
-	//		{
-	//			d *= 0.1f;
-	//		}
-	//	}
-	//	other->getDamage(d);
-	//}
-
+	
 	if (skill.isLowerAttack) //하단 공격일때
 	{
 		if (other->getGuardState() == 2) //하단 방어일때
@@ -713,4 +765,50 @@ void Character::hit(float damage, bool bUpperAttack,FPOINT hit)
 	}
 }
 
-
+bool Character::doubleClickCheck(int key)
+{
+	if (key == EKeyType::KEY_A)
+	{
+		if (!clickedKeyA)
+		{
+			clickedKeyA = true;
+			return false;
+		}
+		else
+		{
+			if (doubleClickTimerA < 0.2f)
+			{
+				doubleClickTimerA = 0;
+				clickedKeyA = false;
+				return true;
+			}
+			else
+			{
+				doubleClickTimerA = 0;
+				return false;
+			}
+		}
+	}
+	else if (key == EKeyType::KEY_D)
+	{
+		if (!clickedKeyD)
+		{
+			clickedKeyD = true;
+			return false;
+		}
+		else
+		{
+			if (doubleClickTimerD < 0.2f)
+			{
+				doubleClickTimerD = 0;
+				clickedKeyD = false;
+				return true;
+			}
+			else
+			{
+				doubleClickTimerD = 0;
+				return false;
+			}
+		}
+	}
+}
