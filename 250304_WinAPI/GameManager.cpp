@@ -141,6 +141,7 @@ void GameManager::Init()
 		tempHong->pushSkill("Y", AkumaRp, 12, 5, 50, true, false, 8);
 		tempHong->pushSkill("G", AkumaLk, 30, 5, 80, false, true, 4);
 		tempHong->pushSkill("H", AkumaRk, 9, 5, 50, false, true, 4);
+		tempHong->pushSkill("SDTY", AkumaLp, 12, 5, 50, true, false, 4);
 
 		tempHong->Init(2, maiProfile, { 550,250 }, 200.f, 100.f, tempImage2);
 		tempHong->InitCollider();
@@ -169,6 +170,7 @@ void GameManager::Init()
 
 		Image maiBack;
 		maiBack.Init(L"Image/Mai/Mai_Smove_Back.bmp", 1677, 300, 6, 1, true, RGB(255, 0, 255));
+
 		maiImage.push_back(maiIdle);
 		maiImage.push_back(maiBackWalk);
 		maiImage.push_back(maiWalk);
@@ -239,7 +241,6 @@ void GameManager::Update(float TimeDelta)
 		//살아있다면
 		if (*P1Players[NextP1Player]->getCurrentHp() >= 0)
 		{
-			CurrentPlayer[P1]->SetPos({ -100.f, -100.f });
 			CurrentPlayer[P1]->SetActive(false);
 			CurrentPlayer[P1] = P1Players[NextP1Player];
 			P1Tag = true;
@@ -258,7 +259,6 @@ void GameManager::Update(float TimeDelta)
 		//살아있다면
 		if (*P2Players[NextP2Player]->getCurrentHp() >= 0.f)
 		{
-			CurrentPlayer[P2]->SetPos({ -100.f, -100.f });
 			CurrentPlayer[P2]->SetActive(false);
 			CurrentPlayer[P2] = P2Players[NextP2Player];
 			P2Tag = true;
