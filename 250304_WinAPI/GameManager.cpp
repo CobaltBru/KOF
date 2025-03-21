@@ -7,7 +7,7 @@
 #include "ObjectManager.h"
 #include "KeyManager.h"
 #include "Mai.h"
-#include "UserInterface.h"
+#include "Chang.h"
 #include "Kusanagi.h"
 
 void GameManager::Init()
@@ -158,35 +158,55 @@ void GameManager::Init()
 	Mai* tempMai = new Mai();
 	{
 		vector<Image> maiImage;
-		
 		Image maiIdle;
-		maiIdle.Init(L"Image/Mai/Mai_Endle.bmp", 3000, 300, 12, 1, true, RGB(255, 0, 255));
+		maiIdle.Init(L"Image/Mai/Mai_Endle.bmp", 1200, 100, 12, 1, true, RGB(255, 0, 255));
 
 		Image maiWalk;
-		maiWalk.Init(L"Image/Mai/Mai_Smove_Front.bmp", 1901, 300, 6, 1, true, RGB(255, 0, 255));
+		maiWalk.Init(L"Image/Mai/Mai_Smove_Front.bmp", 600, 100, 6, 1, true, RGB(255, 0, 255));
 
 		Image maiBackWalk;
-		maiBackWalk.Init(L"Image/Mai/Mai_Smove_Back.bmp", 1677, 300, 6, 1, true, RGB(255, 0, 255));
+		maiBackWalk.Init(L"Image/Mai/Mai_Smove_Back.bmp", 600, 100, 6, 1, true, RGB(255, 0, 255));
 
 		Image maiDown;
-		maiDown.Init(L"Image/Mai/Mai_Sit.bmp", 1016, 300, 4, 1, true, RGB(255, 0, 255));
+		maiDown.Init(L"Image/Mai/Mai_Sit.bmp", 100, 100, 4, 1, true, RGB(255, 0, 255));
 
 		Image maiDash;
-		maiDash.Init(L"Image/Mai/Mai_Run.bmp", 2265, 300, 6, 1, true, RGB(255, 0, 255));
+		maiDash.Init(L"Image/Mai/Mai_Run.bmp", 800, 100, 6, 1, true, RGB(255, 0, 255));
 
 		Image maiBack;
-		maiBack.Init(L"Image/Mai/Mai_Smove_Back.bmp", 1677, 300, 6, 1, true, RGB(255, 0, 255));
-
+		maiBack.Init(L"Image/Mai/Mai_Smove_Back.bmp", 600, 100, 6, 1, true, RGB(255, 0, 255));
 		maiImage.push_back(maiIdle);
 		maiImage.push_back(maiBackWalk);
 		maiImage.push_back(maiWalk);
 		maiImage.push_back(maiDown);
 		maiImage.push_back(maiDash);
 		maiImage.push_back(maiBack);
-		
+
+
 		Image* maiProfile = new Image();
 		maiProfile->Init(TEXT("Image/UI/yuri.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255));
-		tempMai->Init(1, maiProfile, { 250,250 }, 200.f, 100.f, maiImage);
+		tempMai->Init(2, maiProfile, { 400,250 }, 200.f, 100.f, maiImage);
+
+		Image* maiLightPunch = new Image();
+		maiLightPunch->Init(L"Image/Mai/Mai_Wpunch.bmp", 533, 100, 4, 1, true, RGB(255, 0, 255));
+
+		Image* maiStrongPunch = new Image();
+		maiStrongPunch->Init(L"Image/Mai/Mai_Spunch.bmp", 801, 165, 5, 1, true, RGB(255, 0, 255));
+
+		Image* maiLightKick = new Image();
+		maiLightKick->Init(L"Image/Mai/Mai_Middlekick.bmp", 961, 149, 6, 1, true, RGB(255, 0, 255));
+
+		Image* maiStrongKick = new Image();
+		maiStrongKick->Init(L"Image/Mai/Mai_HighKick.bmp", 961, 165, 6, 1, true, RGB(255, 0, 255));
+
+
+		tempMai->pushSkill("H", maiLightPunch, 7, 5, 50, true, false, 2);
+		tempMai->pushSkill("Y", maiStrongPunch, 9, 10, 70, true, false, 4);
+		tempMai->pushSkill("G", maiLightKick, 7, 7, 60, true, false, 3);
+		tempMai->pushSkill("T", maiStrongKick, 10, 10, 70, true, false, 3);
+
+		tempMai->InitCollider();
+		
 	}
 #pragma endregion
 
@@ -237,21 +257,29 @@ void GameManager::Init()
 	}
 #pragma endregion
 
+#pragma region Chang
+	Chang* tempChang = new Chang();
+	tempChang->InitCollider();
+#pragma endregion
+
+	tempChang->SetActive(false);
 	tempMai->SetActive(false);
 	kusanagi->SetActive(false);
 
 	//1p에 맞춰서 넣어주기
 	P1Players.push_back(tempRyo);
-	P1Players.push_back(tempMai);
+	P1Players.push_back(tempChang);
 
 	//2p에 맞춰서 넣어주기
 	P2Players.push_back(tempHong);
 	P2Players.push_back(kusanagi);
+	P2Players.push_back(tempMai);
 
 	ObjectManager::GetInstance()->AddObject(OBJID::OBJ_CHARACTER, tempRyo);
 	ObjectManager::GetInstance()->AddObject(OBJID::OBJ_CHARACTER, tempHong);
 	ObjectManager::GetInstance()->AddObject(OBJID::OBJ_CHARACTER, tempMai);
 	ObjectManager::GetInstance()->AddObject(OBJID::OBJ_CHARACTER, kusanagi);
+	ObjectManager::GetInstance()->AddObject(OBJID::OBJ_CHARACTER, tempChang);
 
 	CurrentPlayer[P1] = P1Players[0];
 	CurrentPlayer[P2] = P2Players[0];

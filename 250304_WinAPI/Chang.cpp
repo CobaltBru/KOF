@@ -12,6 +12,9 @@ Chang::Chang() {
 
 	vector<Image> tempImage;
 
+	Image* maiProfile = new Image();
+	maiProfile->Init(TEXT("Image/UI/yuri.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255));
+
 	Image idle;
 	idle.Init(L"Image/Chang/Chang_Idle.bmp",576,146, 6, 1, true, RGB(255, 0, 255));
 	Image BackWalk;
@@ -47,7 +50,7 @@ Chang::Chang() {
 	pushSkill("G", BottomKick, 5, 7, 60, false, true, 0);
 	pushSkill("T", PowerKick, 7, 10, 70, true, false, 0);
 
-	this->Init(1, new Image(), { 250,250 }, 100.f, 100.f, tempImage);
+	this->Init(1, maiProfile, { 250,250 }, 100.f, 100.f, tempImage);
 
 	
 };
