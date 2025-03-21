@@ -498,7 +498,6 @@ void Character::useSkill(string str)
 	{
 		return;
 	}
-	KOFKeyManager::GetInstance()->GetPlayerCommand(player);
 	for (int i = 0;i<skillSet.size();i++)
 	{
 		if (str.find(skillSet[i].command) != string::npos)

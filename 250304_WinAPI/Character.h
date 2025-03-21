@@ -49,6 +49,7 @@ protected:																		// BLOCKUPPER, BLOCKLOWER, HITUPPER, HITLOWER,DEAD  
 
 	STATE	currentState; //상태
 	int		guardState; //0 노가드 , 1상단가드, 2하단가드
+
 public:
 	Character();
 	~Character();
