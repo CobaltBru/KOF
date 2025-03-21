@@ -241,6 +241,11 @@ void GameManager::Init()
 		KICK1->Init(TEXT("Image/Kusanagi/kick1.bmp"), 960, 130, 8, 1, true, RGB(248, 0, 248));
 		Image* KICK2 = new Image;
 		KICK2->Init(TEXT("Image/Kusanagi/kick2.bmp"), 990, 130, 11, 1, true, RGB(248, 0, 248));
+		Image* COMBO1 = new Image;
+		COMBO1->Init(TEXT("Image/Kusanagi/combo1.bmp"), 1210, 130, 11, 1, true, RGB(248, 0, 248));
+
+		Image* COMBO2 = new Image;
+		COMBO2->Init(TEXT("Image/Kusanagi/combo2.bmp"), 1375, 130, 11, 1, true, RGB(248, 0, 248));
 
 		//idle, µÞ°È±â, ¾Õ°È±â, ¼÷ÀÌ±â, ¾Õ´ë½¬, ¹é´ë½¬,À­¹æ¾î,¾Æ·§¹æ¾î
 		kusaImages.push_back(*IDLE);
@@ -254,10 +259,13 @@ void GameManager::Init()
 
 
 		kusanagi->Init(2, kusaProfile, { 550.f,320.f }, 100, 100, kusaImages);
+		kusanagi->pushSkill("SG", COMBO2, 11, 10, 40, false, true, 0);
+		kusanagi->pushSkill("SH", COMBO1, 11, 10, 40, true, false, 0);
 		kusanagi->pushSkill("T", PUNCH1, 4, 5, 25, true, false, 0);
 		kusanagi->pushSkill("Y", PUNCH2, 7, 5, 35, true, false, 0);
 		kusanagi->pushSkill("G", KICK1, 8, 10, 40, false, true, 0);
 		kusanagi->pushSkill("H", KICK2, 11, 10, 40, false, true, 0);
+		
 		kusanagi->InitCollider();
 	}
 #pragma endregion
