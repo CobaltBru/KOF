@@ -63,7 +63,7 @@ void Kusanagi::Render(HDC hdc)
 
 void Kusanagi::InitCollider()
 {
-	collider = new Collider(this, { 30.f, 80.f }, { 50.f, 100.f }, COLLIDER_TYPE::Rect);
+	collider = new Collider(this, { 60.f, 80.f }, { 45.f, 98.f }, COLLIDER_TYPE::Rect);
 	CollisionManager* manager = CollisionManager::GetInstance();
 
 	manager->AddObject(OBJID::OBJ_CHARACTER, collider);

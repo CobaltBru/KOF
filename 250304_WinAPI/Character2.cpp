@@ -243,12 +243,12 @@ bool Character2::doubleClickCheck(int key)
 }
 void Character2::PushAnimation(string name,Image* image, float frameSpeed, int flag1, int flag2)
 {
-	animation->PushTask(name, image, frameSpeed, flag1, flag2);
+	//animation->PushTask(name, image, frameSpeed, flag1, flag2);
 }
 
 void Character2::PushAnimation(string name,Image* image, float frameSpeed, int flag1, int flag2, string next)
 {
-	animation->PushTask(name, image, frameSpeed, flag1, flag2, next);
+	//animation->PushTask(name, image, frameSpeed, flag1, flag2, next);
 }
 
 
