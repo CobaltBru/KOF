@@ -168,7 +168,7 @@ void GameManager::Init()
 		maiBackWalk.Init(L"Image/Mai/Mai_Smove_Back.bmp", 600, 100, 6, 1, true, RGB(255, 0, 255));
 
 		Image maiDown;
-		maiDown.Init(L"Image/Mai/Mai_Sit.bmp", 100, 100, 4, 1, true, RGB(255, 0, 255));
+		maiDown.Init(L"Image/Mai/Mai_Sit.bmp", 400, 100, 4, 1, true, RGB(255, 0, 255));
 
 		Image maiDash;
 		maiDash.Init(L"Image/Mai/Mai_Run.bmp", 800, 100, 6, 1, true, RGB(255, 0, 255));
@@ -184,7 +184,7 @@ void GameManager::Init()
 
 
 		Image* maiProfile = new Image();
-		maiProfile->Init(TEXT("Image/UI/yuri.bmp"), 85 * 1.4, 82 * 1.4, true, RGB(255, 0, 255));
+		maiProfile->Init(TEXT("Image/Mai/Mai_Profile.bmp"), 85 * 1.3, 82 * 1.3, true, RGB(255, 0, 255));
 		tempMai->Init(2, maiProfile, { 550.f,320.f }, 200.f, 100.f, maiImage);
 
 		Image* maiLightPunch = new Image();
